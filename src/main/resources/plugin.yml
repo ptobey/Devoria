@@ -1,0 +1,10 @@
+name: Devoria
+version: '${project.version}'
+main: me.devoria.core.Core
+authors: [ ptobey ]
+
+commands:
+  class:
+    description: Select a class
+    usage: huntsman/sorcerer/bard/knight
+
