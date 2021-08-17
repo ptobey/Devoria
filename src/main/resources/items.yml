@@ -1,12 +1,14 @@
 Test Bow:
-  Tradeable: false
-  Attack Speed: 1
-  Neutral Damage: 100
+  tradeable: false
+  rarity: epic
+  attack_speed: 1
+  neutral_Damage: 100
 
 Test Sword:
-  Tradeable: true
-  Attack Speed: 2
-  Neutral Damage: 50
+  tradeable: true
+  rarity: common
+  attack_speed: 2
+  neutral_damage: 50
 
 
 
