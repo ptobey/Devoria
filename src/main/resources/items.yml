@@ -1,0 +1,12 @@
+Test Bow:
+  Tradeable: false
+  Attack Speed: 1
+  Neutral Damage: 100
+
+Test Sword:
+  Tradeable: true
+  Attack Speed: 2
+  Neutral Damage: 50
+
+
+

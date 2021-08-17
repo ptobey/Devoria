@@ -10,6 +10,7 @@ import java.util.Locale;
 
 public class ClassCommand implements CommandExecutor {
 
+    //Sets your class
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
