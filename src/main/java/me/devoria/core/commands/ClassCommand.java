@@ -1,5 +1,6 @@
-package me.devoria.core;
+package me.devoria.core.commands;
 
+import me.devoria.core.Listeners;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

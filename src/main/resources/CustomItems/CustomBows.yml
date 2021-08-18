@@ -1,4 +1,4 @@
-main: me.devoria.core.CustomBow.CustomBow
+main: me.devoria.core.CustomBows.CustomBow
 name: CustomBow
 author: Lucas | Pto
 version: 1.0
