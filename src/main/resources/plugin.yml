@@ -1,7 +1,7 @@
 name: Devoria
 version: '${project.version}'
 main: me.devoria.core.Core
-authors: [ ptobey ]
+authors: [ ptobey | Lucas souza ]
 
 commands:
   class:
