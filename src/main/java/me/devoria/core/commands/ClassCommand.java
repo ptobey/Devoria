@@ -33,6 +33,7 @@ public class ClassCommand implements CommandExecutor {
                     Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("knight");
                     return true;
             }
+            return true;
         }
         return false;
     }

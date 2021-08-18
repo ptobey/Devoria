@@ -22,5 +22,4 @@ public class Core extends JavaPlugin {
         this.getCommand("Reveal").setExecutor(new AttyMod());
     }
 
-
 }

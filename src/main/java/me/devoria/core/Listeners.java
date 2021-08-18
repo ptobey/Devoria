@@ -43,6 +43,9 @@ public class Listeners implements Listener {
     @EventHandler
     public void onUse(PlayerInteractEvent e) {
         if(e.getMaterial().equals(Material.PINK_WOOL)){
+            if(e.getItem().getItemMeta().getLocalizedName().equals("1")) {
+                e.getPlayer().sendMessage("pew pew pew");
+            }
             if(lookUpPlayer(e.getPlayer().getUniqueId()).getType().equals("huntsman") || lookUpPlayer(e.getPlayer().getUniqueId()).getType().equals("bard") ) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     e.setCancelled(true);

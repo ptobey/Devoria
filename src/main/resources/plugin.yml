@@ -7,4 +7,8 @@ commands:
   class:
     description: Select a class
     usage: huntsman/sorcerer/bard/knight
+  item:
+    description: Get a custom item
+    usage: Put an item name
+
 
