@@ -10,7 +10,7 @@ commands:
   item:
     description: Get a custom item
     usage: Put an item name
-  Reveal:
+  reveal:
     descreption: Changes item atty
     usage: Reveal item
 

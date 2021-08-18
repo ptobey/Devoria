@@ -19,7 +19,7 @@ public class Core extends JavaPlugin {
     }
     public void registerCommands() {
         this.getCommand("class").setExecutor(new ClassCommand());
-        this.getCommand("Reveal").setExecutor(new AttyMod());
+        this.getCommand("reveal").setExecutor(new AttyMod());
     }
 
 }
