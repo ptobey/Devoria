@@ -20,12 +20,12 @@ public class RegisterCommand implements CommandExecutor {
 
         try {
             DBconnect.connect();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException throwables) {
-            //throwables.printStackTrace();
-            Bukkit.getLogger().info("Database Connected!");
+
+        } catch (ClassNotFoundException | SQLException e) {
+            Bukkit.getLogger().info("Database NOT Connected!");
         }
+
+        Bukkit.getLogger().info("Database Connected!");
 
 
         if(label.equalsIgnoreCase("register")){
@@ -45,6 +45,7 @@ public class RegisterCommand implements CommandExecutor {
                 }
             } catch (SQLException throwables) {
                 //throwables.printStackTrace();
+                Bukkit.getLogger().info("Problem verifying player!");
             }
 
             PlayerTable.register(uuid,username);

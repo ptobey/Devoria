@@ -27,7 +27,7 @@ public class PlayerTable {
 
 
         }catch (SQLException e){
-            Bukkit.getLogger().info("Could not verify table players");
+            Bukkit.getLogger().info("Could not insert into table players");
         }
 
         DBconnect.disconnect();
