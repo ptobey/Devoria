@@ -15,6 +15,3 @@ commands:
     usage: Reveal item
   register:
     description: register player in database
-
-
-

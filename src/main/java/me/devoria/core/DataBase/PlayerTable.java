@@ -1,4 +1,4 @@
-package me.devoria.core.database;
+package me.devoria.core.DataBase;
 
 import me.devoria.core.Player;
 import org.bukkit.Bukkit;

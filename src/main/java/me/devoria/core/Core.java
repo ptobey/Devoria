@@ -26,6 +26,7 @@ public class Core extends JavaPlugin {
     public void registerListeners() {
         getServer().getPluginManager().registerEvents(new Listeners(), this);
     }
+
     public void registerCommands() {
         this.getCommand("class").setExecutor(new ClassCommand());
         this.getCommand("item").setExecutor(new ItemCommand());

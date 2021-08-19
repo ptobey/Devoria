@@ -1,8 +1,8 @@
 package me.devoria.core.commands;
 
 
-import me.devoria.core.database.DBconnect;
-import me.devoria.core.database.PlayerTable;
+import me.devoria.core.DataBase.DBconnect;
+import me.devoria.core.DataBase.PlayerTable;
 import me.devoria.core.Listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
