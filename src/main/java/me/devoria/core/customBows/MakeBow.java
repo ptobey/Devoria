@@ -11,13 +11,15 @@ import java.util.Objects;
 public class MakeBow {
 
 //makes a custom bow using stats pulled from the yml
-    public static ItemStack makeBow(String name, Boolean tradeable, String rarity, int attackSpeed, String damage, String earthDamage){
+    public static ItemStack makeBow(Object name, Object tradeable, Object rarity, Object attackSpeed, Object damage, Object earthDamage){
 
-        ChatColor rarityColor = null;
-        ChatColor attackSpeedColor = null;
+        ChatColor rarityColor = ChatColor.WHITE;
+        ChatColor attackSpeedColor = ChatColor.WHITE;
 
         String rarityType = "";
         String attackSpeedType = "";
+        String itemInfo = "name:"+name+",tradeable:"+tradeable+",rarity:"+rarity+",attackSpeed:"+attackSpeed+",damage:"+damage;
+
 
         ItemStack bow = new ItemStack(Material.PINK_WOOL);
         ItemMeta bowMeta = bow.getItemMeta();
@@ -43,38 +45,38 @@ public class MakeBow {
             rarityColor = ChatColor.DARK_PURPLE;
             rarityType = "Mythic";
         }
-        if(attackSpeed == -3) {
+        if((Integer) attackSpeed == -3) {
             attackSpeedColor = ChatColor.RED;
             attackSpeedType = "Super Slow";
         }
-        else if(attackSpeed == -2) {
+        else if((Integer) attackSpeed == -2) {
             attackSpeedColor = ChatColor.RED;
             attackSpeedType = "Very Slow";
         }
-        else if(attackSpeed == -1) {
+        else if((Integer) attackSpeed == -1) {
             attackSpeedColor = ChatColor.RED;
             attackSpeedType = "Slow";
         }
-        else if(attackSpeed == 0) {
+        else if(attackSpeed == (Integer) 0) {
             attackSpeedColor = ChatColor.WHITE;
             attackSpeedType = "Normal";
         }
-        else if(attackSpeed == 1) {
+        else if((Integer) attackSpeed == 1) {
             attackSpeedColor = ChatColor.GREEN;
             attackSpeedType = "Fast";
         }
-        else if(attackSpeed == 2) {
+        else if((Integer) attackSpeed == 2) {
             attackSpeedColor = ChatColor.GREEN;
             attackSpeedType = "Very Fast";
         }
-        else if(attackSpeed == 3) {
+        else if((Integer) attackSpeed == 3) {
             attackSpeedColor = ChatColor.GREEN;
             attackSpeedType = "Super Fast";
         }
 
 
         assert bowMeta != null;
-        bowMeta.setDisplayName(rarityColor + name);
+        bowMeta.setDisplayName(rarityColor + "" + name);
 
         lore.add("");
         lore.add(ChatColor.GOLD+"✸ Damage: "+damage);
@@ -83,13 +85,14 @@ public class MakeBow {
 
         if(earthDamage != null) {
             lore.add(ChatColor.DARK_GREEN+"✿ Earth Damage: "+ChatColor.GREEN+earthDamage);
+            itemInfo += ",earthDamage:"+earthDamage;
         }
         lore.add("");
         lore.add(rarityColor+"✯ "+rarityType+" Quality");
 
         bowMeta.setLore(lore);
 
-        bowMeta.setLocalizedName("1");
+        bowMeta.setLocalizedName(itemInfo);
         bow.setItemMeta(bowMeta);
 
         return bow;

@@ -2,7 +2,7 @@ package me.devoria.core.DataBase;
 
 import me.devoria.core.Player;
 import org.bukkit.Bukkit;
-import sun.tools.jar.Main;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

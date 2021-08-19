@@ -1,0 +1,6 @@
+name: example
+tradeable: true
+rarity: common
+attack_speed: 2
+damage: 50
+earth_damage: 80-120

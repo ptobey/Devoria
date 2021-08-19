@@ -1,19 +1,22 @@
 package me.devoria.core;
 
-import me.devoria.core.DataBase.DBconnect;
 import me.devoria.core.commands.AttyMod;
 import me.devoria.core.commands.ClassCommand;
 import me.devoria.core.commands.ItemCommand;
 import me.devoria.core.commands.RegisterCommand;
-import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import java.sql.SQLException;
+import java.io.File;
+import java.io.IOException;
 
 public class Core extends JavaPlugin {
 
+
     public void onEnable() {
 
-        getLogger().info("onEnable is called!");
+        createCustomConfig();
         registerListeners();
         registerCommands();
     }
@@ -30,4 +33,18 @@ public class Core extends JavaPlugin {
         this.getCommand("register").setExecutor(new RegisterCommand());
     }
 
+
+    private void createCustomConfig() {
+        File makeItemsFolder = new File(getDataFolder(), "items/example.yml");
+        if (!makeItemsFolder.exists()) {
+            makeItemsFolder.getParentFile().mkdirs();
+            saveResource("items/example.yml", false);
+        }
+        FileConfiguration customConfig = new YamlConfiguration();
+        try {
+            customConfig.load(makeItemsFolder);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
 }
