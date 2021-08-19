@@ -13,5 +13,8 @@ commands:
   reveal:
     descreption: Changes item atty
     usage: Reveal item
+  register:
+    description: register player in database
+
 
 
