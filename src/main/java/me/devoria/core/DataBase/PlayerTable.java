@@ -1,5 +1,6 @@
 package me.devoria.core.DataBase;
 
+import me.devoria.core.Player;
 import org.bukkit.Bukkit;
 import sun.tools.jar.Main;
 
@@ -15,7 +16,7 @@ public class PlayerTable {
 
 
 
-    public static boolean register(UUID uuid, String username) {
+    public static boolean register(Player uuid, String username) {
 
         try {
             PreparedStatement ps;
@@ -23,14 +24,14 @@ public class PlayerTable {
             ps = connection.prepareStatement("INSERT INTO Players (uuid, Username) VALUES (?, ?)");
             ps.setString(1, uuid.toString());
             ps.setString(2, username);
-            ps.executeQuery();
+            ps.executeUpdate();
 
 
         }catch (SQLException e){
+            Bukkit.getLogger().info(e.toString());
             Bukkit.getLogger().info("Could not insert into table players");
         }
 
-        DBconnect.disconnect();
         return false;
     }
 
@@ -40,7 +41,7 @@ public class PlayerTable {
         return false;
     }
 
-    public static boolean Verify(UUID uuid) throws SQLException {
+    public static boolean Verify(Player uuid) throws SQLException {
 
         try {
             PreparedStatement ps;
@@ -55,10 +56,10 @@ public class PlayerTable {
                 return false;
             }
         }catch (SQLException e){
+            Bukkit.getLogger().info(e.toString());
             Bukkit.getLogger().info("Could not verify table players");
         }
 
-        DBconnect.disconnect();
 
         return true;
 
