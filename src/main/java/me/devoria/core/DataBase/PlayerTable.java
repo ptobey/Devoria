@@ -1,13 +1,14 @@
 package me.devoria.core.DataBase;
 
-import me.devoria.core.Player;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class PlayerTable {
 
@@ -15,7 +16,7 @@ public class PlayerTable {
 
 
 
-    public static boolean register(Player uuid, String username) {
+    public static boolean register(UUID uuid, String username) {
 
         try {
             PreparedStatement ps;
@@ -35,12 +36,27 @@ public class PlayerTable {
     }
 
 
-    public boolean remove(){
-        DBconnect.disconnect();
+    public boolean remove(UUID uuid){
+
+
+        try {
+            PreparedStatement ps;
+            Connection connection = DBconnect.getConnection();
+            ps = connection.prepareStatement("DELETE FROM Players WHERE UUID=?)");
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
+
+
+        }catch (SQLException e){
+            Bukkit.getLogger().info(e.toString());
+            Bukkit.getLogger().info("Could not delete player");
+        }
+
         return false;
+
     }
 
-    public static boolean Verify(Player uuid) throws SQLException {
+    public static boolean Verify(UUID uuid) throws SQLException {
 
         try {
             PreparedStatement ps;

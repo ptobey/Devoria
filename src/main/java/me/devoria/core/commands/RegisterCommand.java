@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class RegisterCommand implements CommandExecutor {
 
@@ -33,15 +34,19 @@ public class RegisterCommand implements CommandExecutor {
 
 
             if(!(sender instanceof Player)){
-
+                DBconnect.disconnect();
                 return true;
+
             }
 
 
             String username = sender.getName();
 
-            me.devoria.core.Player uuid = Listeners.lookUpPlayer(((Player) sender).getUniqueId());
+            //me.devoria.core.Player uuid = Listeners.lookUpPlayer(((Player) sender).getUniqueId());
 
+            me.devoria.core.Player player = Listeners.lookUpPlayer(((Player) sender).getUniqueId());
+            assert player != null;
+            UUID uuid = player.getUuid();
             sender.sendMessage("Player username ->" + username);
             sender.sendMessage("Player uuid ->" + uuid);
 
@@ -50,6 +55,7 @@ public class RegisterCommand implements CommandExecutor {
             try {
                 if(PlayerTable.Verify(uuid)){
                     sender.sendMessage("Player Already Registered!");
+                    DBconnect.disconnect();
                     return true;
 
                 }
@@ -60,12 +66,13 @@ public class RegisterCommand implements CommandExecutor {
 
             PlayerTable.register(uuid,username);
             sender.sendMessage("You have been registered!");
+            DBconnect.disconnect();
             return true;
 
 
 
         }
-
+        DBconnect.disconnect();
 
         return false;
     }
