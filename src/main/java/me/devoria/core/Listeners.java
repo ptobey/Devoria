@@ -1,5 +1,9 @@
 package me.devoria.core;
 
+import me.devoria.core.DataBase.DBconnect;
+import me.devoria.core.DataBase.PlayerTable;
+import me.devoria.core.commands.RegisterCommand;
+import me.devoria.core.onLogin.Registration;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -12,6 +16,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -28,15 +33,19 @@ public class Listeners implements Listener {
             entity.remove();
         }
     }
-    //Sets up players in an object array, will be removed later
+    //on login events!
     @EventHandler
-    public void onPlayerLogin(PlayerLoginEvent event) {
+    public void onPlayerLogin(PlayerLoginEvent event) throws SQLException {
         event.getPlayer().sendMessage("Welcome to the server!");
         UUID uuid = event.getPlayer().getUniqueId();
         String name = event.getPlayer().getDisplayName();
+        String username = event.getPlayer().getName();
         if(lookUpPlayer(uuid) == null) {
             players.add(new me.devoria.core.Player(uuid, name, "none"));
         }
+        //Registering players on login
+        Registration.registerUser(uuid,username);
+
     }
 
 //Makes pink wool shoot arrows if you're a huntsman or bard

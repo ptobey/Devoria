@@ -73,12 +73,11 @@ public class PlayerTable {
         }catch (SQLException e){
             Bukkit.getLogger().info(e.toString());
             Bukkit.getLogger().info("Could not verify table players");
+            return false;
         }
 
 
-        return true;
-
-        }
+    }
 
 }
 

@@ -53,8 +53,7 @@ public class RegisterCommand implements CommandExecutor {
 
             try {
                 if(PlayerTable.Verify(uuid)){
-                    sender.sendMessage("Player Already Registered!");
-                    DBconnect.disconnect();
+                    sender.sendMessage("You are already Registered!");
                     return true;
 
                 }
@@ -65,13 +64,11 @@ public class RegisterCommand implements CommandExecutor {
 
             PlayerTable.register(uuid,username);
             sender.sendMessage("You have been registered!");
-            DBconnect.disconnect();
             return true;
 
 
 
         }
-        DBconnect.disconnect();
 
         return false;
     }
