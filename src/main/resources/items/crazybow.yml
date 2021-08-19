@@ -1,0 +1,6 @@
+name: Crazy Bow
+tradeable: true
+rarity: mythic
+attack_speed: 3
+damage: 25
+earth_damage: 80-120
