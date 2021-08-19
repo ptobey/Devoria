@@ -1,4 +1,4 @@
-package me.devoria.core.DataBase;
+package me.devoria.core.database;
 
 import me.devoria.core.Player;
 import org.bukkit.Bukkit;
@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 
 public class PlayerTable {
 

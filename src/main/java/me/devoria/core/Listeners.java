@@ -44,7 +44,6 @@ public class Listeners implements Listener {
     public void onUse(PlayerInteractEvent e) {
         if(e.getMaterial().equals(Material.PINK_WOOL)){
             e.setCancelled(true);
-                e.getPlayer().sendMessage(e.getItem().getItemMeta().getLocalizedName());
             if(lookUpPlayer(e.getPlayer().getUniqueId()).getType().equals("huntsman") || lookUpPlayer(e.getPlayer().getUniqueId()).getType().equals("bard") ) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     Player p = e.getPlayer();

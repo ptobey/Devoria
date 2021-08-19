@@ -1,4 +1,4 @@
-package me.devoria.core.DataBase;
+package me.devoria.core.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

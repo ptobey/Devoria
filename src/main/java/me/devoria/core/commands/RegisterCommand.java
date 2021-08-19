@@ -1,18 +1,16 @@
 package me.devoria.core.commands;
 
 
-import me.devoria.core.DataBase.DBconnect;
-import me.devoria.core.DataBase.PlayerTable;
+import me.devoria.core.database.DBconnect;
+import me.devoria.core.database.PlayerTable;
 import me.devoria.core.Listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
-import java.util.UUID;
 
 public class RegisterCommand implements CommandExecutor {
 
