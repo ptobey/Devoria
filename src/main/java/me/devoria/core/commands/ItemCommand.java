@@ -28,7 +28,7 @@ public class ItemCommand implements CommandExecutor {
         }
 
         if (sender instanceof Player) {
-            ((Player) sender).getInventory().addItem(MakeBow.makeBow(attributes.get("name"), attributes.get("tradeable"), attributes.get("rarity"), attributes.get("attack_speed"), attributes.get("damage"), attributes.get("earth_damage")));
+            ((Player) sender).getInventory().addItem(MakeBow.makeBow(attributes.get("name"), attributes.get("tradeable"), attributes.get("rarity"), attributes.get("attack_speed"), attributes.get("attack_range"), attributes.get("rune_slots"), attributes.get("damage"), attributes.get("earth_damage"), attributes.get("fire_damage"), attributes.get("water_damage"), attributes.get("light_damage"), attributes.get("dark_damage")));
             return true;
         }
         return false;

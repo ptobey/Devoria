@@ -13,13 +13,17 @@ import java.util.Objects;
 public class MakeBow {
 
 //makes a custom bow using stats pulled from the yml
-    public static ItemStack makeBow(Object name, Object tradeable, Object rarity, Object attackSpeed, Object damage, Object earthDamage){
+    public static ItemStack makeBow(Object name, Object tradeable, Object rarity, Object attackSpeed, Object attackRange, Object runeSlots, Object damage, Object earthDamage, Object fireDamage, Object waterDamage, Object lightDamage, Object darkDamage){
 
         ChatColor rarityColor = ChatColor.WHITE;
         ChatColor attackSpeedColor = ChatColor.WHITE;
 
         String rarityType = "";
         String attackSpeedType = "";
+        String plusOrMinus = "";
+        ChatColor statColor = ChatColor.WHITE;
+
+
         String itemInfo = "name:"+name+",tradeable:"+tradeable+",rarity:"+rarity+",attackSpeed:"+attackSpeed+",damage:"+damage;
 
 
@@ -85,12 +89,122 @@ public class MakeBow {
         lore.add(ChatColor.GRAY+"   Attack Speed: "+attackSpeedColor+attackSpeedType);
         lore.add("");
 
+        //Earth Damage
         if(earthDamage != null) {
+
             String earthDamagePercentage = WeightedPercentageGenerator.generate();
             String calculatedEarthDamage = CalculateStatsWithRange.calculate(earthDamage, earthDamagePercentage);
-            lore.add(ChatColor.DARK_GREEN+"✿ Earth Damage: "+ChatColor.GREEN+"+"+calculatedEarthDamage+" ["+earthDamagePercentage+"%]");
+
+            if(Integer.parseInt(calculatedEarthDamage) < 0) {
+                statColor = ChatColor.RED;
+                plusOrMinus = "";
+            }
+            else if(Integer.parseInt(calculatedEarthDamage) > 0) {
+                statColor = ChatColor.GREEN;
+                plusOrMinus = "+";
+            }
+            else {
+                statColor = ChatColor.WHITE;
+                plusOrMinus = "";
+            }
+            lore.add(ChatColor.DARK_GREEN+"✿ Earth Damage: "+statColor+plusOrMinus+calculatedEarthDamage+" ["+earthDamagePercentage+"%]");
             itemInfo += ",earthDamage:"+earthDamage;
         }
+
+        //Fire Damage
+        if(fireDamage != null) {
+
+            String fireDamagePercentage = WeightedPercentageGenerator.generate();
+            String calculatedFireDamage = CalculateStatsWithRange.calculate(fireDamage, fireDamagePercentage);
+
+            if(Integer.parseInt(calculatedFireDamage) < 0) {
+                statColor = ChatColor.RED;
+                plusOrMinus = "";
+            }
+            else if(Integer.parseInt(calculatedFireDamage) > 0) {
+                statColor = ChatColor.GREEN;
+                plusOrMinus = "+";
+            }
+            else {
+                statColor = ChatColor.WHITE;
+                plusOrMinus = "";
+            }
+            lore.add(ChatColor.DARK_RED+"✹ Fire Damage: "+statColor+plusOrMinus+calculatedFireDamage+" ["+fireDamagePercentage+"%]");
+            itemInfo += ",fireDamage:"+calculatedFireDamage;
+        }
+
+        //Water Damage
+        if(waterDamage != null) {
+
+            String waterDamagePercentage = WeightedPercentageGenerator.generate();
+            String calculatedWaterDamage = CalculateStatsWithRange.calculate(waterDamage, waterDamagePercentage);
+
+            if(Integer.parseInt(calculatedWaterDamage) < 0) {
+                statColor = ChatColor.RED;
+                plusOrMinus = "";
+            }
+            else if(Integer.parseInt(calculatedWaterDamage) > 0) {
+                statColor = ChatColor.GREEN;
+                plusOrMinus = "+";
+            }
+            else {
+                statColor = ChatColor.WHITE;
+                plusOrMinus = "";
+            }
+            lore.add(ChatColor.AQUA+"❆ Water Damage: "+statColor+plusOrMinus+calculatedWaterDamage+" ["+waterDamagePercentage+"%]");
+            itemInfo += ",waterDamage:"+calculatedWaterDamage;
+        }
+
+        //Light Damage
+        if(lightDamage != null) {
+
+            String lightDamagePercentage = WeightedPercentageGenerator.generate();
+            String calculatedLightDamage = CalculateStatsWithRange.calculate(lightDamage, lightDamagePercentage);
+
+            if(Integer.parseInt(calculatedLightDamage) < 0) {
+                statColor = ChatColor.RED;
+                plusOrMinus = "";
+            }
+            else if(Integer.parseInt(calculatedLightDamage) > 0) {
+                statColor = ChatColor.GREEN;
+                plusOrMinus = "+";
+            }
+            else {
+                statColor = ChatColor.WHITE;
+                plusOrMinus = "";
+            }
+            lore.add(ChatColor.YELLOW+"✦ Light Damage: "+statColor+plusOrMinus+calculatedLightDamage+" ["+lightDamagePercentage+"%]");
+            itemInfo += ",lightDamage:"+calculatedLightDamage;
+        }
+
+        //Dark Damage
+        if(darkDamage != null) {
+
+            String darkDamagePercentage = WeightedPercentageGenerator.generate();
+            String calculatedDarkDamage = CalculateStatsWithRange.calculate(darkDamage, darkDamagePercentage);
+
+            if(Integer.parseInt(calculatedDarkDamage) < 0) {
+                statColor = ChatColor.RED;
+                plusOrMinus = "";
+            }
+            else if(Integer.parseInt(calculatedDarkDamage) > 0) {
+                statColor = ChatColor.GREEN;
+                plusOrMinus = "+";
+            }
+            else {
+                statColor = ChatColor.WHITE;
+                plusOrMinus = "";
+            }
+            lore.add(ChatColor.DARK_GRAY+"✺ Dark Damage: "+statColor+plusOrMinus+calculatedDarkDamage+" ["+darkDamagePercentage+"%]");
+            itemInfo += ",darkDamage:"+calculatedDarkDamage;
+        }
+
+
+
+
+
+
+
         lore.add("");
         lore.add(rarityColor+"✯ "+rarityType+" Quality");
 

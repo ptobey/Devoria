@@ -5,7 +5,7 @@ public class CalculateStatsWithRange {
         System.out.println(calculate("10-20","34"));
     }
     public static String calculate(Object range, String percentage) {
-        String[] splitRange = String.valueOf(range).split("-");
+        String[] splitRange = String.valueOf(range).split(",");
         int min = Integer.parseInt(splitRange[0]);
         int max = Integer.parseInt(splitRange[1]);
 
