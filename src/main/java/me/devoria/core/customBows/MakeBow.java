@@ -80,6 +80,10 @@ public class MakeBow {
             attackSpeedType = "Super Fast";
         }
 
+        if(runeSlots == null) {
+            runeSlots = 0;
+        }
+
 
         assert bowMeta != null;
         bowMeta.setDisplayName(rarityColor + "" + name);
@@ -87,6 +91,7 @@ public class MakeBow {
         lore.add("");
         lore.add(ChatColor.GOLD+"✸ Damage: "+damage);
         lore.add(ChatColor.GRAY+"   Attack Speed: "+attackSpeedColor+attackSpeedType);
+        lore.add(ChatColor.GRAY+"   Rune Slots: ["+ChatColor.WHITE+"0/"+runeSlots+ChatColor.GRAY+"]");
         lore.add("");
 
         //Earth Damage

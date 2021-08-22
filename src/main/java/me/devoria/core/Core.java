@@ -1,9 +1,6 @@
 package me.devoria.core;
 
-import me.devoria.core.commands.AttyMod;
-import me.devoria.core.commands.ClassCommand;
-import me.devoria.core.commands.ItemCommand;
-import me.devoria.core.commands.RegisterCommand;
+import me.devoria.core.commands.*;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -32,6 +29,7 @@ public class Core extends JavaPlugin {
         this.getCommand("item").setExecutor(new ItemCommand());
         this.getCommand("reveal").setExecutor(new AttyMod());
         this.getCommand("register").setExecutor(new RegisterCommand());
+        this.getCommand("getinfo").setExecutor(new GetItemInfo());
     }
 
 

@@ -15,3 +15,5 @@ commands:
     usage: Reveal item
   register:
     description: register player in database
+  getinfo:
+    description: Gets an item's meta data
