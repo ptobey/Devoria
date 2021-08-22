@@ -43,9 +43,9 @@ public class Fill_inv {
 
         InventoryHolder owner = (InventoryHolder) sender;
         Inventory bard_inventory = Bukkit.createInventory(owner, InventoryType.PLAYER, ChatColor.BLACK + "Bard inventory!");
-        ItemStack bard_inv = Item_Stack.getItemStack(sender.getUniqueId(),"bard");
+        //String bard_inv = Item_Stack.getItemStack(sender.getUniqueId(),"bard");
         //bard_inventory.setContents(bard_inv);
-        sender.openInventory(bard_inventory);
+        //sender.openInventory(bard_inventory);
 
 
 

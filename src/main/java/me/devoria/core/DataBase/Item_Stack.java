@@ -1,6 +1,5 @@
 package me.devoria.core.DataBase;
 
-import me.devoria.core.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
@@ -37,7 +36,7 @@ public class Item_Stack {
 
     }
 
-    public static void insertItemStack(UUID uuid,String class_name,ItemStack item_stack) throws SQLException {
+    public static void insertItemStack(UUID uuid, String class_name, String item_stack) throws SQLException {
 
 
         try {
@@ -64,7 +63,7 @@ public class Item_Stack {
 
 
 
-    public static void updateItemStack(UUID uuid,String class_name,ItemStack item_stack) throws SQLException {
+    public static void updateItemStack(UUID uuid, String class_name, String item_stack) throws SQLException {
 
         if(Verify_IS(uuid, class_name)) {
 
@@ -97,7 +96,7 @@ public class Item_Stack {
     }
 
 
-    public static ItemStack getItemStack(UUID uuid, String class_name) {
+    public static String getItemStack(UUID uuid, String class_name) {
 
 
         try {
@@ -108,7 +107,7 @@ public class Item_Stack {
             ps.setString(2, class_name);
             ResultSet resultSet = ps.executeQuery();
 
-            return (ItemStack) resultSet;
+            return  resultSet.toString();
 
 
         }catch (SQLException e){

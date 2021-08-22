@@ -1,6 +1,7 @@
 package me.devoria.core.commands;
 
 import me.devoria.core.DataBase.Item_Stack;
+import me.devoria.core.Iventory.SerializeInventory;
 import me.devoria.core.Listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -8,11 +9,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 
 import java.sql.SQLException;
 import java.util.Locale;
 import java.util.UUID;
+
+import static me.devoria.core.Iventory.SerializeInventory.itemStackArrayToBase64;
 
 public class ClassCommand implements CommandExecutor {
 
@@ -20,8 +24,10 @@ public class ClassCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
+            Player player = (Player) sender;
+            PlayerInventory playerInventory = player.getInventory();
+            String itemStack = SerializeInventory.playerInventoryToBase64(playerInventory);
             UUID uuid = ((Player) sender).getUniqueId();
-            ItemStack itemStack = (ItemStack) ((Player) sender).getInventory();
             String current_class = Listeners.lookUpPlayer(((Player) sender).getUniqueId()).getType();
 
             switch (args[0].toLowerCase(Locale.ROOT)) {
