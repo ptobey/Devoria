@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Locale;
 import java.util.UUID;
@@ -41,7 +42,15 @@ public class ClassCommand implements CommandExecutor {
                     }
                     sender.sendMessage("You picked the Huntsman class!");
                     Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("huntsman");
-                    Item_Stack.getItemStack(((Player) sender).getUniqueId(),"huntsman");
+                    ((Player) sender).getInventory().clear();
+                    try {
+                        ItemStack[] items = SerializeInventory.itemStackArrayFromBase64(Item_Stack.getItemStack(((Player) sender).getUniqueId(),"huntsman"));
+                        ((Player) sender).getInventory().setContents(items);
+                    } catch (IOException e) {
+                        Bukkit.getLogger().info(e.toString());
+                        Bukkit.getLogger().info("Could not get inventory form database");
+                    }
+
 
                     return true;
                 case "sorcerer":
@@ -54,7 +63,14 @@ public class ClassCommand implements CommandExecutor {
                     }
                     sender.sendMessage("You picked the Sorcerer class!");
                     Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("sorcerer");
-                    Item_Stack.getItemStack(((Player) sender).getUniqueId(),"sorcerer");
+                    ((Player) sender).getInventory().clear();
+                    try {
+                        ItemStack[] items = SerializeInventory.itemStackArrayFromBase64(Item_Stack.getItemStack(((Player) sender).getUniqueId(),"sorcerer"));
+                        ((Player) sender).getInventory().setContents(items);
+                    } catch (IOException e) {
+                        Bukkit.getLogger().info(e.toString());
+                        Bukkit.getLogger().info("Could not get inventory form database");
+                    }
                     return true;
                 case "bard":
                     try {
@@ -65,7 +81,14 @@ public class ClassCommand implements CommandExecutor {
                     }
                     sender.sendMessage("You picked the Bard class!");
                     Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("bard");
-                    Item_Stack.getItemStack(((Player) sender).getUniqueId(),"bard");
+                    ((Player) sender).getInventory().clear();
+                    try {
+                        ItemStack[] items = SerializeInventory.itemStackArrayFromBase64(Item_Stack.getItemStack(((Player) sender).getUniqueId(),"bard"));
+                        ((Player) sender).getInventory().setContents(items);
+                    } catch (IOException e) {
+                        Bukkit.getLogger().info(e.toString());
+                        Bukkit.getLogger().info("Could not get inventory form database");
+                    }
                     return true;
                 case "knight":
                     try {
@@ -76,7 +99,14 @@ public class ClassCommand implements CommandExecutor {
                     }
                     sender.sendMessage("You picked the Knight class!");
                     Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("knight");
-                    Item_Stack.getItemStack(((Player) sender).getUniqueId(),"knight");
+                    ((Player) sender).getInventory().clear();
+                    try {
+                        ItemStack[] items = SerializeInventory.itemStackArrayFromBase64(Item_Stack.getItemStack(((Player) sender).getUniqueId(),"knight"));
+                        ((Player) sender).getInventory().setContents(items);
+                    } catch (IOException e) {
+                        Bukkit.getLogger().info(e.toString());
+                        Bukkit.getLogger().info("Could not get inventory form database");
+                    }
                     return true;
             }
             return true;

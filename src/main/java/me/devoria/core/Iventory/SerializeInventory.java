@@ -1,4 +1,5 @@
 package me.devoria.core.Iventory;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.io.BukkitObjectInputStream;
@@ -67,6 +68,8 @@ public class SerializeInventory {
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
             ItemStack[] items = new ItemStack[dataInput.readInt()];
 
+            Bukkit.getLogger().info(String.valueOf(items.length));
+
             for (int Index = 0; Index < items.length; Index++) {
 
                 Map<String, Object> stack = (Map<String, Object>) dataInput.readObject();
@@ -81,6 +84,8 @@ public class SerializeInventory {
             dataInput.close();
             return items;
         } catch (ClassNotFoundException e) {
+            Bukkit.getLogger().info("Could not pull item stack ");
+            Bukkit.getLogger().info(e.toString());
             throw new IOException("Unable to decode class type.", e);
         }
     }

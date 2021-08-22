@@ -42,7 +42,7 @@ public class Item_Stack {
         try {
             PreparedStatement ps;
             Connection connection = DBconnect.getConnection();
-            ps = connection.prepareStatement("INSERT INTO Inventory (uuid, Username, itemstack) VALUES (?, ?,?)");
+            ps = connection.prepareStatement("INSERT INTO Inventory (uuid, class_name, itemstack) VALUES (?, ?,?)");
             ps.setString(1, uuid.toString());
             ps.setString(2, class_name);
             ps.setString(3, item_stack.toString());
