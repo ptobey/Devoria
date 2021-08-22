@@ -1,6 +1,5 @@
-package me.devoria.core.customBows;
+package me.devoria.core.itemSystem;
 
-import me.devoria.core.CalculateStatsWithRange;
 import me.devoria.core.WeightedPercentageGenerator;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -113,7 +112,7 @@ public class MakeBow {
                 plusOrMinus = "";
             }
             lore.add(ChatColor.DARK_GREEN+"✿ Earth Damage: "+statColor+plusOrMinus+calculatedEarthDamage+" ["+earthDamagePercentage+"%]");
-            itemInfo += ",earthDamage:"+earthDamage;
+            itemInfo += ",earthDamage:"+calculatedEarthDamage;
         }
 
         //Fire Damage

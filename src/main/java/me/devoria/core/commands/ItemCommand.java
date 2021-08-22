@@ -2,7 +2,7 @@ package me.devoria.core.commands;
 
 
 import me.devoria.core.YMLParser;
-import me.devoria.core.customBows.MakeBow;
+import me.devoria.core.itemSystem.MakeBow;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

@@ -4,6 +4,7 @@ import me.devoria.core.DataBase.DBconnect;
 import me.devoria.core.DataBase.Item_Stack;
 import me.devoria.core.DataBase.PlayerTable;
 import me.devoria.core.commands.RegisterCommand;
+import me.devoria.core.itemSystem.OutputDamageSystem;
 import me.devoria.core.onLogin.Registration;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
@@ -42,7 +43,7 @@ public class Listeners implements Listener {
         String name = event.getPlayer().getDisplayName();
         String username = event.getPlayer().getName();
         if(lookUpPlayer(uuid) == null) {
-            players.add(new me.devoria.core.Player(uuid, name, "none"));
+            players.add(new me.devoria.core.Player(uuid, name, "huntsman"));
         }
         //Registering players on login
         Registration.registerUser(uuid,username);
@@ -56,6 +57,11 @@ public class Listeners implements Listener {
             if(lookUpPlayer(e.getPlayer().getUniqueId()).getType().equals("huntsman") || lookUpPlayer(e.getPlayer().getUniqueId()).getType().equals("bard") ) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     Player p = e.getPlayer();
+
+                    String stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
+
+                    p.sendMessage(OutputDamageSystem.getDamage(stats));
+
                     Arrow arrow = p.getWorld().spawn(p.getEyeLocation(),
                             Arrow.class);
                     arrow.setShooter(p);
