@@ -34,7 +34,7 @@ public class RegisterCommand implements CommandExecutor {
 
 
             if(!(sender instanceof Player)){
-                DBconnect.disconnect();
+
                 return true;
 
             }

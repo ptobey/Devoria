@@ -1,6 +1,7 @@
 package me.devoria.core;
 
 import me.devoria.core.DataBase.DBconnect;
+import me.devoria.core.DataBase.Item_Stack;
 import me.devoria.core.DataBase.PlayerTable;
 import me.devoria.core.commands.RegisterCommand;
 import me.devoria.core.onLogin.Registration;
@@ -45,7 +46,6 @@ public class Listeners implements Listener {
         }
         //Registering players on login
         Registration.registerUser(uuid,username);
-
     }
 
 //Makes pink wool shoot arrows if you're a huntsman or bard
