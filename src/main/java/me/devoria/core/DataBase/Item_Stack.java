@@ -1,13 +1,21 @@
 package me.devoria.core.DataBase;
 
+import me.devoria.core.Iventory.SerializeInventory;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import java.sql.Blob;
 
 public class Item_Stack {
 
@@ -96,7 +104,8 @@ public class Item_Stack {
     }
 
 
-    public static String getItemStack(UUID uuid, String class_name) {
+    public static ItemStack[] getItemStack(UUID uuid, String class_name) {
+
 
 
         try {
@@ -106,11 +115,34 @@ public class Item_Stack {
             ps.setString(1, uuid.toString());
             ps.setString(2, class_name);
             ResultSet resultSet = ps.executeQuery();
+            StringBuilder sb = new StringBuilder();
 
-            return  resultSet.toString();
+            while (resultSet.next()){
+                //String items  =resultSet.getString("itemstack");
+
+                byte[] buffer =new byte[1024];
+                InputStream in = resultSet.getBinaryStream("itemstack");
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+                String line = br.readLine();
+                while(line != null){
+
+                    sb.append(line);
+                    line =br.readLine();
+
+                }
+
+            }
+            String data = sb.toString();
+
+            //Blop Blop = resultSet.getBlob("itemstack");
+
+            ItemStack[] items =SerializeInventory.itemStackArrayFromBase64(data);
+
+            return items;
 
 
-        }catch (SQLException e){
+        }catch (SQLException | IOException e){
             Bukkit.getLogger().info(e.toString());
             Bukkit.getLogger().info("Could not pull item stack ");
         }

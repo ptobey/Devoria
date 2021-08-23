@@ -30,6 +30,7 @@ public class ClassCommand implements CommandExecutor {
             String itemStack = SerializeInventory.playerInventoryToBase64(playerInventory);
             UUID uuid = ((Player) sender).getUniqueId();
             String current_class = Listeners.lookUpPlayer(((Player) sender).getUniqueId()).getType();
+            ItemStack[] items ={};
 
             switch (args[0].toLowerCase(Locale.ROOT)) {
                 case "huntsman":
@@ -43,13 +44,9 @@ public class ClassCommand implements CommandExecutor {
                     sender.sendMessage("You picked the Huntsman class!");
                     Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("huntsman");
                     ((Player) sender).getInventory().clear();
-                    try {
-                        ItemStack[] items = SerializeInventory.itemStackArrayFromBase64(Item_Stack.getItemStack(((Player) sender).getUniqueId(),"huntsman"));
-                        ((Player) sender).getInventory().setContents(items);
-                    } catch (IOException e) {
-                        Bukkit.getLogger().info(e.toString());
-                        Bukkit.getLogger().info("Could not get inventory form database");
-                    }
+                    items = Item_Stack.getItemStack(((Player) sender).getUniqueId(),"huntsman");
+                    ((Player) sender).getInventory().setContents(items);
+
 
 
                     return true;
@@ -61,16 +58,12 @@ public class ClassCommand implements CommandExecutor {
                         Bukkit.getLogger().info(throwables.toString());
                         Bukkit.getLogger().info("Could not update");
                     }
-                    sender.sendMessage("You picked the Sorcerer class!");
+
+                    sender.sendMessage("You picked the sorcerer class!");
                     Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("sorcerer");
                     ((Player) sender).getInventory().clear();
-                    try {
-                        ItemStack[] items = SerializeInventory.itemStackArrayFromBase64(Item_Stack.getItemStack(((Player) sender).getUniqueId(),"sorcerer"));
-                        ((Player) sender).getInventory().setContents(items);
-                    } catch (IOException e) {
-                        Bukkit.getLogger().info(e.toString());
-                        Bukkit.getLogger().info("Could not get inventory form database");
-                    }
+                    items = Item_Stack.getItemStack(((Player) sender).getUniqueId(),"sorcerer");
+                    ((Player) sender).getInventory().setContents(items);
                     return true;
                 case "bard":
                     try {
@@ -80,15 +73,14 @@ public class ClassCommand implements CommandExecutor {
                         Bukkit.getLogger().info("Could not update");
                     }
                     sender.sendMessage("You picked the Bard class!");
+                    sender.sendMessage("You picked the Bard class!");
+
                     Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("bard");
                     ((Player) sender).getInventory().clear();
-                    try {
-                        ItemStack[] items = SerializeInventory.itemStackArrayFromBase64(Item_Stack.getItemStack(((Player) sender).getUniqueId(),"bard"));
-                        ((Player) sender).getInventory().setContents(items);
-                    } catch (IOException e) {
-                        Bukkit.getLogger().info(e.toString());
-                        Bukkit.getLogger().info("Could not get inventory form database");
-                    }
+
+                    items = Item_Stack.getItemStack(((Player) sender).getUniqueId(),"Bard");
+                    ((Player) sender).getInventory().setContents(items);
+
                     return true;
                 case "knight":
                     try {
@@ -100,20 +92,17 @@ public class ClassCommand implements CommandExecutor {
                     sender.sendMessage("You picked the Knight class!");
                     Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("knight");
                     ((Player) sender).getInventory().clear();
-                    try {
-                        ItemStack[] items = SerializeInventory.itemStackArrayFromBase64(Item_Stack.getItemStack(((Player) sender).getUniqueId(),"knight"));
-                        ((Player) sender).getInventory().setContents(items);
-                    } catch (IOException e) {
-                        Bukkit.getLogger().info(e.toString());
-                        Bukkit.getLogger().info("Could not get inventory form database");
+                    Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("knight");
+                    ((Player) sender).getInventory().clear();
+                    items = Item_Stack.getItemStack(((Player) sender).getUniqueId(),"knight");
+                    ((Player) sender).getInventory().setContents(items);
                     }
                     return true;
             }
             return true;
         }
-        return false;
-    }
 }
+
 
 
 

@@ -64,6 +64,7 @@ public class SerializeInventory {
      */
     public static ItemStack[] itemStackArrayFromBase64(String data) throws IOException {
         try {
+
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
             ItemStack[] items = new ItemStack[dataInput.readInt()];
