@@ -17,3 +17,7 @@ commands:
     description: register player in database
   getinfo:
     description: Gets an item's meta data
+  loot:
+    description: Get random loot
+  identify:
+    description: Identifies an item

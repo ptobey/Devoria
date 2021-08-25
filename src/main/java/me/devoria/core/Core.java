@@ -30,6 +30,8 @@ public class Core extends JavaPlugin {
         this.getCommand("reveal").setExecutor(new AttyMod());
         this.getCommand("register").setExecutor(new RegisterCommand());
         this.getCommand("getinfo").setExecutor(new GetItemInfo());
+        this.getCommand("loot").setExecutor(new LootCommand());
+        this.getCommand("identify").setExecutor(new IdentifyCommand());
     }
 
 

@@ -6,10 +6,13 @@ public class WeightedPercentageGenerator {
     public static String generate() {
         Random randomNumbers = new Random();
 
-        int randomNumber1 = randomNumbers.ints(0, 51).findAny().getAsInt();
-        int randomNumber2 = randomNumbers.ints(0, 51).findAny().getAsInt();
+        int randomNumber1 = randomNumbers.ints(0, 101).findAny().getAsInt();
+        //int randomNumber2 = randomNumbers.ints(0, 51).findAny().getAsInt();
 
-        return String.valueOf(randomNumber1+randomNumber2);
+       // return String.valueOf(randomNumber1+randomNumber2);
+
+        //new
+        return String.valueOf(randomNumber1);
 
 
     }

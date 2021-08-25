@@ -1,12 +1,12 @@
 package me.devoria.core;
 
-import me.devoria.core.DataBase.DBconnect;
-import me.devoria.core.DataBase.Item_Stack;
-import me.devoria.core.DataBase.PlayerTable;
-import me.devoria.core.commands.RegisterCommand;
-import me.devoria.core.itemSystem.OutputDamageSystem;
+import me.devoria.core.itemSystem.*;
 import me.devoria.core.onLogin.Registration;
+import org.apache.commons.lang.ObjectUtils;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -16,16 +16,61 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 
 public class Listeners implements Listener {
 
     public static ArrayList<me.devoria.core.Player> players = new ArrayList<>();
+
+    @EventHandler
+    public void onOpenChest(PlayerInteractEvent e) {
+        try {
+            World world = e.getPlayer().getWorld();
+            Location location = new Location(world, -780, 4, 703);
+
+            if (Objects.requireNonNull(e.getClickedBlock()).getLocation().equals(location)) {
+
+                Map<String, Object> attributes;
+
+
+                if (location.getBlock().getType() == Material.CHEST) {
+                    Chest c1 = (Chest) location.getBlock().getState();
+
+                    for (int i = 0; i < 27; i++) {
+                        try {
+                            attributes = GenerateLoot.generate("huntsman", 0, "15");
+                            if (attributes.get("rarity").equals("common")) {
+
+                                UpdateWeapon.update(",fileName:"+attributes.get("file_name"));
+                                c1.getInventory().setItem(i, UpdateWeapon.update(",fileName:"+attributes.get("file_name")));
+
+                            } else {
+                                c1.getInventory().setItem(i, MakeUnidentifiedItem.makeUnidentifiedItem(attributes.get("file_name"), attributes.get("rarity"), attributes.get("type"), attributes.get("level")));
+                            }
+
+
+                        } catch (FileNotFoundException err) {
+                            err.printStackTrace();
+                        }
+
+                    }
+                }
+            }
+        }
+        catch(NullPointerException ignore) {
+        }
+    }
+
+
 
     //Makes arrows despawn
     @EventHandler
@@ -49,16 +94,38 @@ public class Listeners implements Listener {
         Registration.registerUser(uuid,username);
     }
 
+    @EventHandler
+    public void updateIem(PlayerItemHeldEvent e) throws FileNotFoundException {
+        try {
+            Player p = e.getPlayer();
+            String stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
+            p.getInventory().setItemInMainHand((UpdateWeapon.update(stats)));
+        }
+        catch(NullPointerException ignore){
+        }
+
+    }
+
+
+
 //Makes pink wool shoot arrows if you're a huntsman or bard
     @EventHandler
-    public void onUse(PlayerInteractEvent e) {
+    public void onUse(PlayerInteractEvent e) throws FileNotFoundException {
         if(e.getMaterial().equals(Material.PINK_WOOL)){
+
+            Player p = e.getPlayer();
+            String stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
+
+            try {
+                p.getInventory().setItemInMainHand((UpdateWeapon.update(stats)));
+
+
             e.setCancelled(true);
+
             if(lookUpPlayer(e.getPlayer().getUniqueId()).getType().equals("huntsman") || lookUpPlayer(e.getPlayer().getUniqueId()).getType().equals("bard") ) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                    Player p = e.getPlayer();
 
-                    String stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
+
 
                     p.sendMessage(OutputDamageSystem.getDamage(stats));
 
@@ -70,6 +137,9 @@ public class Listeners implements Listener {
             }
             else {
                 e.getPlayer().sendMessage("You can't use this item! You are a "+lookUpPlayer(e.getPlayer().getUniqueId()).getType()+"!");
+            }
+            }
+            catch(NullPointerException ignore){
             }
         }
 
