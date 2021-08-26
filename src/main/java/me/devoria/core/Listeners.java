@@ -128,13 +128,13 @@ public class Listeners implements Listener {
 
                     SpawnDamageIndicator damageIndicator = new SpawnDamageIndicator();
 
-                    String damage = OutputDamageSystem.getDamage(stats);
+                    ArrayList<String> damages = OutputDamageSystem.getDamage(stats);
 
-                    damageIndicator.spawn(p.getWorld(),damage,p.getLocation());
+                    damageIndicator.spawn(p.getWorld(),damages,p.getLocation().add(1,1, 0));
 
 
 
-                    p.sendMessage(damage);
+                    p.sendMessage(damages.get(6));
 
                     Arrow arrow = p.getWorld().spawn(p.getEyeLocation(),
                             Arrow.class);

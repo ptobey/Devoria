@@ -8,12 +8,7 @@ import java.util.HashMap;
 
 public class OutputDamageSystem {
 
-    public static void main(String[] args) {
-        System.out.println(getDamage(",damage:1-100,earthDamage:100,"));
-
-    }
-
-    public static String getDamage(String itemData) {
+    public static ArrayList<String> getDamage(String itemData) {
 
         HashMap<String,String> map = new HashMap<>();
         ArrayList<String> damages = new ArrayList<>();
@@ -80,7 +75,7 @@ public class OutputDamageSystem {
 
 
 
-
+        //Delete total damage later
         int totalDamage = normalDamage+earthDamage+fireDamage+waterDamage+lightDamage+darkDamage;
 
         damages.add(String.valueOf(normalDamage));
@@ -91,7 +86,7 @@ public class OutputDamageSystem {
         damages.add(String.valueOf(darkDamage));
         damages.add(String.valueOf(totalDamage));
 
-        return damages.toString();
+        return damages;
 
 
 
