@@ -10,8 +10,12 @@ import java.io.IOException;
 
 public class Core extends JavaPlugin {
 
+    private static Core instance;
+
 
     public void onEnable() {
+
+        instance = this;
 
         createCustomConfig();
         registerListeners();
@@ -47,5 +51,8 @@ public class Core extends JavaPlugin {
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
+    }
+    public static Core getInstance() {
+        return instance;
     }
 }

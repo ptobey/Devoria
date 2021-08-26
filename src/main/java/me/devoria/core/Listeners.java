@@ -1,5 +1,6 @@
 package me.devoria.core;
 
+import me.devoria.core.damageSystem.SpawnDamageIndicator;
 import me.devoria.core.itemSystem.*;
 import me.devoria.core.onLogin.Registration;
 import org.apache.commons.lang.ObjectUtils;
@@ -125,9 +126,15 @@ public class Listeners implements Listener {
             if(lookUpPlayer(e.getPlayer().getUniqueId()).getType().equals("huntsman") || lookUpPlayer(e.getPlayer().getUniqueId()).getType().equals("bard") ) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
+                    SpawnDamageIndicator damageIndicator = new SpawnDamageIndicator();
+
+                    String damage = OutputDamageSystem.getDamage(stats);
+
+                    damageIndicator.spawn(p.getWorld(),damage,p.getLocation());
 
 
-                    p.sendMessage(OutputDamageSystem.getDamage(stats));
+
+                    p.sendMessage(damage);
 
                     Arrow arrow = p.getWorld().spawn(p.getEyeLocation(),
                             Arrow.class);
