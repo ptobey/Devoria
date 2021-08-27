@@ -1,9 +1,11 @@
 package me.devoria.core;
 
+import me.devoria.core.DataBase.ClassTable;
 import me.devoria.core.damageSystem.SpawnDamageIndicator;
 import me.devoria.core.itemSystem.*;
 import me.devoria.core.onLogin.Registration;
 import org.apache.commons.lang.ObjectUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -88,11 +90,17 @@ public class Listeners implements Listener {
         UUID uuid = event.getPlayer().getUniqueId();
         String name = event.getPlayer().getDisplayName();
         String username = event.getPlayer().getName();
+        //String c_class = ClassTable.FindCurrentClass(uuid);
+
+
         if(lookUpPlayer(uuid) == null) {
             players.add(new me.devoria.core.Player(uuid, name, "huntsman"));
         }
         //Registering players on login
+        //ClassTable.SetCurrentClass(uuid,"huntsman");
         Registration.registerUser(uuid,username);
+        //Bukkit.getLogger().info(c_class);
+
     }
 
     @EventHandler

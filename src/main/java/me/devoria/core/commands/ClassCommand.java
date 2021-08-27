@@ -1,5 +1,6 @@
 package me.devoria.core.commands;
 
+import me.devoria.core.DataBase.ClassTable;
 import me.devoria.core.DataBase.Item_Stack;
 import me.devoria.core.Iventory.SerializeInventory;
 import me.devoria.core.Listeners;
@@ -30,6 +31,7 @@ public class ClassCommand implements CommandExecutor {
             String itemStack = SerializeInventory.playerInventoryToBase64(playerInventory);
             UUID uuid = ((Player) sender).getUniqueId();
             String current_class = Listeners.lookUpPlayer(((Player) sender).getUniqueId()).getType();
+            String c_class = ClassTable.FindCurrentClass(uuid);
             ItemStack[] items ={};
 
             switch (args[0].toLowerCase(Locale.ROOT)) {
@@ -43,8 +45,17 @@ public class ClassCommand implements CommandExecutor {
                     }
                     sender.sendMessage("You picked the Huntsman class!");
                     Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("huntsman");
+                    sender.sendMessage("Your past class is->" + c_class);
+                    try {
+                        ClassTable.SetCurrentClass(uuid,"huntsman");
+                    } catch (SQLException throwables) {
+                        Bukkit.getLogger().info(throwables.toString());
+                        Bukkit.getLogger().info("Could not set class hunt on db");
+
+                    }
                     ((Player) sender).getInventory().clear();
                     items = Item_Stack.getItemStack(((Player) sender).getUniqueId(),"huntsman");
+
                     ((Player) sender).getInventory().setContents(items);
 
 
@@ -61,6 +72,13 @@ public class ClassCommand implements CommandExecutor {
 
                     sender.sendMessage("You picked the sorcerer class!");
                     Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("sorcerer");
+                    sender.sendMessage("Your past class is->" + c_class);
+                    try {
+                        ClassTable.SetCurrentClass(uuid,"sorcerer");
+                    } catch (SQLException throwables) {
+                        Bukkit.getLogger().info(throwables.toString());
+                        Bukkit.getLogger().info("Could not set class sorcerer on db");
+                    }
                     ((Player) sender).getInventory().clear();
                     items = Item_Stack.getItemStack(((Player) sender).getUniqueId(),"sorcerer");
                     ((Player) sender).getInventory().setContents(items);
@@ -73,9 +91,14 @@ public class ClassCommand implements CommandExecutor {
                         Bukkit.getLogger().info("Could not update");
                     }
                     sender.sendMessage("You picked the Bard class!");
-                    sender.sendMessage("You picked the Bard class!");
-
                     Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("bard");
+                    sender.sendMessage("Your past class is->" + c_class);
+                    try {
+                        ClassTable.SetCurrentClass(uuid,"bard");
+                    } catch (SQLException throwables) {
+                        Bukkit.getLogger().info(throwables.toString());
+                        Bukkit.getLogger().info("Could not set class bard on db");
+                    }
                     ((Player) sender).getInventory().clear();
 
                     items = Item_Stack.getItemStack(((Player) sender).getUniqueId(),"Bard");
@@ -91,8 +114,13 @@ public class ClassCommand implements CommandExecutor {
                     }
                     sender.sendMessage("You picked the Knight class!");
                     Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("knight");
-                    ((Player) sender).getInventory().clear();
-                    Listeners.lookUpPlayer(((Player) sender).getUniqueId()).setType("knight");
+                    sender.sendMessage("Your past class is->" + c_class);
+                    try {
+                        ClassTable.SetCurrentClass(uuid,"knight");
+                    } catch (SQLException throwables) {
+                        Bukkit.getLogger().info(throwables.toString());
+                        Bukkit.getLogger().info("Could not set class knight on db");
+                    }
                     ((Player) sender).getInventory().clear();
                     items = Item_Stack.getItemStack(((Player) sender).getUniqueId(),"knight");
                     ((Player) sender).getInventory().setContents(items);
