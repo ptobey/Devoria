@@ -24,7 +24,6 @@ public class SpawnDamageIndicator {
             as1.setCustomNameVisible(true);
             as1.setMarker(true);
             as1.setCustomName(ChatColor.GOLD + "-" + damages.get(0) + " ✸");
-            System.out.println(location.subtract(0, distance, 0));
 
             Bukkit.getScheduler().runTaskLater(Core.getInstance(), as1::remove, delay);
         }
@@ -34,7 +33,6 @@ public class SpawnDamageIndicator {
             as2.setCustomNameVisible(true);
             as2.setMarker(true);
             as2.setCustomName(ChatColor.DARK_GREEN + "-" + damages.get(1) + " ✿");
-            System.out.println(location.subtract(0, distance, 0));
 
             Bukkit.getScheduler().runTaskLater(Core.getInstance(), as2::remove, delay);
         }
@@ -44,7 +42,6 @@ public class SpawnDamageIndicator {
             as3.setCustomNameVisible(true);
             as3.setMarker(true);
             as3.setCustomName(ChatColor.DARK_RED + "-" + damages.get(2) + " ✹");
-            System.out.println(location.subtract(0, distance, 0));
 
             Bukkit.getScheduler().runTaskLater(Core.getInstance(), as3::remove, delay);
         }
@@ -54,7 +51,6 @@ public class SpawnDamageIndicator {
             as4.setCustomNameVisible(true);
             as4.setMarker(true);
             as4.setCustomName(ChatColor.AQUA + "-" + damages.get(3) + " ❆");
-            System.out.println(location.subtract(0, distance, 0));
 
             Bukkit.getScheduler().runTaskLater(Core.getInstance(), as4::remove, delay);
         }
@@ -64,7 +60,6 @@ public class SpawnDamageIndicator {
             as5.setCustomNameVisible(true);
             as5.setMarker(true);
             as5.setCustomName(ChatColor.YELLOW + "-" + damages.get(4) + " ✦");
-            System.out.println(location.subtract(0, distance, 0));
 
             Bukkit.getScheduler().runTaskLater(Core.getInstance(), as5::remove, delay);
         }
@@ -74,7 +69,6 @@ public class SpawnDamageIndicator {
             as6.setCustomNameVisible(true);
             as6.setMarker(true);
             as6.setCustomName(ChatColor.DARK_GRAY + "-" + damages.get(5) + " ✺ ");
-            System.out.println(location.subtract(0, distance, 0));
 
             Bukkit.getScheduler().runTaskLater(Core.getInstance(), as6::remove, delay);
         }
