@@ -14,7 +14,7 @@ public class SpawnDamageIndicator {
 
     public void spawn(World world, ArrayList<String> damages, Location location) {
 
-        double distance = 0.125;
+        double distance = 0.25;
         int delay = 10;
 
 
