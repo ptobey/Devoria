@@ -20,6 +20,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.io.FileNotFoundException;
@@ -85,8 +86,7 @@ public class Listeners implements Listener {
     }
     //on login events!
     @EventHandler
-    public void onPlayerLogin(PlayerLoginEvent event) throws SQLException {
-        event.getPlayer().sendMessage("Welcome to the server!");
+    public void onPlayerLogin(PlayerLoginEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
         String name = event.getPlayer().getDisplayName();
         String username = event.getPlayer().getName();
@@ -101,6 +101,12 @@ public class Listeners implements Listener {
         Registration.registerUser(uuid,username);
         //Bukkit.getLogger().info(c_class);
 
+    }
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        Player p = e.getPlayer();
+        Core.getClassSelectGUI().openInventory(p);
+        p.sendMessage("§aWelcome to Devoria!");
     }
 
     @EventHandler

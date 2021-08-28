@@ -11,6 +11,7 @@ import java.io.IOException;
 public class Core extends JavaPlugin {
 
     private static Core instance;
+    private static ClassSelectGUI classSelectGUI;
 
 
     public void onEnable() {
@@ -26,6 +27,7 @@ public class Core extends JavaPlugin {
 
     public void registerListeners() {
         getServer().getPluginManager().registerEvents(new Listeners(), this);
+        getServer().getPluginManager().registerEvents(classSelectGUI = new ClassSelectGUI(), this);
     }
 
     public void registerCommands() {
@@ -54,5 +56,8 @@ public class Core extends JavaPlugin {
     }
     public static Core getInstance() {
         return instance;
+    }
+    public static ClassSelectGUI getClassSelectGUI() {
+        return classSelectGUI;
     }
 }
