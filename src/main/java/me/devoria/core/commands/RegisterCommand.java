@@ -43,9 +43,7 @@ public class RegisterCommand implements CommandExecutor {
             String username = sender.getName();
 
 
-            me.devoria.core.Player player = Listeners.lookUpPlayer(((Player) sender).getUniqueId());
-            assert player != null;
-            UUID uuid = player.getUuid();
+            UUID uuid = ((Player) sender).getUniqueId();
             sender.sendMessage("Player username ->" + username);
             sender.sendMessage("Player uuid ->" + uuid);
 

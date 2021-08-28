@@ -1,7 +1,6 @@
 package me.devoria.core.Iventory;
 
 import me.devoria.core.DataBase.Item_Stack;
-import me.devoria.core.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.inventory.InventoryType;
