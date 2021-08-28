@@ -94,10 +94,9 @@ public class ClassSelectGUI implements Listener {
 
         String class_location = world + "|" + loc_x.toString() + "|" + loc_y.toString() + "|" + loc_z.toString();
 
-        //updating previous class locations and inventory on db
-        //LocationSv.SetClassLoc(p.getUniqueId(),class_location,c_class);
+
         if(!(Item_Stack.Verify_IS(p.getUniqueId(),c_class))){
-            Item_Stack.insertItemStack(p.getUniqueId(),c_class," ", class_location);
+            Item_Stack.insertItemStack(p.getUniqueId(),c_class,"    ", class_location);
         }
         Item_Stack.updateItemStack(p.getUniqueId(),c_class,itemStack,class_location);
 

@@ -80,10 +80,11 @@ public class Item_Stack {
             try {
                 PreparedStatement ps;
                 Connection connection = DBconnect.getConnection();
-                ps = connection.prepareStatement("UPDATE Inventory SET itemstack=? WHERE uuid=? AND class_name=? ");
+                ps = connection.prepareStatement("UPDATE Inventory SET itemstack=?,class_location=? WHERE uuid=? AND class_name=? ");
                 ps.setString(1, item_stack.toString());
-                ps.setString(2, uuid.toString());
-                ps.setString(3, class_name);
+                ps.setString(2, class_location);
+                ps.setString(3, uuid.toString());
+                ps.setString(4, class_name);
                 ps.executeUpdate();
 
 
