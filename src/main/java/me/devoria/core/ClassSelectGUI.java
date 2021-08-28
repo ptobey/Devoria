@@ -1,8 +1,11 @@
 package me.devoria.core;
 
+import me.devoria.core.DataBase.ClassTable;
+import me.devoria.core.DataBase.Item_Stack;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -11,6 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 
 public class ClassSelectGUI implements Listener {
@@ -66,21 +70,58 @@ public class ClassSelectGUI implements Listener {
         assert clickedItem != null;
         if (clickedItem.getItemMeta().getDisplayName().equals("Huntsman")) {
             p.sendMessage("You selected the Huntsman class!");
+            try {
+                ClassTable.SetCurrentClass(p.getUniqueId(),"huntsman");
+            } catch (SQLException throwables) {
+                Bukkit.getLogger().info(throwables.toString());
+                Bukkit.getLogger().info("Could not set class hunt on db");
+
+            }
+            p.getInventory().clear();
+            ItemStack[]items = Item_Stack.getItemStack(p.getUniqueId(),"huntsman");
+            p.getInventory().setContents(items);
             p.closeInventory();
             //Add database class select
         }
         else if (clickedItem.getItemMeta().getDisplayName().equals("Knight")) {
             p.sendMessage("You selected the Knight class!");
+            try {
+                ClassTable.SetCurrentClass(p.getUniqueId(),"knight");
+            } catch (SQLException throwables) {
+                Bukkit.getLogger().info(throwables.toString());
+                Bukkit.getLogger().info("Could not set class knight on db");
+            }
+            p.getInventory().clear();
+            ItemStack[]items = Item_Stack.getItemStack(p.getUniqueId(),"Knight");
+            p.getInventory().setContents(items);
             p.closeInventory();
             //Add database class select
         }
         else if (clickedItem.getItemMeta().getDisplayName().equals("Bard")) {
             p.sendMessage("You selected the Bard class!");
+            try {
+                ClassTable.SetCurrentClass(p.getUniqueId(),"bard");
+            } catch (SQLException throwables) {
+                Bukkit.getLogger().info(throwables.toString());
+                Bukkit.getLogger().info("Could not set class bard on db");
+            }
+            p.getInventory().clear();
+            ItemStack[]items = Item_Stack.getItemStack(p.getUniqueId(),"Bard");
+            p.getInventory().setContents(items);
             p.closeInventory();
             //Add database class select
         }
         else if (clickedItem.getItemMeta().getDisplayName().equals("Sorcerer")) {
             p.sendMessage("You selected the Sorcerer class!");
+            try {
+                ClassTable.SetCurrentClass(p.getUniqueId(),"sorcerer");
+            } catch (SQLException throwables) {
+                Bukkit.getLogger().info(throwables.toString());
+                Bukkit.getLogger().info("Could not set class sorcerer on db");
+            }
+            p.getInventory().clear();
+            ItemStack[]items = Item_Stack.getItemStack(p.getUniqueId(),"sorcerer");
+            p.getInventory().setContents(items);
             p.closeInventory();
             //Add database class select
         }
