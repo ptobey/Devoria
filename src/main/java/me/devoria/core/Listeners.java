@@ -33,7 +33,6 @@ import java.util.UUID;
 
 public class Listeners implements Listener {
 
-    public static ArrayList<me.devoria.core.Player> players = new ArrayList<>();
 
     @EventHandler
     public void onOpenChest(PlayerInteractEvent e) {
@@ -88,14 +87,8 @@ public class Listeners implements Listener {
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        String name = event.getPlayer().getDisplayName();
         String username = event.getPlayer().getName();
         //String c_class = ClassTable.FindCurrentClass(uuid);
-
-
-        if(lookUpPlayer(uuid) == null) {
-            players.add(new me.devoria.core.Player(uuid, name, "huntsman"));
-        }
         //Registering players on login
         //ClassTable.SetCurrentClass(uuid,"huntsman");
         Registration.registerUser(uuid,username);
@@ -137,7 +130,6 @@ public class Listeners implements Listener {
 
             e.setCancelled(true);
 
-            if(lookUpPlayer(e.getPlayer().getUniqueId()).getType().equals("huntsman") || lookUpPlayer(e.getPlayer().getUniqueId()).getType().equals("bard") ) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
                     SpawnDamageIndicator damageIndicator = new SpawnDamageIndicator();
@@ -156,22 +148,11 @@ public class Listeners implements Listener {
                     arrow.setVelocity(p.getLocation().getDirection().multiply(2.25));
                 }
             }
-            else {
-                e.getPlayer().sendMessage("You can't use this item! You are a "+lookUpPlayer(e.getPlayer().getUniqueId()).getType()+"!");
-            }
-            }
             catch(NullPointerException ignore){
             }
         }
 
     }
 //Temp method for finding a player object using UUID
-    public static me.devoria.core.Player lookUpPlayer(UUID uuid) {
-        for (me.devoria.core.Player player : players) {
-            if (player.getUuid().equals(uuid)) {
-                return player;
-            }
-        }
-        return null;
-    }
+
 }
