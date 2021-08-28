@@ -18,10 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.*;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
@@ -98,8 +95,14 @@ public class Listeners implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
+        p.getInventory().clear();
         Core.getClassSelectGUI().openInventory(p);
         p.sendMessage("§aWelcome to Devoria!");
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent e) {
+
     }
 
     @EventHandler
