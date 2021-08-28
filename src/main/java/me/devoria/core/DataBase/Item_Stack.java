@@ -25,9 +25,10 @@ public class Item_Stack {
         try {
             PreparedStatement ps;
             Connection connection = DBconnect.getConnection();
-            ps = connection.prepareStatement("SELECT itemstack FROM Inventory WHERE uuid=? AND class_name=? ");
+            ps = connection.prepareStatement("SELECT itemstack,class_name,class_location FROM Inventory WHERE uuid=? AND class_name=?");
             ps.setString(1, uuid.toString());
             ps.setString(2, class_name);
+
             ResultSet results = ps.executeQuery();
 
             if(results.next()){
@@ -44,16 +45,17 @@ public class Item_Stack {
 
     }
 
-    public static void insertItemStack(UUID uuid, String class_name, String item_stack) throws SQLException {
+    public static void insertItemStack(UUID uuid, String class_name, String item_stack,String class_location) throws SQLException {
 
 
         try {
             PreparedStatement ps;
             Connection connection = DBconnect.getConnection();
-            ps = connection.prepareStatement("INSERT INTO Inventory (uuid, class_name, itemstack) VALUES (?, ?,?)");
+            ps = connection.prepareStatement("INSERT INTO Inventory (uuid, class_name, itemstack, class_location) VALUES (?, ?,?,?)");
             ps.setString(1, uuid.toString());
             ps.setString(2, class_name);
             ps.setString(3, item_stack.toString());
+            ps.setString(4, class_location);
             ps.executeUpdate();
 
 
@@ -71,7 +73,7 @@ public class Item_Stack {
 
 
 
-    public static void updateItemStack(UUID uuid, String class_name, String item_stack) throws SQLException {
+    public static void updateItemStack(UUID uuid, String class_name, String item_stack,String class_location) throws SQLException {
 
         if(Verify_IS(uuid, class_name)) {
 
@@ -95,7 +97,7 @@ public class Item_Stack {
 
         }else{
 
-            insertItemStack(uuid,class_name,item_stack);
+            insertItemStack(uuid,class_name,item_stack,class_location);
 
 
         }

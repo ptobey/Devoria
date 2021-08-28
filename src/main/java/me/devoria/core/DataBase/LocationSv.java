@@ -37,11 +37,12 @@ public class LocationSv {
 
     public static void insertLocation(UUID uuid, String class_location, String class_name) throws SQLException {
 
+        ClassTable.FindCurrentClass(uuid);
 
         try {
             PreparedStatement ps;
             Connection connection = DBconnect.getConnection();
-            ps = connection.prepareStatement("INSERT INTO Inventory (class_location) VALUES (?) WHERE uuid=? AND class_name=?");
+            ps = connection.prepareStatement("INSERT INTO Inventory (uuid ,class_location) VALUES (?,?)  AND class_name=?");
             ps.setString(1, class_location);
             ps.setString(2, uuid.toString());
             ps.setString(3, class_name);

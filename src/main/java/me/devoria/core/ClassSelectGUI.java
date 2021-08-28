@@ -2,6 +2,8 @@ package me.devoria.core;
 
 import me.devoria.core.DataBase.ClassTable;
 import me.devoria.core.DataBase.Item_Stack;
+import me.devoria.core.DataBase.LocationSv;
+import me.devoria.core.Iventory.SerializeInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -12,6 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.sql.SQLException;
@@ -59,7 +62,7 @@ public class ClassSelectGUI implements Listener {
 
     // Check for clicks on items
     @EventHandler
-    public void onInventoryClick(final InventoryClickEvent e) {
+    public void onInventoryClick(final InventoryClickEvent e) throws SQLException {
         if (e.getInventory() != inv) return;
 
         final org.bukkit.entity.Player p = (org.bukkit.entity.Player) e.getWhoClicked();
@@ -68,6 +71,38 @@ public class ClassSelectGUI implements Listener {
         final ItemStack clickedItem = e.getCurrentItem();
 
         assert clickedItem != null;
+
+        //handling player inventory
+        PlayerInventory playerInventory = p.getInventory();
+        String itemStack = SerializeInventory.playerInventoryToBase64(playerInventory);
+        ItemStack[] items ={};
+
+        //finding current class
+        String c_class = "huntsman";
+        if (!ClassTable.Verify_Class(p.getUniqueId())) {
+            ClassTable.SetCurrentClass(p.getUniqueId(), c_class);
+        }
+
+        c_class = ClassTable.FindCurrentClass(p.getUniqueId());
+
+
+        //class location
+        String world = p.getLocation().getWorld().getName();
+        Integer loc_x = p.getLocation().getBlockX();
+        Integer loc_y = p.getLocation().getBlockY();
+        Integer loc_z = p.getLocation().getBlockZ();
+
+        String class_location = world + "|" + loc_x.toString() + "|" + loc_y.toString() + "|" + loc_z.toString();
+
+        //updating previous class locations and inventory on db
+        //LocationSv.SetClassLoc(p.getUniqueId(),class_location,c_class);
+        if(!(Item_Stack.Verify_IS(p.getUniqueId(),c_class))){
+            Item_Stack.insertItemStack(p.getUniqueId(),c_class," ", class_location);
+        }
+        Item_Stack.updateItemStack(p.getUniqueId(),c_class,itemStack,class_location);
+
+
+        //updating player inventory and class
         if (clickedItem.getItemMeta().getDisplayName().equals("Huntsman")) {
             p.sendMessage("You selected the Huntsman class!");
             try {
@@ -78,24 +113,27 @@ public class ClassSelectGUI implements Listener {
 
             }
             p.getInventory().clear();
-            ItemStack[]items = Item_Stack.getItemStack(p.getUniqueId(),"huntsman");
+            items = Item_Stack.getItemStack(p.getUniqueId(),"huntsman");
             p.getInventory().setContents(items);
             p.closeInventory();
-            //Add database class select
+            p.updateInventory();
+
         }
         else if (clickedItem.getItemMeta().getDisplayName().equals("Knight")) {
             p.sendMessage("You selected the Knight class!");
             try {
                 ClassTable.SetCurrentClass(p.getUniqueId(),"knight");
+
             } catch (SQLException throwables) {
                 Bukkit.getLogger().info(throwables.toString());
                 Bukkit.getLogger().info("Could not set class knight on db");
             }
             p.getInventory().clear();
-            ItemStack[]items = Item_Stack.getItemStack(p.getUniqueId(),"Knight");
+            items = Item_Stack.getItemStack(p.getUniqueId(),"Knight");
             p.getInventory().setContents(items);
             p.closeInventory();
-            //Add database class select
+            p.updateInventory();
+
         }
         else if (clickedItem.getItemMeta().getDisplayName().equals("Bard")) {
             p.sendMessage("You selected the Bard class!");
@@ -106,10 +144,11 @@ public class ClassSelectGUI implements Listener {
                 Bukkit.getLogger().info("Could not set class bard on db");
             }
             p.getInventory().clear();
-            ItemStack[]items = Item_Stack.getItemStack(p.getUniqueId(),"Bard");
+            items = Item_Stack.getItemStack(p.getUniqueId(),"Bard");
             p.getInventory().setContents(items);
             p.closeInventory();
-            //Add database class select
+            p.updateInventory();
+
         }
         else if (clickedItem.getItemMeta().getDisplayName().equals("Sorcerer")) {
             p.sendMessage("You selected the Sorcerer class!");
@@ -120,9 +159,10 @@ public class ClassSelectGUI implements Listener {
                 Bukkit.getLogger().info("Could not set class sorcerer on db");
             }
             p.getInventory().clear();
-            ItemStack[]items = Item_Stack.getItemStack(p.getUniqueId(),"sorcerer");
+            items = Item_Stack.getItemStack(p.getUniqueId(),"sorcerer");
             p.getInventory().setContents(items);
             p.closeInventory();
+            p.updateInventory();
             //Add database class select
         }
     }
