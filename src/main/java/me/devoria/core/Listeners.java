@@ -156,6 +156,4 @@ public class Listeners implements Listener {
         }
 
     }
-//Temp method for finding a player object using UUID
-
 }

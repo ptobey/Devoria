@@ -94,7 +94,7 @@ public class ClassTable {
 
     }
 
-    public static boolean SetCurrentClass(UUID uuid, String c_class) throws SQLException {
+    public static void SetCurrentClass(UUID uuid, String c_class) throws SQLException {
 
         if (Verify_Class(uuid)) {
             try {
@@ -106,20 +106,16 @@ public class ClassTable {
                 ps.executeUpdate();
                 Bukkit.getLogger().info("I`m here 2");
 
-                return true;
-
 
             } catch (SQLException e) {
                 Bukkit.getLogger().info(e.toString());
                 Bukkit.getLogger().info("Could not set current class ");
                 Bukkit.getLogger().info("I`m here 4");
-                return false;
 
             }
 
          }else{
             insertClass(uuid,c_class);
-            return true;
 
         }
     }

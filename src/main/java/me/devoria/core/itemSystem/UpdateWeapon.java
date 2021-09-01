@@ -1,6 +1,7 @@
 package me.devoria.core.itemSystem;
 
 import me.devoria.core.WeightedPercentageGenerator;
+import net.kyori.adventure.text.TextComponent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
