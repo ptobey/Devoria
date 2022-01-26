@@ -95,9 +95,8 @@ public class Listeners implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        p.getInventory().clear();
-        Core.getClassSelectGUI().openInventory(p);
-        p.sendMessage("§aWelcome to Devoria!");
+       // p.getInventory().clear();
+        p.sendMessage("§aWelcome to Eternia!");
     }
 
     @EventHandler
@@ -112,7 +111,7 @@ public class Listeners implements Listener {
             String stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
             p.getInventory().setItemInMainHand((UpdateWeapon.update(stats)));
         }
-        catch(NullPointerException ignore){
+        catch(Exception ignore){
         }
 
     }

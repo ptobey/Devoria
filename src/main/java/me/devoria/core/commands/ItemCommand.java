@@ -1,11 +1,13 @@
 package me.devoria.core.commands;
 
+import me.devoria.core.Core;
 import me.devoria.core.itemSystem.UpdateWeapon;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 
@@ -19,8 +21,20 @@ public class ItemCommand implements CommandExecutor {
             try {
                 ((Player) sender).getInventory().addItem((UpdateWeapon.update(",fileName:"+args[0])));
                 return true;
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+
+                File itemsFolder = new File(Core.dataFolder, "/items");
+
+                String[] names = itemsFolder.list();
+                StringBuilder list = new StringBuilder();
+
+                for (String name : names) {
+                    list.append(name).append(" ");
+                }
+
+                sender.sendMessage(list.toString());
+
                 return false;
             }
         }

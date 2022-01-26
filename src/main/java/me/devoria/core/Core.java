@@ -12,9 +12,12 @@ public class Core extends JavaPlugin {
 
     private static Core instance;
     private static ClassSelectGUI classSelectGUI;
+    public static File dataFolder;
 
 
     public void onEnable() {
+
+        dataFolder = getDataFolder();
 
         instance = this;
 
@@ -42,12 +45,13 @@ public class Core extends JavaPlugin {
 
 
     private void createCustomConfig() {
-        File makeItemsFolder = new File(getDataFolder(), "items/example.yml");
+        File makeItemsFolder = new File(dataFolder, "items/example.yml");
         if (!makeItemsFolder.exists()) {
             makeItemsFolder.getParentFile().mkdirs();
             saveResource("items/example.yml", false);
         }
         FileConfiguration customConfig = new YamlConfiguration();
+
         try {
             customConfig.load(makeItemsFolder);
         } catch (IOException | InvalidConfigurationException e) {

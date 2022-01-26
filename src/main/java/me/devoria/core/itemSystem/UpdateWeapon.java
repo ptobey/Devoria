@@ -1,7 +1,6 @@
 package me.devoria.core.itemSystem;
 
 import me.devoria.core.WeightedPercentageGenerator;
-import net.kyori.adventure.text.TextComponent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -48,10 +47,10 @@ public class UpdateWeapon {
         float totalPercent = 0;
         float numberOfStats = 0;
 
-        String[] seperatedStats = itemData.split(",");
+        String[] separatedStats = itemData.split(",");
 
-        for(int i=1;i<seperatedStats.length;i++){
-            String[] arr = seperatedStats[i].split(":");
+        for(int i=1;i<separatedStats.length;i++){
+            String[] arr = separatedStats[i].split(":");
             map.put(arr[0], arr[1]);
         }
         
