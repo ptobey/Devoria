@@ -36,7 +36,6 @@ public class Core extends JavaPlugin {
     public void registerCommands() {
         this.getCommand("class").setExecutor(new ClassCommand());
         this.getCommand("item").setExecutor(new ItemCommand());
-        this.getCommand("reveal").setExecutor(new AttyMod());
         this.getCommand("register").setExecutor(new RegisterCommand());
         this.getCommand("getinfo").setExecutor(new GetItemInfo());
         this.getCommand("loot").setExecutor(new LootCommand());

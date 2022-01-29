@@ -1,6 +1,7 @@
 package me.devoria.core;
 
 import me.devoria.core.DataBase.ClassTable;
+import me.devoria.core.attributeSystem.UpdateAttributes;
 import me.devoria.core.damageSystem.SpawnDamageIndicator;
 import me.devoria.core.itemSystem.*;
 import me.devoria.core.onLogin.Registration;
@@ -19,6 +20,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
@@ -26,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+
+import static java.lang.Thread.sleep;
 
 
 public class Listeners implements Listener {
@@ -96,24 +102,59 @@ public class Listeners implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
        // p.getInventory().clear();
+
         p.sendMessage("§aWelcome to Eternia!");
+
+        try {
+            if(p.getInventory().getItemInMainHand().getType() != Material.AIR && !p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName().isEmpty()) {
+                String stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
+                p.getInventory().setItemInMainHand(UpdateWeapon.update(stats));
+                stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
+                UpdateAttributes.update(p, stats);
+            }
+            else {
+                UpdateAttributes.update(p, null);
+            }
+
+
+        }
+        catch(Exception ignore){
+        }
     }
+
+
+
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
 
+
     }
 
     @EventHandler
-    public void updateIem(PlayerItemHeldEvent e) throws FileNotFoundException {
+    public void updateIem(PlayerItemHeldEvent e) throws FileNotFoundException, InterruptedException {
+
+
         try {
+            int slot = e.getNewSlot();
             Player p = e.getPlayer();
-            String stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
-            p.getInventory().setItemInMainHand((UpdateWeapon.update(stats)));
+
+
+
+            if(p.getInventory().getItem(slot) != null && !p.getInventory().getItem(slot).getItemMeta().getLocalizedName().isEmpty()) {
+                String stats = p.getInventory().getItem(slot).getItemMeta().getLocalizedName();
+                p.getInventory().setItem(slot, UpdateWeapon.update(stats));
+                stats = p.getInventory().getItem(slot).getItemMeta().getLocalizedName();
+                UpdateAttributes.update(p, stats);
+           }
+            else {
+                UpdateAttributes.update(p, null);
+            }
+
+
         }
         catch(Exception ignore){
         }
-
     }
 
 

@@ -15,35 +15,66 @@ import java.util.Objects;
 
 public class UpdateWeapon {
 
-    public static ItemStack update(String itemData) throws FileNotFoundException {
+    public static ChatColor starsColor = ChatColor.WHITE;
+    public static ChatColor statColor = ChatColor.WHITE;
+    public static String plusOrMinus = "";
 
-        HashMap<String,String> map = new HashMap<>();
-        String[] separatedStats = itemData.split(",");
 
-        for(int i=1;i<separatedStats.length;i++){
-            String[] arr = separatedStats[i].split(":");
-            map.put(arr[0], arr[1]);
+    public static void starsColorFinder(int percentNumber) {
+
+
+        if (percentNumber <= 0) {
+
+            starsColor = ChatColor.DARK_GRAY;
+        } else if (percentNumber < 10) {
+
+            starsColor = ChatColor.DARK_RED;
+        } else if (percentNumber < 30) {
+
+            starsColor = ChatColor.RED;
+        } else if (percentNumber < 70) {
+
+            starsColor = ChatColor.YELLOW;
+        } else if (percentNumber < 90) {
+
+            starsColor = ChatColor.GREEN;
+        } else if (percentNumber < 100) {
+
+            starsColor = ChatColor.DARK_GREEN;
+        } else {
+            starsColor = ChatColor.AQUA;
         }
-
-        Map<String, Object> attributes = FindItemFile.parse(map.get("fileName"));
-        return updateWeapon(itemData, attributes.get("file_name"), attributes.get("name"), attributes.get("tradeable"), attributes.get("rarity"), attributes.get("attack_speed"), attributes.get("attack_range"), attributes.get("rune_slots"), attributes.get("damage"), attributes.get("earth_damage"), attributes.get("fire_damage"), attributes.get("water_damage"), attributes.get("light_damage"), attributes.get("dark_damage"));
     }
 
-    //makes a custom bow using stats pulled from the yml
-    public static ItemStack updateWeapon(String itemData, Object fileName, Object name, Object tradeable, Object rarity, Object attackSpeed, Object attackRange, Object runeSlots, Object damage, Object earthDamage, Object fireDamage, Object waterDamage, Object lightDamage, Object darkDamage){
+        public static void plusOrMinusFinder(String stat){
+
+            if (Integer.parseInt(stat) < 0) {
+                statColor = ChatColor.RED;
+                plusOrMinus = "";
+            } else if (Integer.parseInt(stat) > 0) {
+                statColor = ChatColor.GREEN;
+                plusOrMinus = "+";
+            } else {
+                statColor = ChatColor.WHITE;
+                plusOrMinus = " ";
+            }
+        }
+
+
+
+
+    //makes a custom item using stats pulled from the yml
+    public static ItemStack update(String itemData) throws FileNotFoundException {
 
         HashMap<String,String> map = new HashMap<>();
 
         ChatColor rarityColor = ChatColor.WHITE;
         ChatColor attackSpeedColor = ChatColor.WHITE;
         ChatColor attackRangeColor = ChatColor.WHITE;
-        ChatColor statColor;
 
         String stars = "";
-        ChatColor starsColor = ChatColor.WHITE;
         String attackSpeedType = "Normal";
         String attackRangeType = "Normal";
-        String plusOrMinus;
         float totalPercent = 0;
         float numberOfStats = 0;
 
@@ -53,8 +84,28 @@ public class UpdateWeapon {
             String[] arr = separatedStats[i].split(":");
             map.put(arr[0], arr[1]);
         }
+
+        Map<String, Object> attributes = FindItemFile.parse(map.get("fileName"));
+
+        Object fileName = attributes.get("file_name");
+        Object name = attributes.get("name");
+        Object tradeable = attributes.get("tradeable");
+        Object rarity = attributes.get("rarity");
+        Object attackSpeed = attributes.get("attack_speed");
+        Object attackRange = attributes.get("attack_range");
+        Object runeSlots = attributes.get("rune_slots");
+        Object damage = attributes.get("damage");
+        Object earthDamage = attributes.get("earth_damage");
+        Object fireDamage = attributes.get("fire_damage");
+        Object waterDamage = attributes.get("water_damage");
+        Object lightDamage = attributes.get("light_damage");
+        Object darkDamage = attributes.get("dark_damage");
+        Object walkSpeed = attributes.get("walk_speed");
+
+
+
         
-        String itemInfo = ",fileName:"+fileName+",name:"+name+",tradeable:"+tradeable+",rarity:"+rarity+",attackSpeed:"+attackSpeed+",damage:"+damage;
+        String itemInfo = ",fileName:"+fileName+",name:"+name+",tradeable:"+tradeable+",rarity:"+rarity+",attackSpeed:"+attackSpeed;
 
 
         ItemStack weapon = new ItemStack(Material.PINK_WOOL);
@@ -163,302 +214,66 @@ public class UpdateWeapon {
         // Adds initial lore
 
         lore.add("");
-        lore.add(ChatColor.GOLD+"✸ Damage: "+damage);
+        if(damage != null) {
+            lore.add(ChatColor.GOLD + "✸ Damage: " + damage);
+            itemInfo += ",damage:"+damage;
+        }
+        if(earthDamage != null) {
+            lore.add(ChatColor.DARK_GREEN + "✿ Earth " + ChatColor.GRAY + "Damage: " + earthDamage);
+            itemInfo += ",earthDamage:"+earthDamage;
+        }
+        if(fireDamage != null) {
+            lore.add(ChatColor.DARK_RED + "✹ Fire " + ChatColor.GRAY + "Damage: " + fireDamage);
+            itemInfo += ",fireDamage:"+fireDamage;
+        }
+        if(waterDamage != null) {
+            lore.add(ChatColor.AQUA + "❆ Water " + ChatColor.GRAY + "Damage: " + waterDamage);
+            itemInfo += ",waterDamage:"+waterDamage;
+        }
+        if(lightDamage != null) {
+            lore.add(ChatColor.YELLOW + "✦ Light " + ChatColor.GRAY + "Damage: " + lightDamage);
+            itemInfo += ",lightDamage:"+lightDamage;
+        }
+        if(darkDamage != null) {
+            lore.add(ChatColor.DARK_GRAY + "✺ Darkness " + ChatColor.GRAY + "Damage: " + darkDamage);
+            itemInfo += ",darkDamage:"+darkDamage;
+        }
+        lore.add("");
         lore.add(ChatColor.GRAY+"   Attack Speed: "+attackSpeedColor+attackSpeedType);
         lore.add(ChatColor.GRAY+"   Attack Range: "+attackRangeColor+attackRangeType);
         lore.add(ChatColor.GRAY+"   Rune Slots: ["+ChatColor.WHITE+"0/"+runeSlots+ChatColor.GRAY+"]");
 
-        if(earthDamage != null || fireDamage != null || waterDamage != null || lightDamage != null || darkDamage != null) {
+
+        if(walkSpeed != null) {
             lore.add("");
         }
 
-        //Earth Damage
-        if(earthDamage != null) {
+        //Walk Speed
+        if(walkSpeed != null) {
 
-            String earthDamagePercentage;
-            int earthPercentNumber;
+            String walkSpeedPercentage;
 
-            if(map.get("earthDamagePercentage") != null) {
-                earthDamagePercentage = map.get("earthDamagePercentage");
+            if(map.get("walkSpeedPercentage") != null) {
+                walkSpeedPercentage = map.get("walkSpeedPercentage");
             }
             else {
-                earthDamagePercentage = WeightedPercentageGenerator.generate();
+                walkSpeedPercentage = WeightedPercentageGenerator.generate();
             }
 
-            String calculatedEarthDamage = CalculateStatsWithRange.calculate(earthDamage, earthDamagePercentage);
+            String calculatedWalkSpeed = CalculateStatsWithRange.calculate(walkSpeed, walkSpeedPercentage);
 
-            if(Integer.parseInt(calculatedEarthDamage) < 0) {
-                statColor = ChatColor.RED;
-                plusOrMinus = "";
-            }
-            else if(Integer.parseInt(calculatedEarthDamage) > 0) {
-                statColor = ChatColor.GREEN;
-                plusOrMinus = "+";
-            }
-            else {
-                statColor = ChatColor.WHITE;
-                plusOrMinus = "";
-            }
+            plusOrMinusFinder(calculatedWalkSpeed);
 
-            earthPercentNumber = Integer.parseInt(earthDamagePercentage);
+            starsColorFinder(Integer.parseInt(walkSpeedPercentage));
 
-            if (earthPercentNumber <= 30)  {
-
-                starsColor = ChatColor.DARK_RED;
-            }
-            else if (earthPercentNumber <= 55)  {
-
-                starsColor = ChatColor.RED;
-            }
-            else if (earthPercentNumber <= 80)  {
-
-                starsColor = ChatColor.YELLOW;
-            }
-            else if (earthPercentNumber <= 94)  {
-
-                starsColor = ChatColor.GREEN;
-            }
-            else {
-                starsColor = ChatColor.AQUA;
-            }
-
-            lore.add(ChatColor.DARK_GREEN+"✿ Earth Damage: "+statColor+plusOrMinus+calculatedEarthDamage+starsColor+" ✯");
-            totalPercent += Integer.parseInt(earthDamagePercentage);
+            lore.add(statColor+plusOrMinus+calculatedWalkSpeed+"% "+ChatColor.GRAY+"Walk Speed"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(walkSpeedPercentage);
             numberOfStats += 1;
 
-            itemInfo += ",earthDamage:"+calculatedEarthDamage+",earthDamagePercentage:"+earthDamagePercentage;
+            itemInfo += ",walkSpeed:"+calculatedWalkSpeed+",walkSpeedPercentage:"+walkSpeedPercentage;
         }
 
-        //Fire Damage
-        if(fireDamage != null) {
 
-            String fireDamagePercentage;
-            int firePercentNumber;
-
-            if(map.get("fireDamagePercentage") != null) {
-                fireDamagePercentage = map.get("fireDamagePercentage");
-            }
-            else {
-                fireDamagePercentage = WeightedPercentageGenerator.generate();
-            }
-
-            String calculatedFireDamage = CalculateStatsWithRange.calculate(fireDamage, fireDamagePercentage);
-
-            if(Integer.parseInt(calculatedFireDamage) < 0) {
-                statColor = ChatColor.RED;
-                plusOrMinus = "";
-            }
-            else if(Integer.parseInt(calculatedFireDamage) > 0) {
-                statColor = ChatColor.GREEN;
-                plusOrMinus = "+";
-            }
-            else {
-                statColor = ChatColor.WHITE;
-                plusOrMinus = "";
-            }
-
-
-            firePercentNumber = Integer.parseInt(fireDamagePercentage);
-
-            if (firePercentNumber <= 30)  {
-
-                starsColor = ChatColor.DARK_RED;
-            }
-            else if (firePercentNumber <= 55)  {
-
-                starsColor = ChatColor.RED;
-            }
-            else if (firePercentNumber <= 80)  {
-
-                starsColor = ChatColor.YELLOW;
-            }
-            else if (firePercentNumber <= 94)  {
-
-                starsColor = ChatColor.GREEN;
-            }
-            else {
-                starsColor = ChatColor.AQUA;
-            }
-
-
-            lore.add(ChatColor.DARK_RED+"✹ Fire Damage: "+statColor+plusOrMinus+calculatedFireDamage+starsColor+" ✯");
-            totalPercent += Integer.parseInt(fireDamagePercentage);
-            numberOfStats += 1;
-
-            itemInfo += ",fireDamage:"+calculatedFireDamage+",fireDamagePercentage:"+fireDamagePercentage;
-        }
-
-        //Water Damage
-        if(waterDamage != null) {
-
-
-            String waterDamagePercentage;
-            int waterPercentNumber;
-
-            if(map.get("waterDamagePercentage") != null) {
-                waterDamagePercentage = map.get("waterDamagePercentage");
-            }
-            else {
-                waterDamagePercentage = WeightedPercentageGenerator.generate();
-            }
-
-            String calculatedWaterDamage = CalculateStatsWithRange.calculate(waterDamage, waterDamagePercentage);
-
-            if(Integer.parseInt(calculatedWaterDamage) < 0) {
-                statColor = ChatColor.RED;
-                plusOrMinus = "";
-            }
-            else if(Integer.parseInt(calculatedWaterDamage) > 0) {
-                statColor = ChatColor.GREEN;
-                plusOrMinus = "+";
-            }
-            else {
-                statColor = ChatColor.WHITE;
-                plusOrMinus = "";
-            }
-
-            waterPercentNumber = Integer.parseInt(waterDamagePercentage);
-
-            if (waterPercentNumber <= 30)  {
-
-                starsColor = ChatColor.DARK_RED;
-            }
-            else if (waterPercentNumber <= 55)  {
-
-                starsColor = ChatColor.RED;
-            }
-            else if (waterPercentNumber <= 80)  {
-
-                starsColor = ChatColor.YELLOW;
-            }
-            else if (waterPercentNumber <= 94)  {
-
-                starsColor = ChatColor.GREEN;
-            }
-            else {
-                starsColor = ChatColor.AQUA;
-            }
-
-            lore.add(ChatColor.AQUA+"❆ Water Damage: "+statColor+plusOrMinus+calculatedWaterDamage+starsColor+" ✯");
-            totalPercent += Integer.parseInt(waterDamagePercentage);
-            numberOfStats += 1;
-
-            itemInfo += ",waterDamage:"+calculatedWaterDamage+",waterDamagePercentage:"+waterDamagePercentage;
-        }
-
-        //Light Damage
-        if(lightDamage != null) {
-
-
-            String lightDamagePercentage;
-            int lightPercentNumber;
-
-            if(map.get("lightDamagePercentage") != null) {
-                lightDamagePercentage = map.get("lightDamagePercentage");
-            }
-            else {
-                lightDamagePercentage = WeightedPercentageGenerator.generate();
-            }
-
-            lightPercentNumber = Integer.parseInt(lightDamagePercentage);
-
-            if (lightPercentNumber <= 30)  {
-
-                starsColor = ChatColor.DARK_RED;
-            }
-            else if (lightPercentNumber <= 55)  {
-
-                starsColor = ChatColor.RED;
-            }
-            else if (lightPercentNumber <= 80)  {
-
-                starsColor = ChatColor.YELLOW;
-            }
-            else if (lightPercentNumber <= 94)  {
-
-                starsColor = ChatColor.GREEN;
-            }
-            else {
-                starsColor = ChatColor.AQUA;
-            }
-
-            String calculatedLightDamage = CalculateStatsWithRange.calculate(lightDamage, lightDamagePercentage);
-
-            if(Integer.parseInt(calculatedLightDamage) < 0) {
-                statColor = ChatColor.RED;
-                plusOrMinus = "";
-            }
-            else if(Integer.parseInt(calculatedLightDamage) > 0) {
-                statColor = ChatColor.GREEN;
-                plusOrMinus = "+";
-            }
-            else {
-                statColor = ChatColor.WHITE;
-                plusOrMinus = "";
-            }
-            lore.add(ChatColor.YELLOW+"✦ Light Damage: "+statColor+plusOrMinus+calculatedLightDamage+starsColor+" ✯");
-            totalPercent += Integer.parseInt(lightDamagePercentage);
-            numberOfStats += 1;
-
-            itemInfo += ",lightDamage:"+calculatedLightDamage+",lightDamagePercentage:"+lightDamagePercentage;
-        }
-
-        //Dark Damage
-        if(darkDamage != null) {
-
-            String darkDamagePercentage;
-            int darkPercentNumber;
-
-            if(map.get("darkDamagePercentage") != null) {
-                darkDamagePercentage = map.get("darkDamagePercentage");
-            }
-            else {
-                darkDamagePercentage = WeightedPercentageGenerator.generate();
-            }
-
-            String calculatedDarkDamage = CalculateStatsWithRange.calculate(darkDamage, darkDamagePercentage);
-
-            if(Integer.parseInt(calculatedDarkDamage) < 0) {
-                statColor = ChatColor.RED;
-                plusOrMinus = "";
-            }
-            else if(Integer.parseInt(calculatedDarkDamage) > 0) {
-                statColor = ChatColor.GREEN;
-                plusOrMinus = "+";
-            }
-            else {
-                statColor = ChatColor.WHITE;
-                plusOrMinus = "";
-            }
-
-            darkPercentNumber = Integer.parseInt(darkDamagePercentage);
-
-            if (darkPercentNumber <= 30)  {
-
-                starsColor = ChatColor.DARK_RED;
-            }
-            else if (darkPercentNumber <= 55)  {
-
-                starsColor = ChatColor.RED;
-            }
-            else if (darkPercentNumber <= 80)  {
-
-                starsColor = ChatColor.YELLOW;
-            }
-            else if (darkPercentNumber <= 94)  {
-
-                starsColor = ChatColor.GREEN;
-            }
-            else {
-                starsColor = ChatColor.AQUA;
-            }
-            lore
-                    .add(ChatColor.DARK_GRAY+"✺ Dark Damage: "+statColor+plusOrMinus+calculatedDarkDamage+starsColor+" ✯");
-            totalPercent += Integer.parseInt(darkDamagePercentage);
-            numberOfStats += 1;
-
-            itemInfo += ",darkDamage:"+calculatedDarkDamage+",darkDamagePercentage:"+darkDamagePercentage;
-        }
 
         int itemPercentage = Math.round(totalPercent/numberOfStats);
 
@@ -466,21 +281,29 @@ public class UpdateWeapon {
         if(Objects.equals(rarity, "common")) {
             stars = "";
         }
-        else if (itemPercentage <= 30)  {
+        else if (itemPercentage <= 0)  {
+            stars = " ✯";
+            starsColor = ChatColor.DARK_GRAY;
+        }
+        else if (itemPercentage < 10)  {
             stars = " ✯";
             starsColor = ChatColor.DARK_RED;
         }
-        else if (itemPercentage <= 55)  {
+        else if (itemPercentage < 30)  {
             stars = " ✯✯";
             starsColor = ChatColor.RED;
         }
-        else if (itemPercentage <= 80)  {
+        else if (itemPercentage < 70)  {
             stars = " ✯✯✯";
             starsColor = ChatColor.YELLOW;
         }
-        else if (itemPercentage <= 94)  {
+        else if (itemPercentage < 90)  {
             stars = " ✯✯✯✯";
             starsColor = ChatColor.GREEN;
+        }
+        else if (itemPercentage < 100)  {
+            stars = " ✯✯✯✯✯";
+            starsColor = ChatColor.DARK_GREEN;
         }
         else {
             stars = " ✯✯✯✯✯";

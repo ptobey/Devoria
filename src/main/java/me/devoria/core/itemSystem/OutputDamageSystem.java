@@ -13,6 +13,7 @@ public class OutputDamageSystem {
         HashMap<String,String> map = new HashMap<>();
         ArrayList<String> damages = new ArrayList<>();
 
+        int normalDamage;
         int earthDamage;
         int fireDamage;
         int waterDamage;
@@ -27,6 +28,7 @@ public class OutputDamageSystem {
             map.put(arr[0], arr[1]);
         }
 
+        String nd = map.get("damage");
         String ed = map.get("earthDamage");
         String fd = map.get("fireDamage");
         String wd = map.get("waterDamage");
@@ -36,41 +38,52 @@ public class OutputDamageSystem {
 
         String damagePercentage = WeightedPercentageGenerator.generate();
 
-        int normalDamage = Integer.parseInt(CalculateStatsWithRange.calculate(map.get("damage"), damagePercentage, true));
+
+        if(nd == null)
+            normalDamage = 0;
+        else {
+            normalDamage = Integer.parseInt(CalculateStatsWithRange.calculate(map.get("damage"), damagePercentage, true));
+        }
+
+        damagePercentage = WeightedPercentageGenerator.generate();
 
 
         if(ed == null)
             earthDamage = 0;
         else {
-            earthDamage = Integer.parseInt(ed);
+            earthDamage = Integer.parseInt(CalculateStatsWithRange.calculate(map.get("earthDamage"), damagePercentage, true));
         }
 
+        damagePercentage = WeightedPercentageGenerator.generate();
 
         if(fd == null)
             fireDamage = 0;
         else {
-            fireDamage = Integer.parseInt(fd);
+            fireDamage = Integer.parseInt(CalculateStatsWithRange.calculate(map.get("fireDamage"), damagePercentage, true));
         }
 
+        damagePercentage = WeightedPercentageGenerator.generate();
 
         if(wd == null)
             waterDamage = 0;
         else {
-            waterDamage = Integer.parseInt(wd);
+            waterDamage = Integer.parseInt(CalculateStatsWithRange.calculate(map.get("waterDamage"), damagePercentage, true));
         }
 
+        damagePercentage = WeightedPercentageGenerator.generate();
 
         if(ld == null)
             lightDamage = 0;
         else {
-            lightDamage = Integer.parseInt(ld);
+            lightDamage = Integer.parseInt(CalculateStatsWithRange.calculate(map.get("lightDamage"), damagePercentage, true));
         }
 
+        damagePercentage = WeightedPercentageGenerator.generate();
 
         if(dd == null)
             darkDamage = 0;
         else {
-            darkDamage = Integer.parseInt(dd);
+            darkDamage = Integer.parseInt(CalculateStatsWithRange.calculate(map.get("darkDamage"), damagePercentage, true));
         }
 
 
