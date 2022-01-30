@@ -2,7 +2,7 @@ package me.devoria.core.commands;
 
 import me.devoria.core.itemSystem.GenerateLoot;
 import me.devoria.core.itemSystem.MakeUnidentifiedItem;
-import me.devoria.core.itemSystem.UpdateWeapon;
+import me.devoria.core.itemSystem.UpdateItem;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,7 +28,7 @@ public class LootCommand implements CommandExecutor {
 
             if(attributes.get("rarity").equals("common")) {
                 try {
-                    ((Player) sender).getInventory().setItemInMainHand(UpdateWeapon.update(",fileName:"+attributes.get("fileName")));
+                    ((Player) sender).getInventory().setItemInMainHand(UpdateItem.update(",fileName:"+attributes.get("fileName")));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

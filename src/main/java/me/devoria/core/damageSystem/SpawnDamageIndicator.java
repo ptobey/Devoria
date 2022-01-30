@@ -68,7 +68,7 @@ public class SpawnDamageIndicator {
             as6.setInvisible(true);
             as6.setCustomNameVisible(true);
             as6.setMarker(true);
-            as6.setCustomName(ChatColor.DARK_GRAY + "-" + damages.get(5) + " ✺ ");
+            as6.setCustomName(ChatColor.DARK_PURPLE + "-" + damages.get(5) + " ✺ ");
 
             Bukkit.getScheduler().runTaskLater(Core.getInstance(), as6::remove, delay);
         }

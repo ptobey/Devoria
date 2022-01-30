@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class UpdateWeapon {
+public class UpdateItem {
 
     public static ChatColor starsColor = ChatColor.WHITE;
     public static ChatColor statColor = ChatColor.WHITE;
@@ -88,7 +88,9 @@ public class UpdateWeapon {
         Map<String, Object> attributes = FindItemFile.parse(map.get("fileName"));
 
         Object fileName = attributes.get("file_name");
+        Object type = attributes.get("type");
         Object name = attributes.get("name");
+        Object health = attributes.get("health");
         Object tradeable = attributes.get("tradeable");
         Object rarity = attributes.get("rarity");
         Object attackSpeed = attributes.get("attack_speed");
@@ -105,11 +107,11 @@ public class UpdateWeapon {
 
 
         
-        String itemInfo = ",fileName:"+fileName+",name:"+name+",tradeable:"+tradeable+",rarity:"+rarity+",attackSpeed:"+attackSpeed;
+        String itemInfo = ",fileName:"+fileName+",type:"+type+",name:"+name+",tradeable:"+tradeable+",rarity:"+rarity;
 
 
-        ItemStack weapon = new ItemStack(Material.PINK_WOOL);
-        ItemMeta weaponMeta = weapon.getItemMeta();
+
+
         ArrayList<String> lore = new ArrayList<>();
 
         // Rarity conversion
@@ -214,34 +216,49 @@ public class UpdateWeapon {
         // Adds initial lore
 
         lore.add("");
-        if(damage != null) {
-            lore.add(ChatColor.GOLD + "✸ Damage: " + damage);
-            itemInfo += ",damage:"+damage;
+
+        if(type.equals("bow") || type.equals("sword")) {
+
+            itemInfo += ",attackRange:"+attackRange+",attackSpeed:"+attackSpeed;
+
+            if (damage != null) {
+                lore.add(ChatColor.GOLD + "✸ Damage: " + damage);
+                itemInfo += ",damage:" + damage;
+            }
+            if (earthDamage != null) {
+                lore.add(ChatColor.DARK_GREEN + "✿ Earth " + ChatColor.GRAY + "Damage: " + earthDamage);
+                itemInfo += ",earthDamage:" + earthDamage;
+            }
+            if (fireDamage != null) {
+                lore.add(ChatColor.DARK_RED + "✹ Fire " + ChatColor.GRAY + "Damage: " + fireDamage);
+                itemInfo += ",fireDamage:" + fireDamage;
+            }
+            if (waterDamage != null) {
+                lore.add(ChatColor.AQUA + "❆ Water " + ChatColor.GRAY + "Damage: " + waterDamage);
+                itemInfo += ",waterDamage:" + waterDamage;
+            }
+            if (lightDamage != null) {
+                lore.add(ChatColor.YELLOW + "✦ Light " + ChatColor.GRAY + "Damage: " + lightDamage);
+                itemInfo += ",lightDamage:" + lightDamage;
+            }
+            if (darkDamage != null) {
+                lore.add(ChatColor.DARK_PURPLE + "✺ Darkness " + ChatColor.GRAY + "Damage: " + darkDamage);
+                itemInfo += ",darkDamage:" + darkDamage;
+            }
+            lore.add("");
+            lore.add(ChatColor.GRAY + "   Attack Speed: " + attackSpeedColor + attackSpeedType);
+            lore.add(ChatColor.GRAY + "   Attack Range: " + attackRangeColor + attackRangeType);
+            lore.add(ChatColor.GRAY + "   Rune Slots: [" + ChatColor.WHITE + "0/" + runeSlots + ChatColor.GRAY + "]");
         }
-        if(earthDamage != null) {
-            lore.add(ChatColor.DARK_GREEN + "✿ Earth " + ChatColor.GRAY + "Damage: " + earthDamage);
-            itemInfo += ",earthDamage:"+earthDamage;
+        else if (type.equals("helmet") || type.equals("chestplate") || type.equals("leggings") || type.equals("boots")) {
+
+            if (health != null) {
+                lore.add(ChatColor.DARK_RED + "❤ Health: +"+ health);
+                itemInfo += ",health:" + health;
+                lore.add("");
+                lore.add(ChatColor.GRAY + "   Rune Slots: [" + ChatColor.WHITE + "0/" + runeSlots + ChatColor.GRAY + "]");
+            }
         }
-        if(fireDamage != null) {
-            lore.add(ChatColor.DARK_RED + "✹ Fire " + ChatColor.GRAY + "Damage: " + fireDamage);
-            itemInfo += ",fireDamage:"+fireDamage;
-        }
-        if(waterDamage != null) {
-            lore.add(ChatColor.AQUA + "❆ Water " + ChatColor.GRAY + "Damage: " + waterDamage);
-            itemInfo += ",waterDamage:"+waterDamage;
-        }
-        if(lightDamage != null) {
-            lore.add(ChatColor.YELLOW + "✦ Light " + ChatColor.GRAY + "Damage: " + lightDamage);
-            itemInfo += ",lightDamage:"+lightDamage;
-        }
-        if(darkDamage != null) {
-            lore.add(ChatColor.DARK_GRAY + "✺ Darkness " + ChatColor.GRAY + "Damage: " + darkDamage);
-            itemInfo += ",darkDamage:"+darkDamage;
-        }
-        lore.add("");
-        lore.add(ChatColor.GRAY+"   Attack Speed: "+attackSpeedColor+attackSpeedType);
-        lore.add(ChatColor.GRAY+"   Attack Range: "+attackRangeColor+attackRangeType);
-        lore.add(ChatColor.GRAY+"   Rune Slots: ["+ChatColor.WHITE+"0/"+runeSlots+ChatColor.GRAY+"]");
 
 
         if(walkSpeed != null) {
@@ -312,8 +329,31 @@ public class UpdateWeapon {
 
 
         lore.add("");
-        lore.add(rarityColor+StringUtils.capitalize(String.valueOf(rarity))+" Quality");
+        lore.add(rarityColor+StringUtils.capitalize(String.valueOf(rarity))+" "+StringUtils.capitalize(String.valueOf(type)));
 
+        Material item = Material.STICK;
+
+        if(type.equals("bow")) {
+            item = Material.PINK_WOOL;
+        }
+        else if(type.equals("sword")) {
+            item = Material.DIAMOND_SWORD;
+        }
+        else if(type.equals("helmet")) {
+            item = Material.DIAMOND_HELMET;
+        }
+        else if(type.equals("chestplate")) {
+            item = Material.DIAMOND_CHESTPLATE;
+        }
+        else if(type.equals("leggings")) {
+            item = Material.DIAMOND_LEGGINGS;
+        }
+        else if(type.equals("boots")) {
+            item = Material.DIAMOND_BOOTS;
+        }
+
+        ItemStack weapon = new ItemStack(item);
+        ItemMeta weaponMeta = weapon.getItemMeta();
 
         weaponMeta.setDisplayName(rarityColor +"" +name+starsColor+stars);
         weaponMeta.setLore(lore);
