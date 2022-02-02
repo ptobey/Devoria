@@ -2,15 +2,13 @@ package me.devoria.core;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import me.devoria.core.attributeSystem.UpdateAttributes;
+import me.devoria.core.damageSystem.ChangeHealth;
 import me.devoria.core.damageSystem.SpawnDamageIndicator;
 import me.devoria.core.itemSystem.*;
 import me.devoria.core.onLogin.Registration;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -24,6 +22,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
@@ -87,13 +86,16 @@ public class Listeners implements Listener {
     //on login events!
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
+
         UUID uuid = event.getPlayer().getUniqueId();
         String username = event.getPlayer().getName();
         //String c_class = ClassTable.FindCurrentClass(uuid);
         //Registering players on login
         //ClassTable.SetCurrentClass(uuid,"huntsman");
-        Registration.registerUser(uuid,username);
+        //IMPORTANT Registration.registerUser(uuid,username);
         //Bukkit.getLogger().info(c_class);
+
+
 
     }
     @EventHandler
@@ -101,20 +103,50 @@ public class Listeners implements Listener {
         Player p = e.getPlayer();
        // p.getInventory().clear();
         p.sendMessage("§aWelcome to Eternia!");
-        updateAttributes(p);
-        p.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:1"));
 
 
-        new BukkitRunnable() {
+        //Health Bar
+        new BukkitRunnable(){
+
+            final int log = p.getStatistic(Statistic.LEAVE_GAME);
+
             @Override
-            public void run() {
-                if (!p.isOnline()) {
+            public void run(){
+                if (p.getStatistic(Statistic.LEAVE_GAME) != log) {
                     cancel(); // this cancels it when they leave
                 }
 
                 updateHealthBar(p);
             }
+
         }.runTaskTimer(Core.getInstance(), 0L, 40L);
+
+
+        //HPR
+        new BukkitRunnable() {
+
+            final int log = p.getStatistic(Statistic.LEAVE_GAME);
+
+            @Override
+            public void run() {
+
+
+
+                if (p.getStatistic(Statistic.LEAVE_GAME) != log) {
+                    cancel(); // this cancels it when they leave
+                }
+
+                int hpr = CalculateHealthRegen.calculate(p);
+
+                ChangeHealth.change(p, hpr, false);
+                updateHealthBar(p);
+            }
+
+        }.runTaskTimer(Core.getInstance(), 100L, 100L);
+
+        updateAttributes(p);
+        p.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:1"));
+
     }
 
 
@@ -129,6 +161,7 @@ public class Listeners implements Listener {
 
         Player p = e.getPlayer();
         updateAttributes(p);
+        ChangeHealth.change(p,0,false);
         updateHealthBar(p);
     }
 
@@ -172,15 +205,10 @@ public class Listeners implements Listener {
                 String stats = p.getInventory().getItem(slot).getItemMeta().getLocalizedName();
                 p.getInventory().setItem(slot, UpdateItem.update(stats));
 
-                HashMap<String, Object> weaponStatsMap = new HashMap<>();
-                String[] separatedWeaponStats = stats.split(",");
+                HashMap<String, String> weaponStatsMap = MapData.map(stats);
 
-                for (int i = 1; i < separatedWeaponStats.length; i++) {
-                    String[] arr = separatedWeaponStats[i].split(":");
-                    weaponStatsMap.put(arr[0], arr[1]);
-                }
 
-                String type = (String) weaponStatsMap.get("type");
+                String type = weaponStatsMap.get("type");
 
 
                 if(type.equals("bow") || type.equals("sword")) {
@@ -197,6 +225,7 @@ public class Listeners implements Listener {
         }
 
         UpdateAttributes.update(p, weaponStats, helmetStats, chestplateStats, leggingsStats, bootsStats);
+        ChangeHealth.change(p,0, false);
         updateHealthBar(p);
 
     }
@@ -275,15 +304,10 @@ public class Listeners implements Listener {
 
 
 
-                HashMap<String, Object> weaponStatsMap = new HashMap<>();
-                String[] separatedWeaponStats = stats.split(",");
+                HashMap<String, String> weaponStatsMap = MapData.map(stats);
 
-                for (int i = 1; i < separatedWeaponStats.length; i++) {
-                    String[] arr = separatedWeaponStats[i].split(":");
-                    weaponStatsMap.put(arr[0], arr[1]);
-                }
 
-                String type = (String) weaponStatsMap.get("type");
+                String type = weaponStatsMap.get("type");
 
                 if(type.equals("bow") || type.equals("sword")) {
                     stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
@@ -298,25 +322,11 @@ public class Listeners implements Listener {
     public static void updateHealthBar(Player p) {
         //Max Health
         String playerStats = p.getMetadata("attributes").get(0).asString();
-        HashMap<String,String> playerStatsMap = new HashMap<>();
-        String[] separatedPlayerStats = playerStats.split(",");
-
-        for (int i = 1; i < separatedPlayerStats.length; i++) {
-            String[] arr = separatedPlayerStats[i].split(":");
-            playerStatsMap.put(arr[0], arr[1]);
-        }
+        HashMap<String,String> playerStatsMap = MapData.map(playerStats);
 
         //Current Health
-
         String healthStats = p.getMetadata("healthStats").get(0).asString();
-        HashMap<String,String> healthStatsMap = new HashMap<>();
-        String[] separatedHealthStats = healthStats.split(",");
-
-
-        for (int i = 1; i < separatedHealthStats.length; i++) {
-            String[] arr = separatedHealthStats[i].split(":");
-            healthStatsMap.put(arr[0], arr[1]);
-        }
+        HashMap<String,String> healthStatsMap = MapData.map(healthStats);
 
         String maxHealth = playerStatsMap.get("health");
         String currentHealth = healthStatsMap.get("currentHealth");

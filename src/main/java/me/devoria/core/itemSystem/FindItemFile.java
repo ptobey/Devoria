@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class FindItemFile {
 
-    public static Map<String, Object> parse(String name) throws FileNotFoundException {
-       // String dataFolder = Bukkit.getPluginManager().getPlugin("Devoria").getDataFolder().toString();
+    public static Map<String, String> parse(String name) throws FileNotFoundException {
+
 
         FileInputStream inputStream = new FileInputStream(Core.dataFolder+"/items/"+name+".yml");
         Yaml yaml = new Yaml();

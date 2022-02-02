@@ -1,6 +1,7 @@
 package me.devoria.core.attributeSystem;
 
 import me.devoria.core.Core;;
+import me.devoria.core.MapData;
 import me.devoria.core.itemSystem.CalculateStatsWithRange;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -12,87 +13,146 @@ public class UpdateAttributes {
 
     public static void update(Player p, String weaponItemData, String helmetItemData, String chestplateItemData, String leggingsItemData, String bootsItemData) {
 
-
         String attributes = "";
         int walkSpeed = 0;
         int maxHealth = 0;
+        int hpr = 0;
+        int hprPercent = 0;
+        int currentHealthHpr = 0;
+        int maxHealthHpr = 0;
+        int healthPercent = 0;
 
-
-        HashMap<String,String> weaponStatsMap = new HashMap<>();
-        HashMap<String,String> helmetStatsMap = new HashMap<>();
-        HashMap<String,String> chestplateStatsMap = new HashMap<>();
-        HashMap<String,String> leggingsStatsMap = new HashMap<>();
-        HashMap<String,String> bootsStatsMap = new HashMap<>();
 
         if(weaponItemData != null) {
-            String[] separatedWeaponStats = weaponItemData.split(",");
 
-            for (int i = 1; i < separatedWeaponStats.length; i++) {
-                String[] arr = separatedWeaponStats[i].split(":");
-                weaponStatsMap.put(arr[0], arr[1]);
-            }
+            HashMap<String,String> weaponStatsMap = MapData.map(weaponItemData);
+
             if (weaponStatsMap.get("walkSpeed") != null) {
                 walkSpeed += Integer.parseInt(weaponStatsMap.get("walkSpeed"));
+            }
+            if (weaponStatsMap.get("hpr") != null) {
+                hpr += Integer.parseInt(weaponStatsMap.get("hpr"));
+            }
+            if (weaponStatsMap.get("hprPercent") != null) {
+                hprPercent += Integer.parseInt(weaponStatsMap.get("hprPercent"));
+            }
+            if (weaponStatsMap.get("currentHealthHpr") != null) {
+                currentHealthHpr += Integer.parseInt(weaponStatsMap.get("currentHealthHpr"));
+            }
+            if (weaponStatsMap.get("maxHealthHpr") != null) {
+                maxHealthHpr += Integer.parseInt(weaponStatsMap.get("maxHealthHpr"));
+            }
+            if (weaponStatsMap.get("healthPercent") != null) {
+                healthPercent += Integer.parseInt(weaponStatsMap.get("healthPercent"));
             }
         }
 
         if(helmetItemData != null) {
-            String[] separatedHelmetStats = helmetItemData.split(",");
 
-            for (int i = 1; i < separatedHelmetStats.length; i++) {
-                String[] arr = separatedHelmetStats[i].split(":");
-                helmetStatsMap.put(arr[0], arr[1]);
-            }
+            HashMap<String,String> helmetStatsMap = MapData.map(helmetItemData);
+
             if (helmetStatsMap.get("walkSpeed") != null) {
                 walkSpeed += Integer.parseInt(helmetStatsMap.get("walkSpeed"));
             }
             if (helmetStatsMap.get("health") != null) {
                 maxHealth += Integer.parseInt(helmetStatsMap.get("health"));
             }
+            if (helmetStatsMap.get("hpr") != null) {
+                hpr += Integer.parseInt(helmetStatsMap.get("hpr"));
+            }
+            if (helmetStatsMap.get("hprPercent") != null) {
+                hprPercent += Integer.parseInt(helmetStatsMap.get("hprPercent"));
+            }
+            if (helmetStatsMap.get("currentHealthHpr") != null) {
+                currentHealthHpr += Integer.parseInt(helmetStatsMap.get("currentHealthHpr"));
+            }
+            if (helmetStatsMap.get("maxHealthHpr") != null) {
+                maxHealthHpr += Integer.parseInt(helmetStatsMap.get("maxHealthHpr"));
+            }
+            if (helmetStatsMap.get("healthPercent") != null) {
+                healthPercent += Integer.parseInt(helmetStatsMap.get("healthPercent"));
+            }
         }
 
         if(chestplateItemData != null) {
-            String[] separatedChestplateStats = chestplateItemData.split(",");
 
-            for (int i = 1; i < separatedChestplateStats.length; i++) {
-                String[] arr = separatedChestplateStats[i].split(":");
-                chestplateStatsMap.put(arr[0], arr[1]);
-            }
+            HashMap<String,String> chestplateStatsMap = MapData.map(chestplateItemData);
+
             if (chestplateStatsMap.get("walkSpeed") != null) {
                 walkSpeed += Integer.parseInt(chestplateStatsMap.get("walkSpeed"));
             }
             if (chestplateStatsMap.get("health") != null) {
                 maxHealth += Integer.parseInt(chestplateStatsMap.get("health"));
             }
+            if (chestplateStatsMap.get("hpr") != null) {
+                hpr += Integer.parseInt(chestplateStatsMap.get("hpr"));
+            }
+            if (chestplateStatsMap.get("hprPercent") != null) {
+                hprPercent += Integer.parseInt(chestplateStatsMap.get("hprPercent"));
+            }
+            if (chestplateStatsMap.get("currentHealthHpr") != null) {
+                currentHealthHpr += Integer.parseInt(chestplateStatsMap.get("currentHealthHpr"));
+            }
+            if (chestplateStatsMap.get("maxHealthHpr") != null) {
+                maxHealthHpr += Integer.parseInt(chestplateStatsMap.get("maxHealthHpr"));
+            }
+            if (chestplateStatsMap.get("healthPercent") != null) {
+                healthPercent += Integer.parseInt(chestplateStatsMap.get("healthPercent"));
+            }
+
         }
 
         if(leggingsItemData != null) {
-            String[] separatedLeggingsStats = leggingsItemData.split(",");
 
-            for (int i = 1; i < separatedLeggingsStats.length; i++) {
-                String[] arr = separatedLeggingsStats[i].split(":");
-                leggingsStatsMap.put(arr[0], arr[1]);
-            }
+            HashMap<String,String> leggingsStatsMap = MapData.map(leggingsItemData);
+
             if (leggingsStatsMap.get("walkSpeed") != null) {
                 walkSpeed += Integer.parseInt(leggingsStatsMap.get("walkSpeed"));
             }
             if (leggingsStatsMap.get("health") != null) {
                 maxHealth += Integer.parseInt(leggingsStatsMap.get("health"));
             }
+            if (leggingsStatsMap.get("hpr") != null) {
+                hpr += Integer.parseInt(leggingsStatsMap.get("hpr"));
+            }
+            if (leggingsStatsMap.get("hprPercent") != null) {
+                hprPercent += Integer.parseInt(leggingsStatsMap.get("hprPercent"));
+            }
+            if (leggingsStatsMap.get("currentHealthHpr") != null) {
+                currentHealthHpr += Integer.parseInt(leggingsStatsMap.get("currentHealthHpr"));
+            }
+            if (leggingsStatsMap.get("maxHealthHpr") != null) {
+                maxHealthHpr += Integer.parseInt(leggingsStatsMap.get("maxHealthHpr"));
+            }
+            if (leggingsStatsMap.get("healthPercent") != null) {
+                healthPercent += Integer.parseInt(leggingsStatsMap.get("healthPercent"));
+            }
         }
 
         if(bootsItemData != null) {
-            String[] separatedBootsStats = bootsItemData.split(",");
 
-            for (int i = 1; i < separatedBootsStats.length; i++) {
-                String[] arr = separatedBootsStats[i].split(":");
-                bootsStatsMap.put(arr[0], arr[1]);
-            }
+            HashMap<String,String> bootsStatsMap = MapData.map(bootsItemData);
+
             if (bootsStatsMap.get("walkSpeed") != null) {
                 walkSpeed += Integer.parseInt(bootsStatsMap.get("walkSpeed"));
             }
             if (bootsStatsMap.get("health") != null) {
                 maxHealth += Integer.parseInt(bootsStatsMap.get("health"));
+            }
+            if (bootsStatsMap.get("hpr") != null) {
+                hpr += Integer.parseInt(bootsStatsMap.get("hpr"));
+            }
+            if (bootsStatsMap.get("hprPercent") != null) {
+                hprPercent += Integer.parseInt(bootsStatsMap.get("hprPercent"));
+            }
+            if (bootsStatsMap.get("currentHealthHpr") != null) {
+                currentHealthHpr += Integer.parseInt(bootsStatsMap.get("currentHealthHpr"));
+            }
+            if (bootsStatsMap.get("maxHealthHpr") != null) {
+                maxHealthHpr += Integer.parseInt(bootsStatsMap.get("maxHealthHpr"));
+            }
+            if (bootsStatsMap.get("healthPercent") != null) {
+                healthPercent += Integer.parseInt(bootsStatsMap.get("healthPercent"));
             }
         }
 
@@ -101,11 +161,12 @@ public class UpdateAttributes {
             maxHealth = 5;
         }
 
-        attributes += ",health:"+maxHealth+",walkSpeed:"+walkSpeed;
+        maxHealth += maxHealth*(healthPercent/100.0);
+
+        attributes += ",health:"+maxHealth+",walkSpeed:"+walkSpeed+",hpr:"+hpr+",maxHealthHpr:"+maxHealthHpr+",currentHealthHpr:"+currentHealthHpr+",hprPercent:"+hprPercent+",healthPercent:"+healthPercent;
 
         p.setMetadata("attributes", new FixedMetadataValue(Core.getInstance(), attributes));
         String s = CalculateStatsWithRange.calculate("12-50", String.valueOf(walkSpeed), true);
         p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue((float)Integer.parseInt(s)/100);
-  //  p.sendMessage(String.valueOf((float)Integer.parseInt(s)/100));
     }
 }

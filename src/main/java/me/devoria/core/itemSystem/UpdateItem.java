@@ -1,5 +1,6 @@
 package me.devoria.core.itemSystem;
 
+import me.devoria.core.MapData;
 import me.devoria.core.WeightedPercentageGenerator;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -66,7 +67,6 @@ public class UpdateItem {
     //makes a custom item using stats pulled from the yml
     public static ItemStack update(String itemData) throws FileNotFoundException {
 
-        HashMap<String,String> map = new HashMap<>();
 
         ChatColor rarityColor = ChatColor.WHITE;
         ChatColor attackSpeedColor = ChatColor.WHITE;
@@ -78,14 +78,9 @@ public class UpdateItem {
         float totalPercent = 0;
         float numberOfStats = 0;
 
-        String[] separatedStats = itemData.split(",");
+        HashMap<String,String> map = MapData.map(itemData);
 
-        for(int i=1;i<separatedStats.length;i++){
-            String[] arr = separatedStats[i].split(":");
-            map.put(arr[0], arr[1]);
-        }
-
-        Map<String, Object> attributes = FindItemFile.parse(map.get("fileName"));
+        Map<String, String> attributes = FindItemFile.parse(map.get("fileName"));
 
         Object fileName = attributes.get("file_name");
         Object type = attributes.get("type");
@@ -103,6 +98,11 @@ public class UpdateItem {
         Object lightDamage = attributes.get("light_damage");
         Object darkDamage = attributes.get("dark_damage");
         Object walkSpeed = attributes.get("walk_speed");
+        Object hpr = attributes.get("hpr");
+        Object hprPercent = attributes.get("hpr_percent");
+        Object maxHealthHpr = attributes.get("max_health_hpr");
+        Object currentHealthHpr = attributes.get("current_health_hpr");
+        Object healthPercent = attributes.get("health_percent");
 
 
 
@@ -133,7 +133,7 @@ public class UpdateItem {
 
         }
         else if(Objects.equals(rarity, "mythic")) {
-            rarityColor = ChatColor.DARK_PURPLE;
+            rarityColor = ChatColor.LIGHT_PURPLE;
 
         }
 
@@ -260,8 +260,37 @@ public class UpdateItem {
             }
         }
 
+        if(currentHealthHpr != null || maxHealthHpr != null || healthPercent != null) {
+            lore.add("");
+        }
 
-        if(walkSpeed != null) {
+        //Current Health Hpr
+        if(currentHealthHpr != null) {
+            plusOrMinusFinder(currentHealthHpr.toString());
+            lore.add(statColor+plusOrMinus+currentHealthHpr+"% "+ChatColor.GRAY+"of Current Health Regen");
+
+            itemInfo += ",currentHealthHpr:"+currentHealthHpr;
+        }
+
+        //Max Health Hpr
+        if(maxHealthHpr != null) {
+
+            plusOrMinusFinder(maxHealthHpr.toString());
+            lore.add(statColor+plusOrMinus+maxHealthHpr+"% "+ChatColor.GRAY+"of Max Health Regen");
+
+            itemInfo += ",maxHealthHpr:"+maxHealthHpr;
+        }
+
+        //Health Percent
+        if(healthPercent != null) {
+
+            plusOrMinusFinder(healthPercent.toString());
+            lore.add(statColor+plusOrMinus+healthPercent+"% "+ChatColor.GRAY+"Health");
+
+            itemInfo += ",healthPercent:"+healthPercent;
+        }
+
+        if(walkSpeed != null || hpr != null|| hprPercent != null) {
             lore.add("");
         }
 
@@ -290,12 +319,63 @@ public class UpdateItem {
             itemInfo += ",walkSpeed:"+calculatedWalkSpeed+",walkSpeedPercentage:"+walkSpeedPercentage;
         }
 
+        //Raw Hpr
+        if(hpr != null) {
+
+            String hprPercentage;
+
+            if(map.get("hprPercentage") != null) {
+                hprPercentage = map.get("hprPercentage");
+            }
+            else {
+                hprPercentage = WeightedPercentageGenerator.generate();
+            }
+
+            String calculatedHpr = CalculateStatsWithRange.calculate(hpr, hprPercentage);
+
+            plusOrMinusFinder(calculatedHpr);
+
+            starsColorFinder(Integer.parseInt(hprPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedHpr+" "+ChatColor.GRAY+"Health Regen"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(hprPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",hpr:"+calculatedHpr+",hprPercentage:"+hprPercentage;
+        }
+
+        //Hpr Percent
+        if(hprPercent != null) {
+
+            String hprPercentPercentage;
+
+            if(map.get("hprPercentPercentage") != null) {
+                hprPercentPercentage = map.get("hprPercentPercentage");
+            }
+            else {
+                hprPercentPercentage = WeightedPercentageGenerator.generate();
+            }
+
+            String calculatedHprPercent = CalculateStatsWithRange.calculate(hprPercent, hprPercentPercentage);
+
+            plusOrMinusFinder(calculatedHprPercent);
+
+            starsColorFinder(Integer.parseInt(hprPercentPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedHprPercent+"% "+ChatColor.GRAY+"Health Regen"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(hprPercentPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",hprPercent:"+calculatedHprPercent+",hprPercentPercentage:"+hprPercentPercentage;
+        }
+
+
 
 
         int itemPercentage = Math.round(totalPercent/numberOfStats);
 
 
-        if(Objects.equals(rarity, "common")) {
+        if(numberOfStats == 0) {
             stars = "";
         }
         else if (itemPercentage <= 0)  {
