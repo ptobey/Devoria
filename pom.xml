@@ -61,9 +61,25 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>nexus</id>
+            <name>Lumine Public</name>
+            <url>https://mvn.lumine.io/repository/maven-public/</url>
+        </repository>
+
     </repositories>
 
+
+
     <dependencies>
+
+        <dependency>
+            <groupId>io.lumine.xikage</groupId>
+            <artifactId>MythicMobs</artifactId>
+            <version>4.9.1</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
@@ -75,6 +91,13 @@
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.ticxo.modelengine</groupId>
+            <artifactId>api</artifactId>
+            <version>R2.4.0</version>
+            <scope>provided</scope>
+        </dependency>
+
 
     </dependencies>
 </project>

@@ -22,3 +22,5 @@ commands:
     description: Get random loot
   identify:
     description: Identifies an item
+  summonmob:
+    description: Summons a mob

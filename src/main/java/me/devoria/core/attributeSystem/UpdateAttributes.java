@@ -15,7 +15,7 @@ public class UpdateAttributes {
 
         String attributes = "";
         int walkSpeed = 0;
-        int maxHealth = 0;
+        int maxHealth = 5;
         int hpr = 0;
         int hprPercent = 0;
         int currentHealthHpr = 0;
@@ -29,6 +29,9 @@ public class UpdateAttributes {
 
             if (weaponStatsMap.get("walkSpeed") != null) {
                 walkSpeed += Integer.parseInt(weaponStatsMap.get("walkSpeed"));
+            }
+            if (weaponStatsMap.get("healthBonus") != null) {
+                maxHealth += Integer.parseInt(weaponStatsMap.get("healthBonus"));
             }
             if (weaponStatsMap.get("hpr") != null) {
                 hpr += Integer.parseInt(weaponStatsMap.get("hpr"));
@@ -57,6 +60,9 @@ public class UpdateAttributes {
             if (helmetStatsMap.get("health") != null) {
                 maxHealth += Integer.parseInt(helmetStatsMap.get("health"));
             }
+            if (helmetStatsMap.get("healthBonus") != null) {
+                maxHealth += Integer.parseInt(helmetStatsMap.get("healthBonus"));
+            }
             if (helmetStatsMap.get("hpr") != null) {
                 hpr += Integer.parseInt(helmetStatsMap.get("hpr"));
             }
@@ -83,6 +89,9 @@ public class UpdateAttributes {
             }
             if (chestplateStatsMap.get("health") != null) {
                 maxHealth += Integer.parseInt(chestplateStatsMap.get("health"));
+            }
+            if (chestplateStatsMap.get("healthBonus") != null) {
+                maxHealth += Integer.parseInt(chestplateStatsMap.get("healthBonus"));
             }
             if (chestplateStatsMap.get("hpr") != null) {
                 hpr += Integer.parseInt(chestplateStatsMap.get("hpr"));
@@ -112,6 +121,9 @@ public class UpdateAttributes {
             if (leggingsStatsMap.get("health") != null) {
                 maxHealth += Integer.parseInt(leggingsStatsMap.get("health"));
             }
+            if (leggingsStatsMap.get("healthBonus") != null) {
+                maxHealth += Integer.parseInt(leggingsStatsMap.get("healthBonus"));
+            }
             if (leggingsStatsMap.get("hpr") != null) {
                 hpr += Integer.parseInt(leggingsStatsMap.get("hpr"));
             }
@@ -138,6 +150,9 @@ public class UpdateAttributes {
             }
             if (bootsStatsMap.get("health") != null) {
                 maxHealth += Integer.parseInt(bootsStatsMap.get("health"));
+            }
+            if (bootsStatsMap.get("healthBonus") != null) {
+                maxHealth += Integer.parseInt(bootsStatsMap.get("healthBonus"));
             }
             if (bootsStatsMap.get("hpr") != null) {
                 hpr += Integer.parseInt(bootsStatsMap.get("hpr"));
@@ -166,7 +181,7 @@ public class UpdateAttributes {
         attributes += ",health:"+maxHealth+",walkSpeed:"+walkSpeed+",hpr:"+hpr+",maxHealthHpr:"+maxHealthHpr+",currentHealthHpr:"+currentHealthHpr+",hprPercent:"+hprPercent+",healthPercent:"+healthPercent;
 
         p.setMetadata("attributes", new FixedMetadataValue(Core.getInstance(), attributes));
-        String s = CalculateStatsWithRange.calculate("12-50", String.valueOf(walkSpeed), true);
+        String s = CalculateStatsWithRange.calculate("12-30", String.valueOf(walkSpeed), true);
         p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue((float)Integer.parseInt(s)/100);
     }
 }

@@ -98,6 +98,7 @@ public class UpdateItem {
         Object lightDamage = attributes.get("light_damage");
         Object darkDamage = attributes.get("dark_damage");
         Object walkSpeed = attributes.get("walk_speed");
+        Object healthBonus = attributes.get("health_bonus");
         Object hpr = attributes.get("hpr");
         Object hprPercent = attributes.get("hpr_percent");
         Object maxHealthHpr = attributes.get("max_health_hpr");
@@ -285,7 +286,7 @@ public class UpdateItem {
         if(healthPercent != null) {
 
             plusOrMinusFinder(healthPercent.toString());
-            lore.add(statColor+plusOrMinus+healthPercent+"% "+ChatColor.GRAY+"Health");
+            lore.add(statColor+plusOrMinus+healthPercent+"% "+ChatColor.GRAY+"Health Bonus");
 
             itemInfo += ",healthPercent:"+healthPercent;
         }
@@ -317,6 +318,31 @@ public class UpdateItem {
             numberOfStats += 1;
 
             itemInfo += ",walkSpeed:"+calculatedWalkSpeed+",walkSpeedPercentage:"+walkSpeedPercentage;
+        }
+
+        //Health Bonus
+        if(healthBonus != null) {
+
+            String healthBonusPercentage;
+
+            if(map.get("healthBonusPercentage") != null) {
+                healthBonusPercentage = map.get("healthBonusPercentage");
+            }
+            else {
+                healthBonusPercentage = WeightedPercentageGenerator.generate();
+            }
+
+            String calculatedHealthBonus = CalculateStatsWithRange.calculate(healthBonus, healthBonusPercentage);
+
+            plusOrMinusFinder(calculatedHealthBonus);
+
+            starsColorFinder(Integer.parseInt(healthBonusPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedHealthBonus+" "+ChatColor.GRAY+"Health Bonus"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(healthBonusPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",healthBonus:"+calculatedHealthBonus+",healthBonusPercentage:"+healthBonusPercentage;
         }
 
         //Raw Hpr
@@ -372,7 +398,8 @@ public class UpdateItem {
 
 
 
-        int itemPercentage = Math.round(totalPercent/numberOfStats);
+        float itemPercentage = totalPercent/numberOfStats;
+
 
 
         if(numberOfStats == 0) {

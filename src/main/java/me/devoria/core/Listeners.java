@@ -1,22 +1,23 @@
 package me.devoria.core;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
+import com.ticxo.modelengine.api.model.ModeledEntity;
 import me.devoria.core.attributeSystem.UpdateAttributes;
 import me.devoria.core.damageSystem.ChangeHealth;
 import me.devoria.core.damageSystem.SpawnDamageIndicator;
+import me.devoria.core.damageSystem.UpdateHealthBar;
 import me.devoria.core.itemSystem.*;
 import me.devoria.core.onLogin.Registration;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Chest;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
@@ -39,6 +40,8 @@ public class Listeners implements Listener {
         try {
             World world = e.getPlayer().getWorld();
             Location location = new Location(world, -780, 4, 703);
+
+
 
             if (Objects.requireNonNull(e.getClickedBlock()).getLocation().equals(location)) {
 
@@ -116,7 +119,7 @@ public class Listeners implements Listener {
                     cancel(); // this cancels it when they leave
                 }
 
-                updateHealthBar(p);
+                UpdateHealthBar.update(p);
             }
 
         }.runTaskTimer(Core.getInstance(), 0L, 40L);
@@ -138,14 +141,18 @@ public class Listeners implements Listener {
 
                 int hpr = CalculateHealthRegen.calculate(p);
 
-                ChangeHealth.change(p, hpr, false);
-                updateHealthBar(p);
+                ChangeHealth.change(p, hpr, null, false);
+                UpdateHealthBar.update(p);
             }
 
         }.runTaskTimer(Core.getInstance(), 100L, 100L);
 
         updateAttributes(p);
-        p.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:1"));
+
+        if(p.getMetadata("healthStats").size() == 0) {
+
+            p.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:1000"));
+        }
 
     }
 
@@ -157,19 +164,58 @@ public class Listeners implements Listener {
     }
 
     @EventHandler
-    public void onArmourChange(PlayerArmorChangeEvent e) {
+    public void onArmorChange(PlayerArmorChangeEvent e) {
 
         Player p = e.getPlayer();
         updateAttributes(p);
-        ChangeHealth.change(p,0,false);
-        updateHealthBar(p);
+        ChangeHealth.change(p,0,null,false);
+        UpdateHealthBar.update(p);
+    }
+
+    @EventHandler
+    public void hit(EntityDamageByEntityEvent e) {
+
+        String damagerStats = "";
+        boolean isPlayer = false;
+        Entity damagerEntity = e.getDamager();
+                Entity victim = e.getEntity();
+
+        if(e.getDamager() instanceof Player) {
+            Player damager = (Player) e.getDamager();
+            damagerStats = damager.getPlayer().getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
+            isPlayer = true;
+        }
+        else if(e.getDamager() instanceof ModeledEntity) {
+            ModeledEntity damager = (ModeledEntity) e.getDamager();
+
+            damagerStats = damager.getEntity().getItemInMainHand().getItemMeta().getLocalizedName();
+
+        }
+
+        e.setDamage(0);
+
+        ArrayList<String> damages = OutputDamageSystem.getDamage(damagerStats);
+
+        ChangeHealth.change(victim, Integer.parseInt("-"+damages.get(6)), damagerEntity, true);
+
+        if(victim instanceof Player) {
+            UpdateHealthBar.update((Player) e.getEntity());
+        }
+        else {
+            UpdateHealthBar.update(victim);
+        }
+
+        if(isPlayer) {
+            SpawnDamageIndicator damageIndicator = new SpawnDamageIndicator();
+
+            damageIndicator.spawn(victim.getWorld(),damages,victim.getLocation().add(1,1, 0));
+            e.getDamager().sendMessage(damages.get(6));
+        }
     }
 
 
-
-
     @EventHandler
-    public void updateIem(PlayerItemHeldEvent e) throws FileNotFoundException, InterruptedException {
+    public void updateIem(PlayerItemHeldEvent e) {
         Player p = e.getPlayer();
 
         ItemStack helmet = p.getInventory().getHelmet();
@@ -225,8 +271,8 @@ public class Listeners implements Listener {
         }
 
         UpdateAttributes.update(p, weaponStats, helmetStats, chestplateStats, leggingsStats, bootsStats);
-        ChangeHealth.change(p,0, false);
-        updateHealthBar(p);
+        ChangeHealth.change(p,0, null, false);
+        UpdateHealthBar.update(p);
 
     }
 
@@ -248,15 +294,7 @@ public class Listeners implements Listener {
 
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
-                    SpawnDamageIndicator damageIndicator = new SpawnDamageIndicator();
 
-                    ArrayList<String> damages = OutputDamageSystem.getDamage(stats);
-
-                    damageIndicator.spawn(p.getWorld(),damages,p.getLocation().add(1,1, 0));
-
-
-
-                    p.sendMessage(damages.get(6));
 
                     Arrow arrow = p.getWorld().spawn(p.getEyeLocation(),
                             Arrow.class);
@@ -318,19 +356,6 @@ public class Listeners implements Listener {
         catch(Exception ignore) {
         }
         UpdateAttributes.update(p, weaponStats,helmetStats,chestplateStats,leggingsStats,bootsStats);
-    }
-    public static void updateHealthBar(Player p) {
-        //Max Health
-        String playerStats = p.getMetadata("attributes").get(0).asString();
-        HashMap<String,String> playerStatsMap = MapData.map(playerStats);
-
-        //Current Health
-        String healthStats = p.getMetadata("healthStats").get(0).asString();
-        HashMap<String,String> healthStatsMap = MapData.map(healthStats);
-
-        String maxHealth = playerStatsMap.get("health");
-        String currentHealth = healthStatsMap.get("currentHealth");
-        p.sendActionBar(ChatColor.DARK_RED+"❤ "+currentHealth+"/"+maxHealth);
     }
 
 }

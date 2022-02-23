@@ -1,5 +1,6 @@
 package me.devoria.core;
 
+
 import me.devoria.core.commands.*;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -40,6 +41,7 @@ public class Core extends JavaPlugin {
         this.getCommand("getinfo").setExecutor(new GetItemInfo());
         this.getCommand("loot").setExecutor(new LootCommand());
         this.getCommand("identify").setExecutor(new IdentifyCommand());
+        this.getCommand("summonmob").setExecutor(new SummonMob());
     }
 
 
