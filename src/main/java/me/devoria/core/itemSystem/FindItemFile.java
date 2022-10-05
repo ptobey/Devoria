@@ -11,10 +11,10 @@ import java.util.Map;
 
 public class FindItemFile {
 
-    public static Map<String, String> parse(String name) throws FileNotFoundException {
+    public static Map<String, String> parse(String folder, String name) throws FileNotFoundException {
 
 
-        FileInputStream inputStream = new FileInputStream(Core.dataFolder+"/items/"+name+".yml");
+        FileInputStream inputStream = new FileInputStream(Core.dataFolder+"/"+folder+"/"+name+".yml");
         Yaml yaml = new Yaml();
         return yaml.load(inputStream);
 

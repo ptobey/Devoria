@@ -16,6 +16,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -172,29 +173,48 @@ public class Listeners implements Listener {
         UpdateHealthBar.update(p);
     }
 
+
     @EventHandler
     public void hit(EntityDamageByEntityEvent e) {
+
+        e.setDamage(0);
 
         String damagerStats = "";
         boolean isPlayer = false;
         Entity damagerEntity = e.getDamager();
                 Entity victim = e.getEntity();
 
+
+
         if(e.getDamager() instanceof Player) {
             Player damager = (Player) e.getDamager();
             damagerStats = damager.getPlayer().getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
             isPlayer = true;
-        }
-        else if(e.getDamager() instanceof ModeledEntity) {
-            ModeledEntity damager = (ModeledEntity) e.getDamager();
-
-            damagerStats = damager.getEntity().getItemInMainHand().getItemMeta().getLocalizedName();
 
         }
 
-        e.setDamage(0);
+
+
+        else {
+            e.getDamager();
+            Entity damager = e.getDamager();
+
+
+            damagerStats = String.valueOf(damager.getMetadata("attributes").get(0).asString());
+
+            System.out.println(damagerStats);
+
+        }
+
 
         ArrayList<String> damages = OutputDamageSystem.getDamage(damagerStats);
+
+        if(isPlayer) {
+            SpawnDamageIndicator damageIndicator = new SpawnDamageIndicator();
+
+            damageIndicator.spawn(victim.getWorld(),damages,victim.getLocation().add(1,1, 0));
+            e.getDamager().sendMessage(damages.get(6));
+        }
 
         ChangeHealth.change(victim, Integer.parseInt("-"+damages.get(6)), damagerEntity, true);
 
@@ -205,12 +225,6 @@ public class Listeners implements Listener {
             UpdateHealthBar.update(victim);
         }
 
-        if(isPlayer) {
-            SpawnDamageIndicator damageIndicator = new SpawnDamageIndicator();
-
-            damageIndicator.spawn(victim.getWorld(),damages,victim.getLocation().add(1,1, 0));
-            e.getDamager().sendMessage(damages.get(6));
-        }
     }
 
 

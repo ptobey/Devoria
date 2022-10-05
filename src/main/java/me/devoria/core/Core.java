@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Core extends JavaPlugin {
@@ -46,10 +47,10 @@ public class Core extends JavaPlugin {
 
 
     private void createCustomConfig() {
-        File makeItemsFolder = new File(dataFolder, "items/example.yml");
+        File makeItemsFolder = new File(dataFolder, "items/");
         if (!makeItemsFolder.exists()) {
             makeItemsFolder.getParentFile().mkdirs();
-            saveResource("items/example.yml", false);
+            saveResource("items/", false);
         }
         FileConfiguration customConfig = new YamlConfiguration();
 
@@ -57,7 +58,22 @@ public class Core extends JavaPlugin {
             customConfig.load(makeItemsFolder);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
+            System.out.println("Ignore This");
         }
+
+        File mobFolder = new File(dataFolder, "mobs/");
+        if (!mobFolder.exists()) {
+            mobFolder.getParentFile().mkdirs();
+            saveResource("mobs/", false);
+        }
+
+        try {
+            customConfig.load(mobFolder);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+            System.out.println("Ignore This");
+        }
+
     }
     public static Core getInstance() {
         return instance;

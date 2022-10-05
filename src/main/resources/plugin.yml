@@ -2,7 +2,7 @@ name: Devoria
 version: '${project.version}'
 api-version: 1.16
 main: me.devoria.core.Core
-authors: [ Patrick Tobey | Lucas souza ]
+authors: [ ptobey ]
 
 commands:
   class:

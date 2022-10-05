@@ -80,7 +80,7 @@ public class UpdateItem {
 
         HashMap<String,String> map = MapData.map(itemData);
 
-        Map<String, String> attributes = FindItemFile.parse(map.get("fileName"));
+        Map<String, String> attributes = FindItemFile.parse("items",map.get("fileName"));
 
         Object fileName = attributes.get("file_name");
         Object type = attributes.get("type");
@@ -444,19 +444,19 @@ public class UpdateItem {
             item = Material.PINK_WOOL;
         }
         else if(type.equals("sword")) {
-            item = Material.DIAMOND_SWORD;
+            item = Material.WOODEN_SWORD;
         }
         else if(type.equals("helmet")) {
-            item = Material.DIAMOND_HELMET;
+            item = Material.LEATHER_HELMET;
         }
         else if(type.equals("chestplate")) {
-            item = Material.DIAMOND_CHESTPLATE;
+            item = Material.LEATHER_CHESTPLATE;
         }
         else if(type.equals("leggings")) {
-            item = Material.DIAMOND_LEGGINGS;
+            item = Material.LEATHER_LEGGINGS;
         }
         else if(type.equals("boots")) {
-            item = Material.DIAMOND_BOOTS;
+            item = Material.LEATHER_BOOTS;
         }
 
         ItemStack weapon = new ItemStack(item);

@@ -17,14 +17,14 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.util.HashMap;
 
 public class ChangeHealth {
-    public static void change(Entity p, int healthChange, Entity damager, boolean canKill) {
+    public static void change(Entity e, int healthChange, Entity damager, boolean canKill) {
 
 
-        String healthStats = p.getMetadata("healthStats").get(0).asString();
+        String healthStats = e.getMetadata("healthStats").get(0).asString();
         HashMap<String,String> healthStatsMap = MapData.map(healthStats);
 
 
-        String playerStats = p.getMetadata("attributes").get(0).asString();
+        String playerStats = e.getMetadata("attributes").get(0).asString();
         HashMap<String,String> playerStatsMap = MapData.map(playerStats);
 
 
@@ -32,17 +32,18 @@ public class ChangeHealth {
         int maxHealth = Integer.parseInt(playerStatsMap.get("health"));
 
         if(healthChange+currentHealth >= maxHealth) {
-            p.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:"+maxHealth));
+            e.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:"+maxHealth));
         }
         else if(healthChange+currentHealth <= 0 && canKill) {
-            death(p, String.valueOf(maxHealth), damager);
+            e.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:0"));
+            death(e, String.valueOf(maxHealth), damager);
         }
         else if(healthChange+currentHealth <= 0 && !canKill) {
-            p.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:1"));
+            e.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:1"));
         }
         else {
             currentHealth += healthChange;
-            p.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:"+currentHealth));
+            e.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:"+currentHealth));
         }
 
     }
@@ -59,6 +60,7 @@ public class ChangeHealth {
         }
         else if ( e instanceof  Mob) {
             Mob m = (Mob) e;
+            UpdateHealthBar.update(e);
             m.setHealth(0);
             damager.sendMessage("You got xp for your kill!");
             if(m.getPassengers().get(0)instanceof ArmorStand) {
