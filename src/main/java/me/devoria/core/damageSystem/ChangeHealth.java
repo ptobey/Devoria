@@ -1,23 +1,62 @@
 package me.devoria.core.damageSystem;
 
 import me.devoria.core.Core;
-import me.devoria.core.Listeners;
 import me.devoria.core.MapData;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.Statistic;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Mob;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class ChangeHealth {
     public static void change(Entity e, int healthChange, Entity damager, boolean canKill) {
+
+        if (healthChange < 0 && damager.getType() == EntityType.PLAYER) {
+            Player p = (Player) damager;
+            String damagersStatsString = "";
+            HashMap<String, String> damagersStatsMap = null;
+            
+            
+            try {
+                String damagersStats = e.getMetadata("damagers").get(0).asString();
+                damagersStatsMap = MapData.map(damagersStats);
+            }
+            catch (Exception error){
+            }
+            
+
+
+
+            if (damagersStatsMap != null && damagersStatsMap.get(damager.getUniqueId().toString()) != null) {
+
+                int totalDamage = Integer.parseInt(damagersStatsMap.get(damager.getUniqueId().toString())) + healthChange;
+
+                for (String d : damagersStatsMap.keySet()) {
+                    if (d.equals(damager.getUniqueId().toString())) {
+                        damagersStatsString += "," + d + ":" + totalDamage;
+                    } else {
+                        damagersStatsString += "," + d + ":" + damagersStatsMap.get(d);
+                    }
+
+                }
+            }
+            else {
+                if (damagersStatsMap != null) {
+                    for (String d : damagersStatsMap.keySet()) {
+                        damagersStatsString += "," + d + ":" + damagersStatsMap.get(d);
+                    }
+                }
+                damagersStatsString += "," + p.getUniqueId() + ":" + healthChange;
+            }
+            e.setMetadata("damagers", new FixedMetadataValue(Core.getInstance(), damagersStatsString));
+        }
+
+        else {
+            //heal?
+        }
 
 
         String healthStats = e.getMetadata("healthStats").get(0).asString();
@@ -58,12 +97,23 @@ public class ChangeHealth {
             int deaths = p.getStatistic(Statistic.DEATHS);
             p.setStatistic(Statistic.DEATHS, deaths-1);
         }
-        else if ( e instanceof  Mob) {
+        else if ( e instanceof Mob) {
             Mob m = (Mob) e;
             UpdateHealthBar.update(e);
             m.setHealth(0);
-            damager.sendMessage("You got xp for your kill!");
-            if(m.getPassengers().get(0)instanceof ArmorStand) {
+            int totalDamage = 0;
+
+            String playerStats = e.getMetadata("damagers").get(0).asString();
+            HashMap<String,String> damagersMap = MapData.map(playerStats);
+
+
+            for(String d : damagersMap.keySet()) {
+                if((Integer.parseInt(damagersMap.get(d)) <= (Integer.parseInt(maxHealth) * -0.15))) {
+                    Bukkit.getPlayer((UUID.fromString(d))).sendMessage("You got xp for your kill because you did " + damagersMap.get(d) + " damage!");
+                    // Item drops
+                }
+            }
+            if(m.getPassengers().get(0) instanceof ArmorStand) {
                ArmorStand a = (ArmorStand) m.getPassengers().get(0);
                a.remove();
             }
