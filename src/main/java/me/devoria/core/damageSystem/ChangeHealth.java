@@ -9,84 +9,93 @@ import org.bukkit.entity.*;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.HashMap;
-import java.util.UUID;
+
 
 public class ChangeHealth {
     public static void change(Entity e, int healthChange, Entity damager, boolean canKill) {
-
-        if (healthChange < 0 && damager.getType() == EntityType.PLAYER) {
-            Player p = (Player) damager;
-            String damagersStatsString = "";
-            HashMap<String, String> damagersStatsMap = null;
-            
-            
-            try {
-                String damagersStats = e.getMetadata("damagers").get(0).asString();
-                damagersStatsMap = MapData.map(damagersStats);
-            }
-            catch (Exception error){
-            }
-            
-
-
-
-            if (damagersStatsMap != null && damagersStatsMap.get(damager.getUniqueId().toString()) != null) {
-
-                int totalDamage = Integer.parseInt(damagersStatsMap.get(damager.getUniqueId().toString())) + healthChange;
-
-                for (String d : damagersStatsMap.keySet()) {
-                    if (d.equals(damager.getUniqueId().toString())) {
-                        damagersStatsString += "," + d + ":" + totalDamage;
-                    } else {
-                        damagersStatsString += "," + d + ":" + damagersStatsMap.get(d);
-                    }
-
-                }
-            }
-            else {
-                if (damagersStatsMap != null) {
-                    for (String d : damagersStatsMap.keySet()) {
-                        damagersStatsString += "," + d + ":" + damagersStatsMap.get(d);
-                    }
-                }
-                damagersStatsString += "," + p.getUniqueId() + ":" + healthChange;
-            }
-            e.setMetadata("damagers", new FixedMetadataValue(Core.getInstance(), damagersStatsString));
-        }
-
-        else {
-            //heal?
-        }
-
+        int xp = 0;
 
         String healthStats = e.getMetadata("healthStats").get(0).asString();
         HashMap<String,String> healthStatsMap = MapData.map(healthStats);
 
 
         String playerStats = e.getMetadata("attributes").get(0).asString();
-        HashMap<String,String> playerStatsMap = MapData.map(playerStats);
+        HashMap<String,String> entityStatsMap = MapData.map(playerStats);
 
 
         int currentHealth = Integer.parseInt(healthStatsMap.get("currentHealth"));
-        int maxHealth = Integer.parseInt(playerStatsMap.get("health"));
+        int maxHealth = Integer.parseInt(entityStatsMap.get("health"));
+
+        if(entityStatsMap.get("xp") != null) {
+            xp = Integer.parseInt(entityStatsMap.get("xp"));
+        }
 
         if(healthChange+currentHealth >= maxHealth) {
             e.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:"+maxHealth));
         }
         else if(healthChange+currentHealth <= 0 && canKill) {
+            updateChangeHealthStats(e, damager, -currentHealth);
             e.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:0"));
-            death(e, String.valueOf(maxHealth), damager);
+            death(e, String.valueOf(maxHealth), damager, xp);
         }
         else if(healthChange+currentHealth <= 0 && !canKill) {
             e.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:1"));
         }
         else {
+            updateChangeHealthStats(e, damager, healthChange);
             currentHealth += healthChange;
             e.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:"+currentHealth));
         }
 
     }
-    public static void death(Entity e, String maxHealth, Entity damager) {
+
+    public static void updateChangeHealthStats(Entity e, Entity damager, int healthChange) {
+        if (healthChange < 0 && damager.getType() == EntityType.PLAYER) {
+            Player p = (Player) damager;
+            String damagersStatsString = "";
+            HashMap<String, String> damagersStatsMap;
+            int combinedDamage = 0;
+            boolean inList = false;
+
+            if(e.getMetadata("damagers").size() == 0) {
+                e.setMetadata("damagers", new FixedMetadataValue(Core.getInstance(), ",total:0"));
+            }
+
+            String damagersStats = e.getMetadata("damagers").get(0).asString();
+            damagersStatsMap = MapData.map(damagersStats);
+
+            if (damagersStatsMap.get(damager.getUniqueId().toString()) != null) {
+                combinedDamage = Integer.parseInt(damagersStatsMap.get(damager.getUniqueId().toString())) + healthChange;
+            }
+
+
+            for (String d : damagersStatsMap.keySet()) {
+                if (d.equals(damager.getUniqueId().toString())) {
+                    damagersStatsString += "," + d + ":" + combinedDamage;
+                    inList = true;
+                }
+                else if (d.equals("total")) {
+                    int totalDamage = Integer.parseInt(damagersStatsMap.get("total")) + healthChange;
+                    damagersStatsString += ",total:" + totalDamage;
+                }
+                else {
+                    damagersStatsString += "," + d + ":" + damagersStatsMap.get(d);
+                }
+            }
+            if(!inList) {
+                damagersStatsString += "," + p.getUniqueId() + ":" + healthChange;
+            }
+
+
+            e.setMetadata("damagers", new FixedMetadataValue(Core.getInstance(), damagersStatsString));
+        }
+        else {
+            //heal?
+        }
+
+    }
+
+    public static void death(Entity e, String maxHealth, Entity damager, int xp) {
         if(e instanceof Player) {
             Player p = (Player) e;
             p.sendMessage("You died!");
@@ -97,26 +106,36 @@ public class ChangeHealth {
             int deaths = p.getStatistic(Statistic.DEATHS);
             p.setStatistic(Statistic.DEATHS, deaths-1);
         }
-        else if ( e instanceof Mob) {
+        else if (e instanceof Mob) {
             Mob m = (Mob) e;
             UpdateHealthBar.update(e);
             m.setHealth(0);
-            int totalDamage = 0;
 
+
+/*
             String playerStats = e.getMetadata("damagers").get(0).asString();
             HashMap<String,String> damagersMap = MapData.map(playerStats);
 
 
             for(String d : damagersMap.keySet()) {
-                if((Integer.parseInt(damagersMap.get(d)) <= (Integer.parseInt(maxHealth) * -0.15))) {
-                    Bukkit.getPlayer((UUID.fromString(d))).sendMessage("You got xp for your kill because you did " + damagersMap.get(d) + " damage!");
-                    // Item drops
+
+                if(!d.equals("total")) {
+                    if ((Integer.parseInt(damagersMap.get(d)) <= (Integer.parseInt(damagersMap.get("total")) * 0.15))) {
+                        Bukkit.getPlayer((UUID.fromString(d))).sendMessage("You got an item for your kill because you did " + damagersMap.get(d) + " of " + damagersMap.get("total") + " damage!");
+                        // Item drops
+                    }
+                    int percentXp = (int) (xp * (Double.parseDouble(damagersMap.get(d)) / Double.parseDouble(damagersMap.get("total"))));
+                    Bukkit.getPlayer((UUID.fromString(d))).sendMessage("+"+percentXp+" xp!");
+
                 }
             }
-            if(m.getPassengers().get(0) instanceof ArmorStand) {
-               ArmorStand a = (ArmorStand) m.getPassengers().get(0);
-               a.remove();
-            }
+
+
+ */
+          //  if(m.getPassengers().get(0) instanceof ArmorStand) {
+           //    ArmorStand a = (ArmorStand) m.getPassengers().get(0);
+           //    a.remove();
+          //  }
         }
 
     }

@@ -8,6 +8,7 @@ import me.devoria.core.damageSystem.SpawnDamageIndicator;
 import me.devoria.core.damageSystem.UpdateHealthBar;
 import me.devoria.core.itemSystem.*;
 import me.devoria.core.onLogin.Registration;
+import net.kyori.adventure.text.ComponentLike;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -16,12 +17,10 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -36,49 +35,6 @@ import static java.lang.Thread.sleep;
 public class Listeners implements Listener {
 
 
-    @EventHandler
-    public void onOpenChest(PlayerInteractEvent e) {
-        try {
-            World world = e.getPlayer().getWorld();
-            Location location = new Location(world, -780, 4, 703);
-
-
-
-            if (Objects.requireNonNull(e.getClickedBlock()).getLocation().equals(location)) {
-
-                Map<String, Object> attributes;
-
-
-                if (location.getBlock().getType() == Material.CHEST) {
-                    Chest c1 = (Chest) location.getBlock().getState();
-
-                    for (int i = 0; i < 27; i++) {
-                        try {
-                            attributes = GenerateLoot.generate("huntsman", 0, "15");
-                            if (attributes.get("rarity").equals("common")) {
-
-                                UpdateItem.update(",fileName:"+attributes.get("file_name"));
-                                c1.getInventory().setItem(i, UpdateItem.update(",fileName:"+attributes.get("file_name")));
-
-                            } else {
-                                c1.getInventory().setItem(i, MakeUnidentifiedItem.makeUnidentifiedItem(attributes.get("file_name"), attributes.get("rarity"), attributes.get("type"), attributes.get("level")));
-                            }
-
-
-                        } catch (FileNotFoundException err) {
-                            err.printStackTrace();
-                        }
-
-                    }
-                }
-            }
-        }
-        catch(NullPointerException ignore) {
-        }
-    }
-
-
-
     //Makes arrows despawn
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent ev) {
@@ -87,6 +43,64 @@ public class Listeners implements Listener {
             entity.remove();
         }
     }
+
+    @EventHandler
+    public void onMobDeath(EntityDeathEvent event) {
+        event.getDrops().clear();
+        LivingEntity e = event.getEntity();
+
+        String damagers = e.getMetadata("damagers").get(0).asString();
+        HashMap<String,String> damagersMap = MapData.map(damagers);
+
+        String entityStats = e.getMetadata("attributes").get(0).asString();
+        HashMap<String,String> entityStatsMap = MapData.map(entityStats);
+
+        int xp = Integer.parseInt(entityStatsMap.get("xp"));
+
+
+        for(String d : damagersMap.keySet()) {
+
+            if(!d.equals("total")) {
+                if ((Integer.parseInt(damagersMap.get(d)) <= (Integer.parseInt(damagersMap.get("total")) * 0.15))) {
+                    try {
+                        Collection<ItemStack> drops = GenerateLoot.generate("huntsman", "15");
+
+                        for(ItemStack drop : drops) {
+
+                            ItemMeta itemMeta = drop.getItemMeta();
+                            String itemInfo = drop.getItemMeta().getLocalizedName() + ",owner:" + d;
+                            itemMeta.setLocalizedName(itemInfo);
+                            drop.setItemMeta(itemMeta);
+
+                            e.getLocation().getWorld().dropItemNaturally(e.getLocation(), drop);
+                        }
+
+
+                    } catch (FileNotFoundException err) {
+                        err.printStackTrace();
+                    }
+                }
+                int percentXp = (int) (xp * (Double.parseDouble(damagersMap.get(d)) / Double.parseDouble(damagersMap.get("total"))));
+                Bukkit.getPlayer(UUID.fromString(d)).sendMessage("+"+percentXp+" xp!");
+
+            }
+        }
+    }
+
+    @EventHandler
+    public void onItemPickUp(PlayerAttemptPickupItemEvent event) {
+
+        HashMap<String,String> map = MapData.map(event.getItem().getItemStack().getItemMeta().getLocalizedName());
+
+        if(!event.getPlayer().equals(Bukkit.getPlayer(UUID.fromString(map.get("owner"))))) {
+            event.setCancelled(true);
+        }
+
+
+
+
+    }
+
     //on login events!
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
@@ -148,12 +162,13 @@ public class Listeners implements Listener {
 
         }.runTaskTimer(Core.getInstance(), 100L, 100L);
 
-        updateAttributes(p);
+
 
         if(p.getMetadata("healthStats").size() == 0) {
 
             p.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:1000"));
         }
+        updateAttributes(p);
 
     }
 
@@ -230,7 +245,10 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void updateIem(PlayerItemHeldEvent e) {
-        Player p = e.getPlayer();
+     Player p = e.getPlayer();
+     updateAttributes(p);
+
+ /*
 
         ItemStack helmet = p.getInventory().getHelmet();
         ItemStack chestplate = p.getInventory().getChestplate();
@@ -268,13 +286,16 @@ public class Listeners implements Listener {
                 HashMap<String, String> weaponStatsMap = MapData.map(stats);
 
 
-                String type = weaponStatsMap.get("type");
+                if(!weaponStatsMap.get("unidentified").equals("1")) {
+
+                    p.sendMessage(weaponStatsMap.get("unidentified"));
+                    String type = weaponStatsMap.get("type");
 
 
-                if(type.equals("bow") || type.equals("sword")) {
+                    if (type.equals("bow") || type.equals("sword")) {
 
-                    stats = p.getInventory().getItem(slot).getItemMeta().getLocalizedName();
-                    weaponStats = stats;
+                        weaponStats= p.getInventory().getItem(slot).getItemMeta().getLocalizedName();
+                    }
                 }
 
            }
@@ -285,9 +306,8 @@ public class Listeners implements Listener {
         }
 
         UpdateAttributes.update(p, weaponStats, helmetStats, chestplateStats, leggingsStats, bootsStats);
-        ChangeHealth.change(p,0, null, false);
-        UpdateHealthBar.update(p);
 
+*/
     }
 
 
@@ -333,6 +353,7 @@ public class Listeners implements Listener {
         String leggingsStats = null;
         String bootsStats = null;
 
+
         if(helmet != null && !helmet.getItemMeta().getLocalizedName().isEmpty()) {
             helmetStats = helmet.getItemMeta().getLocalizedName();
         }
@@ -352,24 +373,27 @@ public class Listeners implements Listener {
             if(p.getInventory().getItemInMainHand().getType() != Material.AIR && !p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName().isEmpty()) {
 
                 String stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
-                p.getInventory().setItemInMainHand(UpdateItem.update(stats));
-
-
-
                 HashMap<String, String> weaponStatsMap = MapData.map(stats);
 
+
+                if(weaponStatsMap.get("unidentified") == null) {
+                    p.getInventory().setItemInMainHand(UpdateItem.update(stats));
+                }
 
                 String type = weaponStatsMap.get("type");
 
                 if(type.equals("bow") || type.equals("sword")) {
-                    stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
-                    weaponStats = stats;
+                        weaponStats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
+
                 }
             }
         }
         catch(Exception ignore) {
         }
+
         UpdateAttributes.update(p, weaponStats,helmetStats,chestplateStats,leggingsStats,bootsStats);
+        ChangeHealth.change(p,0, null, false);
+        UpdateHealthBar.update(p);
     }
 
 }

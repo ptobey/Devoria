@@ -52,6 +52,7 @@ public class SummonMob implements CommandExecutor {
             String type = stats.get("type");
             Object maxHealth = stats.get("max_health");
             Object damage = stats.get("damage");
+            Object xp = stats.get("xp");
 
             Material mainHand = stats.get("main_hand") != null ? Material.valueOf(stats.get("main_hand").toUpperCase()) : Material.AIR;
             Material offHand = stats.get("off_hand") != null ? Material.valueOf(stats.get("off_hand").toUpperCase()) : Material.AIR;
@@ -89,7 +90,7 @@ public class SummonMob implements CommandExecutor {
 
 
             mob.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:"+maxHealth));
-            mob.setMetadata("attributes", new FixedMetadataValue(Core.getInstance(), ",health:"+maxHealth+",damage:"+damage));
+            mob.setMetadata("attributes", new FixedMetadataValue(Core.getInstance(), ",health:"+maxHealth+",damage:"+damage+",xp:"+xp));
 
 
             Objects.requireNonNull(mob.getEquipment()).setItemInMainHand(new ItemStack(mainHand));

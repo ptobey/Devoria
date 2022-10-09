@@ -16,7 +16,7 @@ public class MakeUnidentifiedItem {
     //makes a custom bow using stats pulled from the yml
     public static ItemStack makeUnidentifiedItem(Object fileName, Object rarity, Object type, Object level){
 
-        String itemInfo = ",fileName:"+fileName+",level:"+level;
+        String itemInfo = ",unidentified:1,fileName:"+fileName+",level:"+level;
 
         ChatColor rarityColor = ChatColor.WHITE;
         Material material = Material.WHITE_WOOL;

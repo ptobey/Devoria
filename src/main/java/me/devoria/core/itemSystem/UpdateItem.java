@@ -441,7 +441,7 @@ public class UpdateItem {
         Material item = Material.STICK;
 
         if(type.equals("bow")) {
-            item = Material.PINK_WOOL;
+            item = Material.BOW;
         }
         else if(type.equals("sword")) {
             item = Material.WOODEN_SWORD;
