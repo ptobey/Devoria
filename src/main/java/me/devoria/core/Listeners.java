@@ -168,7 +168,7 @@ public class Listeners implements Listener {
 
             p.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:1000"));
         }
-        updateAttributes(p);
+        updateAttributes(p, -1);
 
     }
 
@@ -183,7 +183,7 @@ public class Listeners implements Listener {
     public void onArmorChange(PlayerArmorChangeEvent e) {
 
         Player p = e.getPlayer();
-        updateAttributes(p);
+        updateAttributes(p, -1);
         ChangeHealth.change(p,0,null,false);
         UpdateHealthBar.update(p);
     }
@@ -246,7 +246,7 @@ public class Listeners implements Listener {
     @EventHandler
     public void updateIem(PlayerItemHeldEvent e) {
      Player p = e.getPlayer();
-     updateAttributes(p);
+     updateAttributes(p, e.getNewSlot());
 
  /*
 
@@ -312,7 +312,7 @@ public class Listeners implements Listener {
 
 
 
-//Makes pink wool shoot arrows if you're a huntsman or bard
+
     @EventHandler
     public void onUse(PlayerInteractEvent e) throws FileNotFoundException {
         if(e.getMaterial().equals(Material.PINK_WOOL)){
@@ -342,7 +342,7 @@ public class Listeners implements Listener {
 
     }
 
-    public static void updateAttributes(Player p) {
+    public static void updateAttributes(Player p, int slot) {
         ItemStack helmet = p.getInventory().getHelmet();
         ItemStack chestplate = p.getInventory().getChestplate();
         ItemStack leggings = p.getInventory().getLeggings();
@@ -368,9 +368,8 @@ public class Listeners implements Listener {
         }
 
         try {
-
-
-            if(p.getInventory().getItemInMainHand().getType() != Material.AIR && !p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName().isEmpty()) {
+            if(slot == -1) {
+                if(p.getInventory().getItemInMainHand().getType() != Material.AIR && !p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName().isEmpty()) {
 
                 String stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
                 HashMap<String, String> weaponStatsMap = MapData.map(stats);
@@ -378,19 +377,44 @@ public class Listeners implements Listener {
 
                 if(weaponStatsMap.get("unidentified") == null) {
                     p.getInventory().setItemInMainHand(UpdateItem.update(stats));
-                }
 
-                String type = weaponStatsMap.get("type");
 
-                if(type.equals("bow") || type.equals("sword")) {
+                    String type = weaponStatsMap.get("type");
+
+                    if (type.equals("bow") || type.equals("sword")) {
                         weaponStats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
+
+                    }
+                }
+                }
+            }
+            else {
+                if(p.getInventory().getItem(slot) != null && !p.getInventory().getItem(slot).getItemMeta().getLocalizedName().isEmpty()) {
+
+                    String stats = p.getInventory().getItem(slot).getItemMeta().getLocalizedName();
+                    HashMap<String, String> weaponStatsMap = MapData.map(stats);
+
+
+                    if(weaponStatsMap.get("unidentified") == null) {
+                        p.getInventory().setItem(slot, UpdateItem.update(stats));
+                    }
+
+
+                        String type = weaponStatsMap.get("type");
+
+
+                        if (type.equals("bow") || type.equals("sword")) {
+
+                            weaponStats = p.getInventory().getItem(slot).getItemMeta().getLocalizedName();
+                        }
+
+
 
                 }
             }
         }
         catch(Exception ignore) {
         }
-
         UpdateAttributes.update(p, weaponStats,helmetStats,chestplateStats,leggingsStats,bootsStats);
         ChangeHealth.change(p,0, null, false);
         UpdateHealthBar.update(p);
