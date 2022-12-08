@@ -11,9 +11,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
 public class GUIListener implements Listener {
-    public GUIListener(Devoria plugin) {
-        Bukkit.getPluginManager().registerEvents(this, plugin);
-    }
     @EventHandler
     public void onInvClick(InventoryClickEvent event) {
         switch (event.getView().getTitle()) {

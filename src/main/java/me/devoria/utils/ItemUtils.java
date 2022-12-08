@@ -288,6 +288,84 @@ public class ItemUtils {
         p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue((float)Integer.parseInt(s)/100);
     }
 
+    public static void updateAttributes(Player p, int slot) {
+        ItemStack helmet = p.getInventory().getHelmet();
+        ItemStack chestplate = p.getInventory().getChestplate();
+        ItemStack leggings = p.getInventory().getLeggings();
+        ItemStack boots = p.getInventory().getBoots();
+        String weaponStats = null;
+        String helmetStats = null;
+        String chestplateStats = null;
+        String leggingsStats = null;
+        String bootsStats = null;
+
+
+        if(helmet != null && !helmet.getItemMeta().getLocalizedName().isEmpty()) {
+            helmetStats = helmet.getItemMeta().getLocalizedName();
+        }
+        if(chestplate != null && !chestplate.getItemMeta().getLocalizedName().isEmpty()) {
+            chestplateStats = chestplate.getItemMeta().getLocalizedName();
+        }
+        if(leggings != null && !leggings.getItemMeta().getLocalizedName().isEmpty()) {
+            leggingsStats = leggings.getItemMeta().getLocalizedName();
+        }
+        if(boots != null && !boots.getItemMeta().getLocalizedName().isEmpty()) {
+            bootsStats = boots.getItemMeta().getLocalizedName();
+        }
+
+        try {
+            if(slot == -1) {
+                if(p.getInventory().getItemInMainHand().getType() != Material.AIR && !p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName().isEmpty()) {
+
+                    String stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
+                    HashMap<String, String> weaponStatsMap = FastUtils.map(stats);
+
+
+                    if(weaponStatsMap.get("unidentified") == null) {
+                        p.getInventory().setItemInMainHand(ItemUtils.updateItem(stats));
+
+
+                        String type = weaponStatsMap.get("type");
+
+                        if (type.equals("bow") || type.equals("sword")) {
+                            weaponStats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
+
+                        }
+                    }
+                }
+            }
+            else {
+                if(p.getInventory().getItem(slot) != null && !p.getInventory().getItem(slot).getItemMeta().getLocalizedName().isEmpty()) {
+
+                    String stats = p.getInventory().getItem(slot).getItemMeta().getLocalizedName();
+                    HashMap<String, String> weaponStatsMap = FastUtils.map(stats);
+
+
+                    if(weaponStatsMap.get("unidentified") == null) {
+                        p.getInventory().setItem(slot, ItemUtils.updateItem(stats));
+                    }
+
+
+                    String type = weaponStatsMap.get("type");
+
+
+                    if (type.equals("bow") || type.equals("sword")) {
+
+                        weaponStats = p.getInventory().getItem(slot).getItemMeta().getLocalizedName();
+                    }
+
+
+
+                }
+            }
+        }
+        catch(Exception ignore) {
+        }
+        ItemUtils.updateAttributes(p, weaponStats,helmetStats,chestplateStats,leggingsStats,bootsStats);
+        PlayerUtils.changeHealth(p,0, null, false);
+        PlayerUtils.updateHealthBar(p);
+    }
+
     //makes a custom item using stats pulled from the yml
     public static ItemStack updateItem(String itemData) throws FileNotFoundException {
         ChatColor rarityColor = ChatColor.WHITE;

@@ -9,12 +9,13 @@ import me.devoria.commands.LootCommand;
 import me.devoria.commands.OpenFactionGUI;
 import me.devoria.commands.RegisterCommand;
 import me.devoria.commands.Spectator;
+import me.devoria.commands.SpellMode;
 import me.devoria.commands.SummonMob;
 import me.devoria.commands.Survival;
 import me.devoria.cooldowns.CooldownManager;
 import me.devoria.guis.ClassSelectGUI;
+import me.devoria.listeners.EntityListener;
 import me.devoria.listeners.GUIListener;
-import me.devoria.listeners.Listeners;
 import me.devoria.listeners.PlayerListener;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -32,9 +33,8 @@ public class Devoria extends JavaPlugin {
 
 
     public void onEnable() {
-
+        cdInstance = new CooldownManager();
         dataFolder = getDataFolder();
-
         instance = this;
 
         createCustomConfig();
@@ -45,9 +45,9 @@ public class Devoria extends JavaPlugin {
     }
 
     public void registerListeners() {
-        getServer().getPluginManager().registerEvents(new Listeners(), this);
-        new PlayerListener(this);
-        new GUIListener(this);
+        getServer().getPluginManager().registerEvents(new EntityListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new EntityListener(), this);
         getServer().getPluginManager().registerEvents(classSelectGUI = new ClassSelectGUI(), this);
     }
 
@@ -58,6 +58,7 @@ public class Devoria extends JavaPlugin {
         this.getCommand("loot").setExecutor(new LootCommand());
         this.getCommand("identify").setExecutor(new IdentifyCommand());
         this.getCommand("summonmob").setExecutor(new SummonMob());
+        this.getCommand("spellmode").setExecutor(new SpellMode());
         getCommand("survival").setExecutor(new Survival());
         getCommand("creative").setExecutor(new Creative());
         getCommand("adventure").setExecutor(new Adventure());

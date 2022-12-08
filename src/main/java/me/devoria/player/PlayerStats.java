@@ -11,6 +11,7 @@ public class PlayerStats {
     public static HashMap<UUID, PlayerStats> playerStats = new HashMap<>();
     public Player player;
     public SpellTriggers spellTriggers;
+    public boolean spellMode = false;
     public FactionType faction;
     public AffinityType affinity;
     public Spell[] spells = {

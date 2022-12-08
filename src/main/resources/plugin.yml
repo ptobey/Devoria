@@ -21,3 +21,26 @@ commands:
     description: Identifies an item
   summonmob:
     description: Summons a mob
+  survival:
+    aliases: 0
+    description: Puts your gamemode to survival
+    usage: /0 or /survival
+  creative:
+    aliases: 1
+    description: Puts your gamemode to creative
+    usage: /1 or /creative
+  adventure:
+    aliases: 2
+    description: Puts your gamemode to adventure
+    usage: /2 or /adventure
+  spectator:
+    aliases: 3
+    description: Puts your gamemode to spectator
+    usage: /3 or /spectator
+  factions:
+    description: Opens the Factions GUI
+    usage: /factions [player]
+  spellmode:
+    aliases: spells
+    description: Toggles spellmode
+    usage: /spellmode [player]

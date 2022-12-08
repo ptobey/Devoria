@@ -13,6 +13,8 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -32,7 +34,7 @@ public class ArrowRain extends Spell {
                 particleBuilder.extra(0);
                 particleBuilder.location(location);
                 ParticleUtils.filledCircle(particleBuilder, 10);
-                int partialCount = 10;
+                int partialCount = 1;
                 int revolutionDegrees = 360;
                 double currentDegrees = 0;
 
@@ -58,6 +60,11 @@ public class ArrowRain extends Spell {
                         public void run() {
                             arrow.getWorld().spawnParticle(Particle.REDSTONE, arrow.getLocation(), 1, new Particle.DustOptions(Color.AQUA, 1));
                             if (arrow.isDead() || arrow.isOnGround()) {
+                                for (Entity entity : arrow.getNearbyEntities(2, 2, 2)) {
+                                    if (!(entity instanceof LivingEntity) || entity.equals(player)) continue;
+                                    LivingEntity livingEntity = (LivingEntity) entity;
+                                    livingEntity.damage(5, player);
+                                }
                                 arrow.remove();
                                 this.cancel();
                             }
