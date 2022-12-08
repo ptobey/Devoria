@@ -1,9 +1,7 @@
-package me.devoria.core.commands;
+package me.devoria.commands;
 
 
-import me.devoria.core.DataBase.DBconnect;
-import me.devoria.core.DataBase.PlayerTable;
-import me.devoria.core.Listeners;
+import me.devoria.utils.DatabaseUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,7 +17,7 @@ public class RegisterCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         try {
-            DBconnect.connect();
+            DatabaseUtils.connect();
             Bukkit.getLogger().info("Database Connected!");
 
         } catch (ClassNotFoundException | SQLException e) {
@@ -50,7 +48,7 @@ public class RegisterCommand implements CommandExecutor {
 
 
             try {
-                if(PlayerTable.Verify(uuid)){
+                if(DatabaseUtils.verify(uuid)){
                     sender.sendMessage("You are already Registered!");
                     return true;
 
@@ -60,7 +58,7 @@ public class RegisterCommand implements CommandExecutor {
                 Bukkit.getLogger().info("Problem verifying player!");
             }
 
-            PlayerTable.register(uuid,username);
+            DatabaseUtils.register(uuid,username);
             sender.sendMessage("You have been registered!");
             return true;
 

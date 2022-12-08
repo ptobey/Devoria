@@ -1,8 +1,8 @@
-package me.devoria.core;
+package me.devoria.utils;
 
 import java.util.HashMap;
 
-public class MapData {
+public class FastUtils {
     public static HashMap<String, String> map(String data) {
 
         HashMap<String, String> map = new HashMap<>();

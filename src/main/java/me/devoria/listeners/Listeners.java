@@ -1,18 +1,12 @@
-package me.devoria.core;
+package me.devoria.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
-import com.ticxo.modelengine.api.model.ModeledEntity;
-import me.devoria.core.attributeSystem.UpdateAttributes;
-import me.devoria.core.damageSystem.ChangeHealth;
-import me.devoria.core.damageSystem.SpawnDamageIndicator;
-import me.devoria.core.damageSystem.UpdateHealthBar;
-import me.devoria.core.itemSystem.*;
-import me.devoria.core.onLogin.Registration;
-import net.kyori.adventure.text.ComponentLike;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import me.devoria.Devoria;
+import me.devoria.utils.FastUtils;
+import me.devoria.utils.ItemUtils;
+import me.devoria.utils.MiscellaneousUtils;
+import me.devoria.utils.PlayerUtils;
 import org.bukkit.*;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,13 +17,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.FileNotFoundException;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static java.lang.Thread.sleep;
 
 
 public class Listeners implements Listener {
@@ -50,10 +41,10 @@ public class Listeners implements Listener {
         LivingEntity e = event.getEntity();
 
         String damagers = e.getMetadata("damagers").get(0).asString();
-        HashMap<String,String> damagersMap = MapData.map(damagers);
+        HashMap<String,String> damagersMap = FastUtils.map(damagers);
 
         String entityStats = e.getMetadata("attributes").get(0).asString();
-        HashMap<String,String> entityStatsMap = MapData.map(entityStats);
+        HashMap<String,String> entityStatsMap = FastUtils.map(entityStats);
 
         int xp = Integer.parseInt(entityStatsMap.get("xp"));
 
@@ -63,7 +54,7 @@ public class Listeners implements Listener {
             if(!d.equals("total")) {
                 if ((Integer.parseInt(damagersMap.get(d)) <= (Integer.parseInt(damagersMap.get("total")) * 0.15))) {
                     try {
-                        Collection<ItemStack> drops = GenerateLoot.generate("huntsman", "15");
+                        Collection<ItemStack> drops = ItemUtils.generate("huntsman", "15");
 
                         for(ItemStack drop : drops) {
 
@@ -90,7 +81,7 @@ public class Listeners implements Listener {
     @EventHandler
     public void onItemPickUp(PlayerAttemptPickupItemEvent event) {
 
-        HashMap<String,String> map = MapData.map(event.getItem().getItemStack().getItemMeta().getLocalizedName());
+        HashMap<String,String> map = FastUtils.map(event.getItem().getItemStack().getItemMeta().getLocalizedName());
 
         if(!event.getPlayer().equals(Bukkit.getPlayer(UUID.fromString(map.get("owner"))))) {
             event.setCancelled(true);
@@ -134,10 +125,10 @@ public class Listeners implements Listener {
                     cancel(); // this cancels it when they leave
                 }
 
-                UpdateHealthBar.update(p);
+                PlayerUtils.updateHealthBar(p);
             }
 
-        }.runTaskTimer(Core.getInstance(), 0L, 40L);
+        }.runTaskTimer(Devoria.getInstance(), 0L, 40L);
 
 
         //HPR
@@ -154,19 +145,19 @@ public class Listeners implements Listener {
                     cancel(); // this cancels it when they leave
                 }
 
-                int hpr = CalculateHealthRegen.calculate(p);
+                int hpr = PlayerUtils.calculate(p);
 
-                ChangeHealth.change(p, hpr, null, false);
-                UpdateHealthBar.update(p);
+                PlayerUtils.changeHealth(p, hpr, null, false);
+                PlayerUtils.updateHealthBar(p);
             }
 
-        }.runTaskTimer(Core.getInstance(), 100L, 100L);
+        }.runTaskTimer(Devoria.getInstance(), 100L, 100L);
 
 
 
         if(p.getMetadata("healthStats").size() == 0) {
 
-            p.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:1000"));
+            p.setMetadata("healthStats", new FixedMetadataValue(Devoria.getInstance(), ",currentHealth:1000"));
         }
         updateAttributes(p, -1);
 
@@ -184,8 +175,8 @@ public class Listeners implements Listener {
 
         Player p = e.getPlayer();
         updateAttributes(p, -1);
-        ChangeHealth.change(p,0,null,false);
-        UpdateHealthBar.update(p);
+        PlayerUtils.changeHealth(p,0,null,false);
+        PlayerUtils.updateHealthBar(p);
     }
 
 
@@ -222,22 +213,22 @@ public class Listeners implements Listener {
         }
 
 
-        ArrayList<String> damages = OutputDamageSystem.getDamage(damagerStats);
+        ArrayList<String> damages = ItemUtils.getItemDamage(damagerStats);
 
         if(isPlayer) {
-            SpawnDamageIndicator damageIndicator = new SpawnDamageIndicator();
+            MiscellaneousUtils damageIndicator = new MiscellaneousUtils();
 
-            damageIndicator.spawn(victim.getWorld(),damages,victim.getLocation().add(1,1, 0));
+            damageIndicator.spawnDamageIndicator(victim.getWorld(),damages,victim.getLocation().add(1,1, 0));
             e.getDamager().sendMessage(damages.get(6));
         }
 
-        ChangeHealth.change(victim, Integer.parseInt("-"+damages.get(6)), damagerEntity, true);
+        PlayerUtils.changeHealth(victim, Integer.parseInt("-"+damages.get(6)), damagerEntity, true);
 
         if(victim instanceof Player) {
-            UpdateHealthBar.update((Player) e.getEntity());
+            PlayerUtils.updateHealthBar((Player) e.getEntity());
         }
         else {
-            UpdateHealthBar.update(victim);
+            PlayerUtils.updateHealthBar(victim);
         }
 
     }
@@ -321,7 +312,7 @@ public class Listeners implements Listener {
             String stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
 
             try {
-                p.getInventory().setItemInMainHand((UpdateItem.update(stats)));
+                p.getInventory().setItemInMainHand((ItemUtils.updateItem(stats)));
 
 
             e.setCancelled(true);
@@ -372,11 +363,11 @@ public class Listeners implements Listener {
                 if(p.getInventory().getItemInMainHand().getType() != Material.AIR && !p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName().isEmpty()) {
 
                 String stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
-                HashMap<String, String> weaponStatsMap = MapData.map(stats);
+                HashMap<String, String> weaponStatsMap = FastUtils.map(stats);
 
 
                 if(weaponStatsMap.get("unidentified") == null) {
-                    p.getInventory().setItemInMainHand(UpdateItem.update(stats));
+                    p.getInventory().setItemInMainHand(ItemUtils.updateItem(stats));
 
 
                     String type = weaponStatsMap.get("type");
@@ -392,11 +383,11 @@ public class Listeners implements Listener {
                 if(p.getInventory().getItem(slot) != null && !p.getInventory().getItem(slot).getItemMeta().getLocalizedName().isEmpty()) {
 
                     String stats = p.getInventory().getItem(slot).getItemMeta().getLocalizedName();
-                    HashMap<String, String> weaponStatsMap = MapData.map(stats);
+                    HashMap<String, String> weaponStatsMap = FastUtils.map(stats);
 
 
                     if(weaponStatsMap.get("unidentified") == null) {
-                        p.getInventory().setItem(slot, UpdateItem.update(stats));
+                        p.getInventory().setItem(slot, ItemUtils.updateItem(stats));
                     }
 
 
@@ -415,9 +406,9 @@ public class Listeners implements Listener {
         }
         catch(Exception ignore) {
         }
-        UpdateAttributes.update(p, weaponStats,helmetStats,chestplateStats,leggingsStats,bootsStats);
-        ChangeHealth.change(p,0, null, false);
-        UpdateHealthBar.update(p);
+        ItemUtils.updateAttributes(p, weaponStats,helmetStats,chestplateStats,leggingsStats,bootsStats);
+        PlayerUtils.changeHealth(p,0, null, false);
+        PlayerUtils.updateHealthBar(p);
     }
 
 }

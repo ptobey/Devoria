@@ -1,6 +1,6 @@
-package me.devoria.core.commands;
+package me.devoria.commands;
 
-import me.devoria.core.itemSystem.UpdateItem;
+import me.devoria.utils.ItemUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +27,7 @@ public class IdentifyCommand implements CommandExecutor {
             }
 
             try {
-                ((Player) sender).getInventory().setItemInMainHand(UpdateItem.update(",fileName:"+map.get("fileName")));
+                ((Player) sender).getInventory().setItemInMainHand(ItemUtils.updateItem(",fileName:"+map.get("fileName")));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }

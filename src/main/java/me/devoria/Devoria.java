@@ -1,18 +1,25 @@
-package me.devoria.core;
+package me.devoria;
 
 
-import me.devoria.core.commands.*;
+import me.devoria.commands.ClassCommand;
+import me.devoria.commands.GetItemInfo;
+import me.devoria.commands.IdentifyCommand;
+import me.devoria.commands.ItemCommand;
+import me.devoria.commands.LootCommand;
+import me.devoria.commands.RegisterCommand;
+import me.devoria.commands.SummonMob;
+import me.devoria.guis.ClassSelectGUI;
+import me.devoria.listeners.Listeners;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class Core extends JavaPlugin {
+public class Devoria extends JavaPlugin {
 
-    private static Core instance;
+    private static Devoria instance;
     private static ClassSelectGUI classSelectGUI;
     public static File dataFolder;
 
@@ -36,7 +43,6 @@ public class Core extends JavaPlugin {
     }
 
     public void registerCommands() {
-        this.getCommand("class").setExecutor(new ClassCommand());
         this.getCommand("item").setExecutor(new ItemCommand());
         this.getCommand("register").setExecutor(new RegisterCommand());
         this.getCommand("getinfo").setExecutor(new GetItemInfo());
@@ -75,7 +81,7 @@ public class Core extends JavaPlugin {
         }
 
     }
-    public static Core getInstance() {
+    public static Devoria getInstance() {
         return instance;
     }
     public static ClassSelectGUI getClassSelectGUI() {

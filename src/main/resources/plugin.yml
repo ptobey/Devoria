@@ -1,13 +1,10 @@
 name: Devoria
 version: '${project.version}'
-api-version: 1.16
-main: me.devoria.core.Core
-authors: [ ptobey ]
+api-version: 1.19
+main: me.devoria.Devoria
+authors: [ ptobey, SleepingRaven ]
 
 commands:
-  class:
-    description: Select a class
-    usage: huntsman/sorcerer/bard/knight
   item:
     description: Get a custom item
     usage: Put an item name

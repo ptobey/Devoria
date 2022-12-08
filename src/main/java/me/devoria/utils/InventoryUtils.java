@@ -1,4 +1,4 @@
-package me.devoria.core.Iventory;
+package me.devoria.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 
-public class SerializeInventory {
+public class InventoryUtils {
     /**
      * Converts the player inventory to a Base64 encoded string.
      *

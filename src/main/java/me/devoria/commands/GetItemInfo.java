@@ -1,4 +1,4 @@
-package me.devoria.core.commands;
+package me.devoria.commands;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.Command;

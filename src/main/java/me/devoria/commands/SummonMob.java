@@ -1,4 +1,4 @@
-package me.devoria.core.commands;
+package me.devoria.commands;
 
 
 
@@ -7,9 +7,9 @@ import com.google.common.collect.ImmutableSet;
 import com.ticxo.modelengine.api.ModelEngineAPI;
 import com.ticxo.modelengine.api.model.ActiveModel;
 import com.ticxo.modelengine.api.model.ModeledEntity;
-import me.devoria.core.Core;
-import me.devoria.core.damageSystem.UpdateHealthBar;
-import me.devoria.core.itemSystem.FindItemFile;
+import me.devoria.Devoria;
+import me.devoria.utils.ItemUtils;
+import me.devoria.utils.PlayerUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -40,7 +40,7 @@ public class SummonMob implements CommandExecutor {
         }
 
         try {
-            Map<String, String> stats = FindItemFile.parse("mobs", args[0]);
+            Map<String, String> stats = ItemUtils.parseItemFile("mobs", args[0]);
 
             if (!(sender instanceof Player)) {
                 sendError(sender, "May only be used in-game");
@@ -89,8 +89,8 @@ public class SummonMob implements CommandExecutor {
             }
 
 
-            mob.setMetadata("healthStats", new FixedMetadataValue(Core.getInstance(), ",currentHealth:"+maxHealth));
-            mob.setMetadata("attributes", new FixedMetadataValue(Core.getInstance(), ",health:"+maxHealth+",damage:"+damage+",xp:"+xp));
+            mob.setMetadata("healthStats", new FixedMetadataValue(Devoria.getInstance(), ",currentHealth:"+maxHealth));
+            mob.setMetadata("attributes", new FixedMetadataValue(Devoria.getInstance(), ",health:"+maxHealth+",damage:"+damage+",xp:"+xp));
 
 
             Objects.requireNonNull(mob.getEquipment()).setItemInMainHand(new ItemStack(mainHand));
@@ -114,7 +114,7 @@ public class SummonMob implements CommandExecutor {
             modeledEntity.getNametagHandler().setCustomNameVisibility("nametag", true);
             modeledEntity.getNametagHandler().setCustomNameVisibility("healthbar", true);
             modeledEntity.getNametagHandler().setCustomName("nametag", name);
-            UpdateHealthBar.update(mob);
+            PlayerUtils.updateHealthBar(mob);
 
             return true;
         } catch (FileNotFoundException e) {
