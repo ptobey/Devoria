@@ -9,15 +9,17 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import me.devoria.Devoria;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -65,6 +67,51 @@ public class ItemUtils {
             statColor = ChatColor.WHITE;
             plusOrMinus = " ";
         }
+    }
+
+    public static final Set<Material> weapons = EnumSet.of(
+            Material.WOODEN_AXE,
+            Material.STONE_AXE,
+            Material.GOLDEN_AXE,
+            Material.IRON_AXE,
+            Material.DIAMOND_AXE,
+            Material.NETHERITE_AXE,
+            Material.WOODEN_SWORD,
+            Material.STONE_SWORD,
+            Material.GOLDEN_SWORD,
+            Material.IRON_SWORD,
+            Material.DIAMOND_SWORD,
+            Material.NETHERITE_SWORD,
+            Material.WOODEN_SHOVEL,
+            Material.STONE_SHOVEL,
+            Material.GOLDEN_SHOVEL,
+            Material.IRON_SHOVEL,
+            Material.DIAMOND_SHOVEL,
+            Material.NETHERITE_SHOVEL,
+            Material.WOODEN_HOE,
+            Material.STONE_HOE,
+            Material.GOLDEN_HOE,
+            Material.IRON_HOE,
+            Material.DIAMOND_HOE,
+            Material.NETHERITE_HOE,
+            Material.SHEARS
+    );
+
+    public static ItemStack getItem(ItemStack item, String name, String ... lore) {
+        ItemMeta meta = item.getItemMeta();
+
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+
+        List<String> lores = new ArrayList<>();
+        for (String s : lore) {
+            lores.add(ChatColor.translateAlternateColorCodes('&', s));
+        }
+
+        meta.setLore(lores);
+
+        item.setItemMeta(meta);
+
+        return item;
     }
 
     public static void updateAttributes(Player p, String weaponItemData, String helmetItemData, String chestplateItemData, String leggingsItemData, String bootsItemData) {

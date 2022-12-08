@@ -1,15 +1,21 @@
 package me.devoria;
 
-
-import me.devoria.commands.ClassCommand;
+import me.devoria.commands.Adventure;
+import me.devoria.commands.Creative;
 import me.devoria.commands.GetItemInfo;
 import me.devoria.commands.IdentifyCommand;
 import me.devoria.commands.ItemCommand;
 import me.devoria.commands.LootCommand;
+import me.devoria.commands.OpenFactionGUI;
 import me.devoria.commands.RegisterCommand;
+import me.devoria.commands.Spectator;
 import me.devoria.commands.SummonMob;
+import me.devoria.commands.Survival;
+import me.devoria.cooldowns.CooldownManager;
 import me.devoria.guis.ClassSelectGUI;
+import me.devoria.listeners.GUIListener;
 import me.devoria.listeners.Listeners;
+import me.devoria.listeners.PlayerListener;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,6 +26,7 @@ import java.io.IOException;
 public class Devoria extends JavaPlugin {
 
     private static Devoria instance;
+    private CooldownManager cdInstance;
     private static ClassSelectGUI classSelectGUI;
     public static File dataFolder;
 
@@ -39,6 +46,8 @@ public class Devoria extends JavaPlugin {
 
     public void registerListeners() {
         getServer().getPluginManager().registerEvents(new Listeners(), this);
+        new PlayerListener(this);
+        new GUIListener(this);
         getServer().getPluginManager().registerEvents(classSelectGUI = new ClassSelectGUI(), this);
     }
 
@@ -49,6 +58,11 @@ public class Devoria extends JavaPlugin {
         this.getCommand("loot").setExecutor(new LootCommand());
         this.getCommand("identify").setExecutor(new IdentifyCommand());
         this.getCommand("summonmob").setExecutor(new SummonMob());
+        getCommand("survival").setExecutor(new Survival());
+        getCommand("creative").setExecutor(new Creative());
+        getCommand("adventure").setExecutor(new Adventure());
+        getCommand("spectator").setExecutor(new Spectator());
+        getCommand("factions").setExecutor(new OpenFactionGUI());
     }
 
 
@@ -86,5 +100,9 @@ public class Devoria extends JavaPlugin {
     }
     public static ClassSelectGUI getClassSelectGUI() {
         return classSelectGUI;
+    }
+
+    public CooldownManager getCdInstance() {
+        return cdInstance;
     }
 }
