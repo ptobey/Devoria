@@ -58,4 +58,9 @@ public class EyeofLight extends Spell {
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_CHIME, 2f, 0.1f);
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_BELL_RESONATE, 2f, 1.9f);
     }
+
+    @Override
+    public String toString() {
+        return "EyeOfLight";
+    }
 }

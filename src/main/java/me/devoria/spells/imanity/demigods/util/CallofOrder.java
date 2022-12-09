@@ -1,4 +1,6 @@
 package me.devoria.spells.imanity.demigods.util;
 
-public class CallofOrder {
+import me.devoria.spells.Spell;
+
+public class CallofOrder extends Spell {
 }

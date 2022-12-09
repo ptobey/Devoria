@@ -1,9 +1,7 @@
 package me.devoria.listeners;
 
-import me.devoria.Devoria;
 import me.devoria.guis.FactionGUI;
 import me.devoria.player.PlayerStats;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,7 +22,7 @@ public class GUIListener implements Listener {
     public void onInvClose(InventoryCloseEvent event) {
         switch (event.getView().getTitle()) {
             case FactionGUI.invName:
-                if (PlayerStats.getStats((Player) event.getPlayer(), event.getPlayer().getUniqueId()).faction != null) break;
+                if (PlayerStats.getStats(event.getPlayer().getUniqueId()).getFaction() != null) break;
                 FactionGUI.openGUI((Player) event.getPlayer());
         }
     }

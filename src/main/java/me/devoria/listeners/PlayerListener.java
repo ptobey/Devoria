@@ -35,22 +35,22 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerListener implements Listener {
     private final Devoria plugin = Devoria.getInstance();
     CooldownManager cooldownManager = plugin.getCdInstance();
-    @EventHandler
-    public void onPlayerLogin(PlayerLoginEvent event) {
-        UUID pUUID = event.getPlayer().getUniqueId();
-        CooldownManager cooldownManager = plugin.getCdInstance();
-        cooldownManager.createContainer(pUUID);
-    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
+        CooldownManager cooldownManager = plugin.getCdInstance();
+        cooldownManager.createContainer(p.getUniqueId());
+        PlayerStats pData = PlayerStats.getStats(p.getUniqueId());
+        pData.save();
+
         p.sendMessage("§aWelcome to Eternia!");
         //Health Bar
         new BukkitRunnable(){
@@ -63,7 +63,6 @@ public class PlayerListener implements Listener {
                 PlayerUtils.updateHealthBar(p);
             }
         }.runTaskTimer(Devoria.getInstance(), 0L, 40L);
-
         //HPR
         new BukkitRunnable() {
             final int log = p.getStatistic(Statistic.LEAVE_GAME);
@@ -229,14 +228,14 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void playerLeftClick(PlayerAnimationEvent event) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    public void playerLeftClick(PlayerAnimationEvent event) {
         Player player = event.getPlayer();
         // PlayerInteractEvent doesn't work with LEFT_CLICK_BLOCK in adventure mode, so using this for that.
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || event.getAnimationType() != PlayerAnimationType.ARM_SWING || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType())) return;
         long cooldown = 10;
-        PlayerStats playerStats = PlayerStats.getStats(player, player.getUniqueId());
+        PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
 
-        if (playerStats.spellMode) {
+        if (true) {
             cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
             if (playerStats.spellTriggers.spellMode) {
                 playerStats.spellTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR);
@@ -257,14 +256,14 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void playerRightClick(PlayerInteractEvent event) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    public void playerRightClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Action action = event.getAction();
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || action == Action.LEFT_CLICK_AIR || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType())) return;
         long cooldown = (10);
-        PlayerStats playerStats = PlayerStats.getStats(player, player.getUniqueId());
+        PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
 
-        if (playerStats.spellMode) {
+        if (true) {
             cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
 
             if (playerStats.spellTriggers.spellMode) {
@@ -276,6 +275,10 @@ public class PlayerListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void playerQuit(PlayerQuitEvent event) {
+        PlayerStats.playerStats.remove(event.getPlayer().getUniqueId());
+    }
 
     @EventHandler
     public void playerHit(EntityDamageEvent event) {

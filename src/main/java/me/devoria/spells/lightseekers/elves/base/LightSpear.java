@@ -54,4 +54,9 @@ public class LightSpear extends Spell {
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 0.2f, 1f);
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_AMETHYST_CLUSTER_BREAK, 2f, 2f);
     }
+
+    @Override
+    public String toString() {
+        return "LightSpear";
+    }
 }

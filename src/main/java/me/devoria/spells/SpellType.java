@@ -4,5 +4,6 @@ public enum SpellType {
     BASE,
     UTIL,
     HEAVY,
-    MOVEMENT
+    MOVEMENT;
+
 }
