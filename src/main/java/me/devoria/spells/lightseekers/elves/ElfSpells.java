@@ -7,8 +7,8 @@ import me.devoria.spells.lightseekers.elves.movement.LeapofFate;
 import me.devoria.spells.lightseekers.elves.util.EyeofLight;
 
 public class ElfSpells {
-    public static Spell LIGHT_SPEAR = new LightSpear();
-    public static Spell EYE_OF_LIGHT = new EyeofLight();
-    public static Spell LEAP_OF_FATE = new LeapofFate();
-    public static Spell ARROW_RAIN = new ArrowRain();
+    public static final Spell LIGHT_SPEAR = new LightSpear();
+    public static final Spell EYE_OF_LIGHT = new EyeofLight();
+    public static final Spell LEAP_OF_FATE = new LeapofFate();
+    public static final Spell ARROW_RAIN = new ArrowRain();
 }

@@ -7,8 +7,8 @@ import me.devoria.spells.lightseekers.astreans.movement.Warp;
 import me.devoria.spells.lightseekers.astreans.util.LightPlague;
 
 public class AstreanSpells {
-    public static Spell LIGHT_SURGE = new LightSurge();
-    public static Spell OMNIBLAST = new Omniblast();
-    public static Spell WARP = new Warp();
-    public static Spell LIGHT_PLAGUE = new LightPlague();
+    public static final Spell LIGHT_SURGE = new LightSurge();
+    public static final Spell OMNIBLAST = new Omniblast();
+    public static final Spell WARP = new Warp();
+    public static final Spell LIGHT_PLAGUE = new LightPlague();
 }

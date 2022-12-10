@@ -7,8 +7,8 @@ import me.devoria.spells.lightseekers.aquans.movement.Ripwhirl;
 import me.devoria.spells.lightseekers.aquans.util.OceanPower;
 
 public class AquanSpells {
-    public static Spell AQUAJET = new AquaJet();
-    public static Spell OCEAN_POWER = new OceanPower();
-    public static Spell RIPWHIRL = new Ripwhirl();
-    public static Spell WATER_PRISON = new WaterPrison();
+    public static final Spell AQUAJET = new AquaJet();
+    public static final Spell OCEAN_POWER = new OceanPower();
+    public static final Spell RIPWHIRL = new Ripwhirl();
+    public static final Spell WATER_PRISON = new WaterPrison();
 }

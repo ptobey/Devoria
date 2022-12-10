@@ -55,6 +55,8 @@ public abstract class Spell {
     }
 
     public String toString() {
+        Integer i = new Integer(1);
+        
         return null;
     }
 }

@@ -7,8 +7,8 @@ import me.devoria.spells.imanity.mages.movement.Teleport;
 import me.devoria.spells.imanity.mages.util.Channeling;
 
 public class MageSpells {
-    public static Spell MANA_PULL = new ManaPull();
-    public static Spell CHANNELING = new Channeling();
-    public static Spell TELEPORT = new Teleport();
-    public static Spell MANA_BURST = new ManaBurst();
+    public static final Spell MANA_PULL = new ManaPull();
+    public static final Spell CHANNELING = new Channeling();
+    public static final Spell TELEPORT = new Teleport();
+    public static final Spell MANA_BURST = new ManaBurst();
 }

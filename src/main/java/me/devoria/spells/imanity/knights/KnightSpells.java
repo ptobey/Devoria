@@ -7,8 +7,8 @@ import me.devoria.spells.imanity.knights.movement.RageLeap;
 import me.devoria.spells.imanity.knights.util.DivineProtection;
 
 public class KnightSpells {
-    public static Spell HEAVY_SLAM = new HeavySlam();
-    public static Spell DIVINE_PROTECTION = new DivineProtection();
-    public static Spell RAGE_LEAP = new RageLeap();
-    public static Spell KNIGHTS_JUSTICE = new KnightsJustice();
+    public static final Spell HEAVY_SLAM = new HeavySlam();
+    public static final Spell DIVINE_PROTECTION = new DivineProtection();
+    public static final Spell RAGE_LEAP = new RageLeap();
+    public static final Spell KNIGHTS_JUSTICE = new KnightsJustice();
 }
