@@ -1,10 +1,10 @@
-package me.devoria.spells.lightseekers.angels.util;
+package me.devoria.spells.imanity.knights.movement;
 
 import me.devoria.cooldowns.CooldownManager;
 import me.devoria.spells.Spell;
 import org.bukkit.entity.Player;
 
-public class Aura extends Spell {
+public class RageLeap extends Spell {
     @Override
     public void cast(Player p, CooldownManager cooldownManager) {
 
@@ -12,6 +12,6 @@ public class Aura extends Spell {
 
     @Override
     public String toString() {
-        return "Aura";
+        return "RageLeap";
     }
 }
