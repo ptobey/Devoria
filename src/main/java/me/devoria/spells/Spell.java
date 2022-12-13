@@ -12,9 +12,8 @@ import me.devoria.spells.lightseekers.elves.ElfSpells;
 import org.bukkit.entity.Player;
 
 public abstract class Spell {
-    public void cast(Player p, CooldownManager cooldownManager) {
-        // just for things to inherit from :)
-    }
+    public abstract void cast(Player p, CooldownManager cooldownManager);
+    public abstract String toString();
 
     public static Spell fromString(String string) {
         return switch (string) {
@@ -50,13 +49,7 @@ public abstract class Spell {
             case "ArrowRain" -> ElfSpells.ARROW_RAIN;
             case "LeapOfFate" -> ElfSpells.LEAP_OF_FATE;
             case "EyeOfLight" -> ElfSpells.EYE_OF_LIGHT;
-            case default -> null;
+            default -> throw new IllegalStateException("Unexpected value: " + string);
         };
-    }
-
-    public String toString() {
-        Integer i = new Integer(1);
-        
-        return null;
     }
 }

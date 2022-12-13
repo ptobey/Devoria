@@ -38,7 +38,7 @@ public class Devoria extends JavaPlugin {
         dataFolder = getDataFolder();
         instance = this;
 
-        saveDefaultConfig();
+        //saveDefaultConfig();
         createCustomConfig();
         registerListeners();
         registerCommands();

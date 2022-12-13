@@ -4,7 +4,8 @@ public enum FactionType {
     IMANITY,
     LIGHTSEEKER,
     HELLSCAPER,
-    CAVEDWELLER;
+    CAVEDWELLER,
+    NONE;
 
     public static FactionType fromString(String string) {
         switch (string) {
@@ -12,7 +13,7 @@ public enum FactionType {
             case "lightseeker": return LIGHTSEEKER;
             case "hellscaper": return HELLSCAPER;
             case "cavedweller": return CAVEDWELLER;
-            case default: return null;
+            default: return NONE;
         }
     }
 
@@ -22,7 +23,7 @@ public enum FactionType {
             case LIGHTSEEKER: return "lightseeker";
             case HELLSCAPER: return "hellscaper";
             case CAVEDWELLER: return "cavedweller";
-            case default: return null;
+            default: return "none";
         }
     }
 }

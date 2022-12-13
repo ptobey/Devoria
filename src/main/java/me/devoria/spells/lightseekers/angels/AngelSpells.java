@@ -6,9 +6,9 @@ import me.devoria.spells.lightseekers.angels.heavy.CurseoftheDamned;
 import me.devoria.spells.lightseekers.angels.movement.Flight;
 import me.devoria.spells.lightseekers.angels.util.Aura;
 
-public class AngelSpells {
-    public static final Spell ANGELIC_VOICE = new AngelicVoice();
-    public static final Spell AURA = new Aura();
-    public static final Spell FLIGHT = new Flight();
-    public static final Spell CURSE_OF_THE_DAMNED = new CurseoftheDamned();
+public interface AngelSpells {
+    Spell ANGELIC_VOICE = new AngelicVoice();
+    Spell AURA = new Aura();
+    Spell FLIGHT = new Flight();
+    Spell CURSE_OF_THE_DAMNED = new CurseoftheDamned();
 }

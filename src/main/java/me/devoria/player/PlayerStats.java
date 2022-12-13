@@ -12,36 +12,38 @@ import me.devoria.spells.SpellTriggers;
 import me.devoria.spells.imanity.humans.HumanSpells;
 import me.devoria.spells.lightseekers.elves.ElfSpells;
 import me.devoria.utils.JsonUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class PlayerStats {
-    public static HashMap<UUID, PlayerStats> playerStats = new HashMap<>();
+    public static Map<UUID, PlayerStats> playerStats = new HashMap<>();
     private static final Path STORAGE_FOLDER = Devoria.getInstance().getDataFolder().toPath().resolve("PlayerData");
     private final Path storage;
     private final UUID uuid;
-    private FactionType faction;
-    private AffinityType affinity;
+    public SpellTriggers spellTriggers;
+    private FactionType faction = FactionType.NONE;
+    private AffinityType affinity = AffinityType.NONE;
     private Spell[] spells = {
-            HumanSpells.HEROIC_STRIKE,
-            HumanSpells.ADVENTURERS_AURA,
-            HumanSpells.ENERGY_BURST,
-            HumanSpells.DASH
+        null,
+        null,
+        null,
+        null
     };
     private int maxMana = 100;
     private int currentMana = 100;
-    public SpellTriggers spellTriggers;
 
     @Override
     public String toString() {
         return "PlayerData{" +
-                "uuid=" + uuid +
-                ", faction='" + faction +
-                ", affinity='" + affinity +
-                ", spellRLR='" + spells[0] +
-                ", spellRRL='" + spells[1] +
-                ", spellRLL='" + spells[2] +
-                ", spellRRR='" + spells[3] +
-                ", mana=" + +
+                "uuid=" + uuid.toString() +
+                ", faction='" + faction.toString() +
+                ", affinity='" + affinity.toString() +
+                ", spellRLR='" + spells[0].toString() +
+                ", spellRRL='" + spells[1].toString() +
+                ", spellRLL='" + spells[2].toString() +
+                ", spellRRR='" + spells[3].toString() +
+                ", maxMana=" + maxMana +
+                ", mana=" + currentMana +
                 '}';
     }
 
@@ -88,6 +90,7 @@ public class PlayerStats {
     public PlayerStats(UUID uuid) {
         this.uuid = uuid;
         this.storage = STORAGE_FOLDER.resolve(uuid + ".json");
+        this.spellTriggers = new SpellTriggers(Bukkit.getPlayer(uuid));
     }
     
     public static PlayerStats getStats(UUID uuid) {
@@ -106,6 +109,8 @@ public class PlayerStats {
                 // print the error
                 e.printStackTrace();
             }
+
+            System.out.println(data);
             playerStats.put(uuid, data);
         }
         return data;
@@ -126,8 +131,8 @@ public class PlayerStats {
 
     public void save() {
         try {
-            this.createJSON();
-            Files.writeString(this.storage, JsonUtils.GSON.toJson(this));
+            createJSON();
+            Files.writeString(storage, JsonUtils.GSON.toJson(this));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -135,6 +140,6 @@ public class PlayerStats {
 
     public void saveAndDelete() {
         save();
-        playerStats.remove(this,uuid);
+        playerStats.remove(uuid, this);
     }
 }

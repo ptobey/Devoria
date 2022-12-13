@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.UUID;
 import me.devoria.Devoria;
 import me.devoria.cooldowns.CooldownManager;
+import me.devoria.player.AffinityType;
+import me.devoria.player.FactionType;
 import me.devoria.player.PlayerStats;
+import me.devoria.spells.imanity.humans.HumanSpells;
 import me.devoria.utils.FastUtils;
 import me.devoria.utils.ItemUtils;
 import me.devoria.utils.PlayerUtils;
@@ -46,7 +49,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        CooldownManager cooldownManager = plugin.getCdInstance();
         cooldownManager.createContainer(p.getUniqueId());
         PlayerStats pData = PlayerStats.getStats(p.getUniqueId());
         pData.save();
@@ -83,6 +85,15 @@ public class PlayerListener implements Listener {
             p.setMetadata("healthStats", new FixedMetadataValue(Devoria.getInstance(), ",currentHealth:1000"));
         }
         ItemUtils.updateAttributes(p, -1);
+    }
+
+    @EventHandler
+    public void playerQuit(PlayerQuitEvent event) {
+        UUID uuid = event.getPlayer().getUniqueId();
+        CooldownManager cooldownManager = plugin.getCdInstance();
+        cooldownManager.removeContainer(uuid);
+        PlayerStats playerData = PlayerStats.getStats(uuid);
+        playerData.saveAndDelete();
     }
 
     @EventHandler
@@ -275,10 +286,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void playerQuit(PlayerQuitEvent event) {
-        PlayerStats.playerStats.remove(event.getPlayer().getUniqueId());
-    }
+
 
     @EventHandler
     public void playerHit(EntityDamageEvent event) {
