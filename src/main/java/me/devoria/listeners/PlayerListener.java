@@ -1,16 +1,12 @@
 package me.devoria.listeners;
 
 import java.io.FileNotFoundException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import me.devoria.Devoria;
 import me.devoria.cooldowns.CooldownManager;
-import me.devoria.player.AffinityType;
-import me.devoria.player.FactionType;
 import me.devoria.player.PlayerStats;
-import me.devoria.spells.imanity.humans.HumanSpells;
 import me.devoria.utils.FastUtils;
 import me.devoria.utils.ItemUtils;
 import me.devoria.utils.PlayerUtils;
@@ -37,7 +33,6 @@ import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -246,11 +241,9 @@ public class PlayerListener implements Listener {
         long cooldown = 10;
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
 
-        if (true) {
+        if (playerStats.spellTriggers.spellMode) {
+            playerStats.spellTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR);
             cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
-            if (playerStats.spellTriggers.spellMode) {
-                playerStats.spellTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR);
-            }
         }
     }
 
@@ -274,16 +267,14 @@ public class PlayerListener implements Listener {
         long cooldown = (10);
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
 
-        if (true) {
-            cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
+        cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
 
-            if (playerStats.spellTriggers.spellMode) {
-                playerStats.spellTriggers.continueNormalSpell(action);
-                return;
-            }
-
-            playerStats.spellTriggers.enterSpellMode();
+        if (playerStats.spellTriggers.spellMode) {
+            playerStats.spellTriggers.continueNormalSpell(action);
+            return;
         }
+
+        playerStats.spellTriggers.enterSpellMode();
     }
 
 

@@ -99,6 +99,7 @@ public class PlayerStats {
             Path path = STORAGE_FOLDER.resolve(uuid.toString() + ".json");
             if (!Files.exists(path)) {
                 data = new PlayerStats(uuid);
+                playerStats.put(uuid, data);
                 return data;
             }
             try {
@@ -109,8 +110,6 @@ public class PlayerStats {
                 // print the error
                 e.printStackTrace();
             }
-
-            System.out.println(data);
             playerStats.put(uuid, data);
         }
         return data;
