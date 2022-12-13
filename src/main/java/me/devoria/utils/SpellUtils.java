@@ -9,11 +9,9 @@ import org.bukkit.entity.Player;
 
 public class SpellUtils {
     public static void redirect(Player player, UUID pUUID, SpellType spellType) {
-        player.sendMessage("Redirecting...");
         PlayerStats stats = PlayerStats.getStats(pUUID);
         Spell spell = getSpell(spellType, stats);
         if (spell == null) return;
-        player.sendMessage("Spell has been found!");
         spell.cast(player, Devoria.getInstance().getCdInstance());
     }
 
