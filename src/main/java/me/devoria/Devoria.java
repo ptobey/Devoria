@@ -17,6 +17,7 @@ import me.devoria.guis.ClassSelectGUI;
 import me.devoria.listeners.EntityListener;
 import me.devoria.listeners.GUIListener;
 import me.devoria.listeners.PlayerListener;
+import me.devoria.player.PlayerStats;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -37,11 +38,13 @@ public class Devoria extends JavaPlugin {
         dataFolder = getDataFolder();
         instance = this;
 
+        //saveDefaultConfig();
         createCustomConfig();
         registerListeners();
         registerCommands();
     }
     public void onDisable() {
+        PlayerStats.saveAll();
     }
 
     public void registerListeners() {

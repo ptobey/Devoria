@@ -81,4 +81,9 @@ public class ArrowRain extends Spell {
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ALLAY_AMBIENT_WITHOUT_ITEM, 1f, 2f);
         player.getWorld().playSound(player.getLocation(), Sound.ITEM_TRIDENT_RIPTIDE_3, 0.4f, 1.1f);
     }
+
+    @Override
+    public String toString() {
+        return "ArrowRain";
+    }
 }

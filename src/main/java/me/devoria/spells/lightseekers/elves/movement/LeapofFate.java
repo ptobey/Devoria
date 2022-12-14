@@ -43,4 +43,9 @@ public class LeapofFate extends Spell {
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_HORSE_JUMP, 0.6f, 1f);
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CONDUIT_AMBIENT_SHORT, 2f, 2f);
     }
+
+    @Override
+    public String toString() {
+        return "LeapOfFate";
+    }
 }

@@ -79,13 +79,13 @@ public class FactionGUI {
 
     public static void clickedGUI(InventoryClickEvent event) {
         event.setCancelled(true);
-        PlayerStats stats = PlayerStats.getStats((Player) event.getWhoClicked(), event.getWhoClicked().getUniqueId());
+        PlayerStats stats = PlayerStats.getStats(event.getWhoClicked().getUniqueId());
         switch (event.getSlot()) {
             case imanitySlot:
-                stats.faction = FactionType.IMANITY;
+                stats.setFaction(FactionType.IMANITY);
                 AffinityGUI.openGUI((Player) event.getWhoClicked());
             case lightbringerSlot:
-                stats.faction = FactionType.LIGHTSEEKER;
+                stats.setFaction(FactionType.LIGHTSEEKER);
                 AffinityGUI.openGUI((Player) event.getWhoClicked());
         }
     }
