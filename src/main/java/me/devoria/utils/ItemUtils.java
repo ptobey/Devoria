@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import me.devoria.Devoria;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -736,7 +736,7 @@ public class ItemUtils {
 
 
         lore.add("");
-        lore.add(rarityColor+ StringUtils.capitalize(String.valueOf(rarity))+" "+StringUtils.capitalize(String.valueOf(type)));
+        lore.add(rarityColor+ StringUtils.capitalize(String.valueOf(rarity))+" "+ StringUtils.capitalize(String.valueOf(type)));
 
         Material item = Material.STICK;
 
