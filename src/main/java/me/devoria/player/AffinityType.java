@@ -35,7 +35,7 @@ public enum AffinityType {
             case AQUAN -> "aquan";
             case ASTREAN -> "astrean";
             case ELF -> "elf";
-            case NONE -> null;
+            case NONE -> "none";
         };
     }
 }

@@ -1,5 +1,6 @@
 package me.devoria.spells;
 
+import javax.annotation.Nullable;
 import me.devoria.cooldowns.CooldownManager;
 import me.devoria.spells.imanity.demigods.DemigodSpells;
 import me.devoria.spells.imanity.humans.HumanSpells;
@@ -49,6 +50,7 @@ public abstract class Spell {
             case "ArrowRain" -> ElfSpells.ARROW_RAIN;
             case "LeapOfFate" -> ElfSpells.LEAP_OF_FATE;
             case "EyeOfLight" -> ElfSpells.EYE_OF_LIGHT;
+            case "Default" -> DefaultSpells.DEFAULT;
             default -> throw new IllegalStateException("Unexpected value: " + string);
         };
     }

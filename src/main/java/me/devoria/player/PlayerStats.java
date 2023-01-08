@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import me.devoria.Devoria;
+import me.devoria.spells.DefaultSpell;
+import me.devoria.spells.DefaultSpells;
 import me.devoria.spells.Spell;
 import me.devoria.spells.SpellTriggers;
 import me.devoria.spells.imanity.humans.HumanSpells;
@@ -24,10 +26,10 @@ public class PlayerStats {
     private FactionType faction = FactionType.NONE;
     private AffinityType affinity = AffinityType.NONE;
     private Spell[] spells = {
-        null,
-        null,
-        null,
-        null
+            DefaultSpells.DEFAULT,
+            DefaultSpells.DEFAULT,
+            DefaultSpells.DEFAULT,
+            DefaultSpells.DEFAULT
     };
     private int maxMana = 100;
     private int currentMana = 100;
