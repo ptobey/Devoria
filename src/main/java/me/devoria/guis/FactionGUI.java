@@ -83,9 +83,11 @@ public class FactionGUI {
         switch (event.getSlot()) {
             case imanitySlot:
                 stats.setFaction(FactionType.IMANITY);
+                stats.save();
                 AffinityGUI.openGUI((Player) event.getWhoClicked());
             case lightbringerSlot:
                 stats.setFaction(FactionType.LIGHTSEEKER);
+                stats.save();
                 AffinityGUI.openGUI((Player) event.getWhoClicked());
         }
     }

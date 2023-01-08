@@ -13,9 +13,7 @@ import me.devoria.commands.SpellMode;
 import me.devoria.commands.SummonMob;
 import me.devoria.commands.Survival;
 import me.devoria.cooldowns.CooldownManager;
-import me.devoria.guis.ClassSelectGUI;
 import me.devoria.listeners.EntityListener;
-import me.devoria.listeners.GUIListener;
 import me.devoria.listeners.PlayerListener;
 import me.devoria.player.PlayerStats;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -29,7 +27,6 @@ public class Devoria extends JavaPlugin {
 
     private static Devoria instance;
     private CooldownManager cdInstance;
-    private static ClassSelectGUI classSelectGUI;
     public static File dataFolder;
 
 
@@ -51,7 +48,6 @@ public class Devoria extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EntityListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new EntityListener(), this);
-        getServer().getPluginManager().registerEvents(classSelectGUI = new ClassSelectGUI(), this);
     }
 
     public void registerCommands() {
@@ -101,9 +97,6 @@ public class Devoria extends JavaPlugin {
     }
     public static Devoria getInstance() {
         return instance;
-    }
-    public static ClassSelectGUI getClassSelectGUI() {
-        return classSelectGUI;
     }
 
     public CooldownManager getCdInstance() {
