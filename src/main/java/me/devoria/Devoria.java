@@ -77,8 +77,11 @@ public class Devoria extends JavaPlugin {
         try {
             customConfig.load(makeItemsFolder);
         } catch (IOException | InvalidConfigurationException e) {
+            /*
+             Do nothing for now, since it doesn't seem to be used.
             e.printStackTrace();
             System.out.println("Ignore This");
+            */
         }
 
         File mobFolder = new File(dataFolder, "mobs/");
@@ -90,8 +93,11 @@ public class Devoria extends JavaPlugin {
         try {
             customConfig.load(mobFolder);
         } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-            System.out.println("Ignore This");
+            /*
+             Do nothing for now, since it doesn't seem to be used.
+             e.printStackTrace();
+             System.out.println("Ignore This");
+            */
         }
 
     }
