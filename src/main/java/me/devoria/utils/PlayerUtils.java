@@ -3,7 +3,10 @@ package me.devoria.utils;
 import com.ticxo.modelengine.api.ModelEngineAPI;
 import com.ticxo.modelengine.api.model.ModeledEntity;
 import me.devoria.Devoria;
+import me.devoria.player.PlayerStats;
+import me.devoria.spells.SpellTriggers;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minestom.server.network.packet.client.ClientPacketsHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Statistic;
@@ -215,8 +218,14 @@ public class PlayerUtils {
         String maxHealth = playerStatsMap.get("health");
         String currentHealth = healthStatsMap.get("currentHealth");
 
+        SpellTriggers triggers = PlayerStats.getStats(p.getUniqueId()).spellTriggers;
 
-        p.sendActionBar(ChatColor.DARK_RED + "❤ " + currentHealth + "/" + maxHealth);
+
+        if (triggers.spellMode)
+            p.sendActionBar(ChatColor.DARK_RED + "❤ " + currentHealth + "/" + maxHealth + "    " + triggers.currentMessage);
+        else
+            p.sendActionBar(ChatColor.DARK_RED + "❤ " + currentHealth + "/" + maxHealth);
+
     }
 
     public static void updateHealthBar(Entity e) {

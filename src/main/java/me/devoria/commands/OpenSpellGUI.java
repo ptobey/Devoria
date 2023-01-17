@@ -14,13 +14,13 @@ public class OpenSpellGUI implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         for (String string : args) {
             if (Bukkit.getPlayer(string) != null) {
-                SpellsGUI.openGUI(Bukkit.getPlayer(string));
+                //SpellsGUI.openGUI(Bukkit.getPlayer(string));
                 return true;
             }
         }
 
         if (!(sender instanceof Player)) return false;
-        SpellsGUI.openGUI((Player) sender);
+        //SpellsGUI.openGUI((Player) sender);
         return true;
     }
 }

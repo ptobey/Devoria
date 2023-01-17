@@ -2,6 +2,7 @@ package me.devoria.spells;
 
 import me.devoria.Devoria;
 import me.devoria.cooldowns.CooldownManager;
+import me.devoria.utils.PlayerUtils;
 import me.devoria.utils.SpellUtils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -11,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 public class SpellTriggers {
     public Devoria plugin = Devoria.getInstance();
@@ -24,10 +27,21 @@ public class SpellTriggers {
     public boolean spellMode = false;
     public int clicksSoFar = 0;
     public boolean[] spellClicks = new boolean[2]; //left = false, right = true.
+    private BukkitTask inactivityTimer;
     public void enterSpellMode() {
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_LEVER_CLICK, 0.5f, 1f);
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(currentMessage));
         spellMode = true;
+        PlayerUtils.updateHealthBar(player);
+        inactivityTimer = new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.sendMessage(ChatColor.RED + "Spell cancelled due to inactivity.");
+                spellMode = false;
+                clicksSoFar = 0;
+                spellClicks = new boolean[2];
+                currentMessage = ChatColor.GREEN.toString() + ChatColor.UNDERLINE +  "R" + ChatColor.RESET + ChatColor.RED + " _ _";
+            }
+        }.runTaskLater(plugin, 60L);
     }
     public void continueNormalSpell(Action clickType) {
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_LEVER_CLICK, 0.5f, 0.8f);
@@ -48,7 +62,7 @@ public class SpellTriggers {
                         /*IF WE ARE LEFT CLICKING*/ ChatColor.GREEN.toString() + ChatColor.UNDERLINE +  "R R L";
             }
         }
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(currentMessage));
+        PlayerUtils.updateHealthBar(player);
         if (clicksSoFar < 2) {
             spellClicks[clicksSoFar] = click;
         }
@@ -62,10 +76,12 @@ public class SpellTriggers {
         }
     }
     public void finishSpell() {
+        inactivityTimer.cancel();
         boolean firstClick = spellClicks[0];
         boolean secondClick = spellClicks[1];
 
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.YELLOW + "Casted!"));
+        currentMessage = ChatColor.YELLOW + "Casted!";
+        PlayerUtils.updateHealthBar(player);
 
         // If the notation is LEFT-RIGHT
         if (!firstClick && secondClick) {

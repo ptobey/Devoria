@@ -1,14 +1,22 @@
 package me.devoria.guis;
 
+import java.util.Arrays;
 import me.devoria.player.AffinityType;
 import me.devoria.player.FactionType;
+import me.devoria.player.PlayerStats;
+import me.devoria.spells.Spell;
+import me.devoria.spells.imanity.humans.HumanSpells;
+import me.devoria.spells.lightseekers.elves.ElfSpells;
 import me.devoria.utils.ItemUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.units.qual.A;
 
 public class AffinityGUI {
     private static final int dpsSlot = 10;
@@ -17,15 +25,26 @@ public class AffinityGUI {
     private static final int balanceSlot = 43;
     public static final String invName = "Affinity Selector";
     public static void openGUI(Player player, FactionType type) {
-        AffinityType[] classes = switch(type) {
-            case IMANITY -> {
-                AffinityType.HUMAN,
-                AffinityType.
-            }
-            case LIGHTSEEKER -> AffinityType.AQUAN;
-            default -> AffinityType.NONE;
+        ItemStack[] classes = switch(type) {
+            case IMANITY -> new ItemStack[] {
+                    ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Demigod", "Lore Required"),
+                    ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Mage", "Lore Required"),
+                    ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Ancient Knight", "Lore Required"),
+                    ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Human", "Lore Required")
+            };
+            case LIGHTSEEKER -> new ItemStack[] {
+                    ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Aquan", "Lore Required"),
+                    ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Elf", "Lore Required"),
+                    ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Angel", "Lore Required"),
+                    ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Astrean", "Lore Required")
+            };
+            default -> new ItemStack[] {
+                    ItemUtils.getItem(new ItemStack(Material.BARRIER), "ERROR", "Please contact a moderator if you are seeing this."),
+                    ItemUtils.getItem(new ItemStack(Material.BARRIER), "ERROR", "Please contact a moderator if you are seeing this."),
+                    ItemUtils.getItem(new ItemStack(Material.BARRIER), "ERROR", "Please contact a moderator if you are seeing this."),
+                    ItemUtils.getItem(new ItemStack(Material.BARRIER), "ERROR", "Please contact a moderator if you are seeing this.")
+            };
         };
-        if (dps == null ||) throw new NullPointerException();
 
         Inventory inv = Bukkit.createInventory(player, 9 * 6, invName);
         for (int i = 0; i < 3; i++) {
@@ -38,13 +57,13 @@ public class AffinityGUI {
             inv.setItem(i, ItemUtils.getItem(new ItemStack(Material.PINK_STAINED_GLASS_PANE), ""));
         }
         inv.setItem(9, ItemUtils.getItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ""));
-        inv.setItem(dpsSlot, ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING),"Imanity", "The children of God, these beings utilize life magic in all shapes and forms."));
+        inv.setItem(dpsSlot, classes[0]);
         inv.setItem(11, ItemUtils.getItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ""));
         for (int i = 12; i < 15; i++) {
             inv.setItem(i, ItemUtils.getItem(new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE), ""));
         }
         inv.setItem(15, ItemUtils.getItem(new ItemStack(Material.PINK_STAINED_GLASS_PANE), ""));
-        inv.setItem(rangedSlot, ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING),"Lightseekers", "The faithful servants of the light created by Akilion to protect and serve the light."));
+        inv.setItem(rangedSlot, classes[1]);
         inv.setItem(17, ItemUtils.getItem(new ItemStack(Material.PINK_STAINED_GLASS_PANE), ""));
         for (int i = 18; i < 21; i++) {
             inv.setItem(i, ItemUtils.getItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ""));
@@ -65,13 +84,13 @@ public class AffinityGUI {
             inv.setItem(i, ItemUtils.getItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), ""));
         }
         inv.setItem(36, ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ""));
-        inv.setItem(tankSlot, ItemUtils.getItem(new ItemStack(Material.BARRIER),"Hellscapers", "Coming Soon..."));
+        inv.setItem(tankSlot, classes[2]);
         inv.setItem(38, ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ""));
         for (int i = 39; i < 42; i++) {
             inv.setItem(i, ItemUtils.getItem(new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE), ""));
         }
         inv.setItem(42, ItemUtils.getItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), ""));
-        inv.setItem(balanceSlot, ItemUtils.getItem(new ItemStack(Material.BARRIER),"Cavedwellers", "Coming Soon..."));
+        inv.setItem(balanceSlot, classes[3]);
         inv.setItem(44, ItemUtils.getItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), ""));
         for (int i = 45; i < 48; i++) {
             inv.setItem(i, ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ""));
@@ -87,5 +106,93 @@ public class AffinityGUI {
     }
 
     public static void clickedGUI(InventoryClickEvent event) {
+        event.setCancelled(true);
+        PlayerStats stats = PlayerStats.getStats(event.getWhoClicked().getUniqueId());
+        switch (event.getSlot()) {
+            case dpsSlot:
+                switch (stats.getFaction()) {
+                    case IMANITY -> {
+                        stats.setAffinity(AffinityType.DEMIGOD);
+                        stats.save();
+                        event.getWhoClicked().closeInventory();
+                    }
+                    case LIGHTSEEKER -> {
+                        stats.setAffinity(AffinityType.AQUAN);
+                        stats.save();
+                        event.getWhoClicked().closeInventory();
+                    }
+                    default -> {
+                        event.getWhoClicked().sendMessage(ChatColor.RED + "Please contact an administrator or SleepingRaven#0604 on Discord if you see this message.");
+                        event.getWhoClicked().closeInventory();
+                    }
+                }
+                break;
+            case rangedSlot:
+                switch (stats.getFaction()) {
+                    case IMANITY -> {
+                        stats.setAffinity(AffinityType.MAGE);
+                        stats.save();
+                        event.getWhoClicked().closeInventory();
+                    }
+                    case LIGHTSEEKER -> {
+                        stats.setAffinity(AffinityType.ELF);
+                        stats.setSpells(new Spell[] {
+                                ElfSpells.LIGHT_SPEAR,
+                                ElfSpells.EYE_OF_LIGHT,
+                                ElfSpells.ARROW_RAIN,
+                                ElfSpells.LEAP_OF_FATE
+                        });
+                        stats.save();
+                        event.getWhoClicked().closeInventory();
+                    }
+                    default -> {
+                        event.getWhoClicked().sendMessage(ChatColor.RED + "Please contact an administrator or SleepingRaven#0604 on Discord if you see this message.");
+                        event.getWhoClicked().closeInventory();
+                    }
+                }
+                break;
+            case tankSlot:
+                switch (stats.getFaction()) {
+                    case IMANITY -> {
+                        stats.setAffinity(AffinityType.KNIGHT);
+                        stats.save();
+                        event.getWhoClicked().closeInventory();
+                    }
+                    case LIGHTSEEKER -> {
+                        stats.setAffinity(AffinityType.ANGEL);
+                        stats.save();
+                        event.getWhoClicked().closeInventory();
+                    }
+                    default -> {
+                        event.getWhoClicked().sendMessage(ChatColor.RED + "Please contact an administrator or SleepingRaven#0604 on Discord if you see this message.");
+                        event.getWhoClicked().closeInventory();
+                    }
+                }
+                break;
+            case balanceSlot:
+                switch (stats.getFaction()) {
+                    case IMANITY -> {
+                        stats.setAffinity(AffinityType.HUMAN);
+                        stats.setSpells(new Spell[] {
+                                HumanSpells.HEROIC_STRIKE,
+                                HumanSpells.ADVENTURERS_AURA,
+                                HumanSpells.ENERGY_BURST,
+                                HumanSpells.DASH
+                        });
+                        stats.save();
+                        event.getWhoClicked().closeInventory();
+                    }
+                    case LIGHTSEEKER -> {
+                        stats.setAffinity(AffinityType.ASTREAN);
+                        stats.save();
+                        event.getWhoClicked().closeInventory();
+                    }
+                    default -> {
+                        event.getWhoClicked().sendMessage(ChatColor.RED + "Please contact an administrator or SleepingRaven#0604 on Discord if you see this message.");
+                        event.getWhoClicked().closeInventory();
+                    }
+                }
+                break;
+        }
     }
 }

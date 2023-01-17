@@ -14,6 +14,7 @@ import me.devoria.commands.SummonMob;
 import me.devoria.commands.Survival;
 import me.devoria.cooldowns.CooldownManager;
 import me.devoria.listeners.EntityListener;
+import me.devoria.listeners.GUIListener;
 import me.devoria.listeners.PlayerListener;
 import me.devoria.player.PlayerStats;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -47,7 +48,7 @@ public class Devoria extends JavaPlugin {
     public void registerListeners() {
         getServer().getPluginManager().registerEvents(new EntityListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new EntityListener(), this);
+        getServer().getPluginManager().registerEvents(new GUIListener(), this);
     }
 
     public void registerCommands() {
