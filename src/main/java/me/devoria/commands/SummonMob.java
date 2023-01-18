@@ -1,14 +1,12 @@
 package me.devoria.commands;
 
 
+
+
 import com.google.common.collect.ImmutableSet;
 import com.ticxo.modelengine.api.ModelEngineAPI;
 import com.ticxo.modelengine.api.model.ActiveModel;
 import com.ticxo.modelengine.api.model.ModeledEntity;
-import java.io.FileNotFoundException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import me.devoria.Devoria;
 import me.devoria.utils.ItemUtils;
 import me.devoria.utils.PlayerUtils;
@@ -19,13 +17,15 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Mob;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.FileNotFoundException;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 
 public class SummonMob implements CommandExecutor {
@@ -58,6 +58,9 @@ public class SummonMob implements CommandExecutor {
             Material offHand = stats.get("off_hand") != null ? Material.valueOf(stats.get("off_hand").toUpperCase()) : Material.AIR;
 
 
+
+
+
             EntityType entityType;
             try {
                 entityType = EntityType.valueOf(type.toUpperCase());
@@ -86,27 +89,31 @@ public class SummonMob implements CommandExecutor {
             }
 
 
-            mob.setMetadata("healthStats", new FixedMetadataValue(Devoria.getInstance(), ",currentHealth:" + maxHealth));
-            mob.setMetadata("attributes", new FixedMetadataValue(Devoria.getInstance(), ",health:" + maxHealth + ",damage:" + damage + ",xp:" + xp));
+            mob.setMetadata("healthStats", new FixedMetadataValue(Devoria.getInstance(), ",currentHealth:"+maxHealth));
+            mob.setMetadata("attributes", new FixedMetadataValue(Devoria.getInstance(), ",health:"+maxHealth+",damage:"+damage+",xp:"+xp));
 
 
             Objects.requireNonNull(mob.getEquipment()).setItemInMainHand(new ItemStack(mainHand));
             Objects.requireNonNull(mob.getEquipment()).setItemInOffHand(new ItemStack(offHand));
 
-            ActiveModel activeModel = ModelEngineAPI.createActiveModel(model);
+            ActiveModel activeModel = ModelEngineAPI.api.getModelManager().createActiveModel(model);
             if (activeModel == null) {
                 sendError(sender, "Failed to load model: " + ChatColor.WHITE + model);
                 return true;
             }
 
-            ModeledEntity modeledEntity = ModelEngineAPI.createModeledEntity(mob);
+            ModeledEntity modeledEntity = ModelEngineAPI.api.getModelManager().createModeledEntity(mob);
             if (modeledEntity == null) {
                 sendError(sender, "Failed to create modelled entity");
                 return false;
             }
 
-            modeledEntity.addModel(activeModel, true);
-            modeledEntity.setBaseEntityVisible(false);
+            modeledEntity.addActiveModel(activeModel);
+            modeledEntity.detectPlayers();
+            modeledEntity.setInvisible(true);
+            modeledEntity.getNametagHandler().setCustomNameVisibility("nametag", true);
+            modeledEntity.getNametagHandler().setCustomNameVisibility("healthbar", true);
+            modeledEntity.getNametagHandler().setCustomName("nametag", name);
             PlayerUtils.updateHealthBar(mob);
 
             return true;
