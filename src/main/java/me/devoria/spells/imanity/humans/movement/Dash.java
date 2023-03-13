@@ -3,6 +3,7 @@ package me.devoria.spells.imanity.humans.movement;
 import me.devoria.Devoria;
 import me.devoria.cooldowns.CooldownManager;
 import me.devoria.spells.Spell;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -21,6 +22,7 @@ public class Dash extends Spell {
             }
         }.runTaskLater(Devoria.getInstance(), 5L);
         //Particles
+        p.getWorld().playSound(p.getLocation(), Sound.ITEM_TRIDENT_RIPTIDE_3, 0.6f, 1.8f);
     }
 
     @Override

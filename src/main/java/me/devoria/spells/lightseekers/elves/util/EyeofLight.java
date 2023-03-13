@@ -19,6 +19,7 @@ public class EyeofLight extends Spell {
             int ticks = 0;
             double yOffset = 0;
             double radius = 3;
+
             @Override
             public void run() {
                 Location location = player.getLocation();

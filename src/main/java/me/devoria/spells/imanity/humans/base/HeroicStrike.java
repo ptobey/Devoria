@@ -2,49 +2,51 @@ package me.devoria.spells.imanity.humans.base;
 
 import me.devoria.cooldowns.CooldownManager;
 import me.devoria.spells.Spell;
-import org.bukkit.Color;
+import me.devoria.utils.ParticleUtils;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 public class HeroicStrike extends Spell {
-    private static final double AOE_RADIUS = 5.0;
-    private static final double DAMAGE = 5.0;
-    private static final Particle.DustOptions GREEN_DUST_OPTIONS = new Particle.DustOptions(Color.GREEN, 1.0f);
-    private static final Particle.DustOptions YELLOW_DUST_OPTIONS = new Particle.DustOptions(Color.YELLOW, 1.0f);
 
     @Override
     public void cast(Player p, CooldownManager cooldownManager) {
-        // Get the location of the player
-        Location playerLocation = p.getLocation();
+        // Calculate start, control, and end points
+        Vector start = ParticleUtils.rotateYAxis(ParticleUtils.rotateXAxis(p.getEyeLocation().getDirection().multiply(5), -45), 90);
+        Vector control = p.getEyeLocation().getDirection().multiply(5);
+        Vector end = ParticleUtils.rotateYAxis(ParticleUtils.rotateXAxis(p.getEyeLocation().getDirection().multiply(5), 45), -90);
 
-        // Spawn green and yellow particles in a circle around the player
-        for (double theta = 0; theta < 2 * Math.PI; theta += Math.PI / 16) {
-            double x = AOE_RADIUS * Math.cos(theta);
-            double z = AOE_RADIUS * Math.sin(theta);
-            playerLocation.add(x, 0, z);
-            p.getWorld().spawnParticle(Particle.REDSTONE, playerLocation, 1, GREEN_DUST_OPTIONS);
-            playerLocation.subtract(x, 0, z);
-        }
-        for (double theta = 0; theta < 2 * Math.PI; theta += Math.PI / 16) {
-            double x = AOE_RADIUS * Math.cos(theta);
-            double z = AOE_RADIUS * Math.sin(theta);
-            playerLocation.add(x, 0, z);
-            p.getWorld().spawnParticle(Particle.REDSTONE, playerLocation, 1, YELLOW_DUST_OPTIONS);
-            playerLocation.subtract(x, 0, z);
-        }
-
-        // Damage all players within the AOE radius
-        for (Entity e : playerLocation.getWorld().getNearbyEntities(playerLocation, AOE_RADIUS, AOE_RADIUS, AOE_RADIUS)) {
-            if (e instanceof Player) {
-                Player target = (Player) e;
-                if (target != p) {
-                    target.damage(DAMAGE);
-                }
+        // Spawn particles for first part of curve
+        for (int i = 0; i <= 20; i++) {
+            double t = (double) i / 20.0;
+            Location particleLoc = p.getEyeLocation().add(ParticleUtils.getQuadraticBezierPoint(start, control, end, t));
+            p.getWorld().spawnParticle(Particle.CRIT, particleLoc, 3, 0, 0, 0, 0);
+            for (Entity entity : particleLoc.getNearbyEntities(2, 2, 2)) {
+                if (!(entity instanceof LivingEntity) || entity.equals(p)) continue;
+                ((LivingEntity) entity).damage(5);
             }
         }
 
+        // Calculate new start and end points for second part of curve
+        start = ParticleUtils.rotateYAxis(ParticleUtils.rotateXAxis(p.getEyeLocation().getDirection().multiply(5), 45), 90);
+        end = ParticleUtils.rotateYAxis(ParticleUtils.rotateXAxis(p.getEyeLocation().getDirection().multiply(5), -45), -90);
+
+        // Spawn particles for second part of curve
+        for (int i = 0; i <= 20; i++) {
+            double t = (double) i / 20.0;
+            Location particleLoc = p.getEyeLocation().add(ParticleUtils.getQuadraticBezierPoint(start, control, end, t));
+            p.getWorld().spawnParticle(Particle.CRIT, particleLoc, 1, 0, 0, 0, 0);
+        }
+
+        p.getWorld().playSound(p.getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 1.0f, 1.0f);
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_DROWNED_SHOOT, 1.2f, 0.1f);
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1.5f, 0.1f);
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1.2f, 0.1f);
+        p.getWorld().playSound(p.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1f, 2f);
     }
 
     @Override
