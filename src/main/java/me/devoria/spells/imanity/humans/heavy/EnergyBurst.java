@@ -46,7 +46,7 @@ public class EnergyBurst extends Spell {
                         armorStand.getWorld().spawnParticle(Particle.SMOKE_LARGE, armorStand.getLocation(), 5, 0, 0, 0, 0.3);
                         armorStand.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, armorStand.getLocation(), 5, 0, 0, 0, 0.3);
                         for (Entity nearbyEntity : armorStand.getLocation().getNearbyEntities(2, 2, 2)) {
-                            if (!(nearbyEntity instanceof LivingEntity)) continue;
+                            if (!(nearbyEntity instanceof LivingEntity) || nearbyEntity.equals(p)) continue;
                             LivingEntity target = (LivingEntity) nearbyEntity;
                             target.damage(5, p);
                         }
@@ -55,7 +55,7 @@ public class EnergyBurst extends Spell {
                         armorStand.getWorld().spawnParticle(Particle.SMOKE_LARGE, armorStand.getLocation(), 1, 0, 0, 0, 0.3);
                         armorStand.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, armorStand.getLocation(), 1, 0, 0, 0, 0.3);
                         for (Entity nearbyEntity : armorStand.getLocation().getNearbyEntities(2, 2, 2)) {
-                            if (!(nearbyEntity instanceof LivingEntity)) continue;
+                            if (!(nearbyEntity instanceof LivingEntity) || nearbyEntity.equals(p)) continue;
                             LivingEntity target = (LivingEntity) nearbyEntity;
                             target.damage(3, p);
                         }

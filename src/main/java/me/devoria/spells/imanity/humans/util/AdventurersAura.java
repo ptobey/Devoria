@@ -18,7 +18,7 @@ import org.bukkit.util.Vector;
 public class AdventurersAura extends Spell {
     @Override
     public void cast(Player p, CooldownManager cooldownManager) {
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 1));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 2));
         new BukkitRunnable() {
             List<ArmorStand> armorStandList = new ArrayList<>();
             int ticks = 0;
@@ -36,6 +36,7 @@ public class AdventurersAura extends Spell {
                         if (movement < 0.4) continue;
                         armorStand.teleport(armorStand.getLocation().add(0, movement, 0));
                         armorStand.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, armorStand.getLocation(), 1, 0, 0, 0);
+                        armorStand.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, armorStand.getLocation(), 1, 0, 0, 0.01);
                         armorStand.getWorld().spawnParticle(Particle.CLOUD, armorStand.getLocation(), 1, 0, 0, 0);
                     }
                 } else {
@@ -46,6 +47,7 @@ public class AdventurersAura extends Spell {
                         Vector normalized = diff.normalize();
                         armorStand.teleport(armorStand.getLocation().setDirection(normalized).add(normalized));
                         armorStand.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, armorStand.getLocation(), 1, 0, 0, 0);
+                        armorStand.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, armorStand.getLocation(), 1, 0, 0, 0.01);
                     }
                     Vector randomPoint = new Vector(FastUtils.randomDoubleInRange(-3, 3), FastUtils.randomDoubleInRange(-3, 3), FastUtils.randomDoubleInRange(-3, 3));
                     ArmorStand armorStand = p.getWorld().spawn(p.getLocation().add(randomPoint), ArmorStand.class);

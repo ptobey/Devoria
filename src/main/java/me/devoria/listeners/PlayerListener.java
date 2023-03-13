@@ -50,10 +50,11 @@ public class PlayerListener implements Listener {
 
         p.sendMessage("§aWelcome to Eternia!");
         //Health Bar
-        new BukkitRunnable(){
+        new BukkitRunnable() {
             final int log = p.getStatistic(Statistic.LEAVE_GAME);
+
             @Override
-            public void run(){
+            public void run() {
                 if (p.getStatistic(Statistic.LEAVE_GAME) != log) {
                     cancel(); // this cancels it when they leave
                 }
@@ -76,7 +77,7 @@ public class PlayerListener implements Listener {
             }
         }.runTaskTimer(Devoria.getInstance(), 100L, 100L);
 
-        if(p.getMetadata("healthStats").size() == 0) {
+        if (p.getMetadata("healthStats").size() == 0) {
             p.setMetadata("healthStats", new FixedMetadataValue(Devoria.getInstance(), ",currentHealth:1000"));
         }
         ItemUtils.updateAttributes(p, -1);
@@ -111,7 +112,7 @@ public class PlayerListener implements Listener {
                     world.spawnParticle(Particle.EXPLOSION_NORMAL, loc, 50, 0, 0, 0, 0.3);
                     player.getWorld().playSound(arrow.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f);
                     for (Entity nearbyEntity : loc.getNearbyEntities(2, 2, 2)) {
-                        if (!(nearbyEntity instanceof LivingEntity)) continue;
+                        if (!(nearbyEntity instanceof LivingEntity) || nearbyEntity.equals(player)) continue;
                         LivingEntity target = (LivingEntity) nearbyEntity;
                         target.damage(5, player);
                     }
@@ -206,7 +207,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onUse(PlayerInteractEvent e) throws FileNotFoundException {
-        if(e.getMaterial().equals(Material.PINK_WOOL)){
+        if (e.getMaterial().equals(Material.PINK_WOOL)) {
 
             Player p = e.getPlayer();
             String stats = p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
@@ -220,14 +221,12 @@ public class PlayerListener implements Listener {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
 
-
                     Arrow arrow = p.getWorld().spawn(p.getEyeLocation(),
                             Arrow.class);
                     arrow.setShooter(p);
                     arrow.setVelocity(p.getLocation().getDirection().multiply(2.25));
                 }
-            }
-            catch(NullPointerException ignore){
+            } catch (NullPointerException ignore) {
             }
         }
 
@@ -237,7 +236,8 @@ public class PlayerListener implements Listener {
     public void playerLeftClick(PlayerAnimationEvent event) {
         Player player = event.getPlayer();
         // PlayerInteractEvent doesn't work with LEFT_CLICK_BLOCK in adventure mode, so using this for that.
-        if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || event.getAnimationType() != PlayerAnimationType.ARM_SWING || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType())) return;
+        if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || event.getAnimationType() != PlayerAnimationType.ARM_SWING || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType()))
+            return;
         long cooldown = 10;
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
 
@@ -263,7 +263,8 @@ public class PlayerListener implements Listener {
     public void playerRightClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Action action = event.getAction();
-        if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || action == Action.LEFT_CLICK_AIR || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType())) return;
+        if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || action == Action.LEFT_CLICK_AIR || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType()))
+            return;
         long cooldown = (10);
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
 
@@ -278,22 +279,20 @@ public class PlayerListener implements Listener {
     }
 
 
-
     @EventHandler
     public void playerHit(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
         switch (event.getCause()) {
             case FALL:
-                event.setDamage(event.getDamage() * 0.8);
-                break;
+                event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onItemPickUp(PlayerAttemptPickupItemEvent event) {
-        HashMap<String,String> map = FastUtils.map(event.getItem().getItemStack().getItemMeta().getLocalizedName());
+        HashMap<String, String> map = FastUtils.map(event.getItem().getItemStack().getItemMeta().getLocalizedName());
 
-        if(!event.getPlayer().equals(Bukkit.getPlayer(UUID.fromString(map.get("owner"))))) {
+        if (!event.getPlayer().equals(Bukkit.getPlayer(UUID.fromString(map.get("owner"))))) {
             event.setCancelled(true);
         }
     }
