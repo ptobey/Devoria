@@ -13,7 +13,6 @@ import me.devoria.commands.SpellMode;
 import me.devoria.commands.SummonMob;
 import me.devoria.commands.Survival;
 import me.devoria.cooldowns.CooldownManager;
-import me.devoria.guis.ClassSelectGUI;
 import me.devoria.listeners.EntityListener;
 import me.devoria.listeners.GUIListener;
 import me.devoria.listeners.PlayerListener;
@@ -29,7 +28,6 @@ public class Devoria extends JavaPlugin {
 
     private static Devoria instance;
     private CooldownManager cdInstance;
-    private static ClassSelectGUI classSelectGUI;
     public static File dataFolder;
 
 
@@ -50,8 +48,7 @@ public class Devoria extends JavaPlugin {
     public void registerListeners() {
         getServer().getPluginManager().registerEvents(new EntityListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new EntityListener(), this);
-        getServer().getPluginManager().registerEvents(classSelectGUI = new ClassSelectGUI(), this);
+        getServer().getPluginManager().registerEvents(new GUIListener(), this);
     }
 
     public void registerCommands() {
@@ -81,8 +78,11 @@ public class Devoria extends JavaPlugin {
         try {
             customConfig.load(makeItemsFolder);
         } catch (IOException | InvalidConfigurationException e) {
+            /*
+             Do nothing for now, since it doesn't seem to be used.
             e.printStackTrace();
             System.out.println("Ignore This");
+            */
         }
 
         File mobFolder = new File(dataFolder, "mobs/");
@@ -94,16 +94,16 @@ public class Devoria extends JavaPlugin {
         try {
             customConfig.load(mobFolder);
         } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-            System.out.println("Ignore This");
+            /*
+             Do nothing for now, since it doesn't seem to be used.
+             e.printStackTrace();
+             System.out.println("Ignore This");
+            */
         }
 
     }
     public static Devoria getInstance() {
         return instance;
-    }
-    public static ClassSelectGUI getClassSelectGUI() {
-        return classSelectGUI;
     }
 
     public CooldownManager getCdInstance() {

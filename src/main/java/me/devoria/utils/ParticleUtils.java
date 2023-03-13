@@ -91,4 +91,8 @@ public class ParticleUtils {
     }
 
 
+    public static Vector getQuadraticBezierPoint(Vector A, Vector B, Vector C, double t) {
+        double u = 1 - t;
+        return A.multiply(u * u).add(B.clone().multiply(2 * u * t)).add(C.clone().multiply(t * t));
+    }
 }

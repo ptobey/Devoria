@@ -7,13 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import me.devoria.Devoria;
+import me.devoria.spells.DefaultSpells;
 import me.devoria.spells.Spell;
 import me.devoria.spells.SpellTriggers;
-import me.devoria.spells.imanity.humans.HumanSpells;
-import me.devoria.spells.lightseekers.elves.ElfSpells;
 import me.devoria.utils.JsonUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 public class PlayerStats {
     public static Map<UUID, PlayerStats> playerStats = new HashMap<>();
@@ -24,10 +22,10 @@ public class PlayerStats {
     private FactionType faction = FactionType.NONE;
     private AffinityType affinity = AffinityType.NONE;
     private Spell[] spells = {
-        null,
-        null,
-        null,
-        null
+            DefaultSpells.DEFAULT,
+            DefaultSpells.DEFAULT,
+            DefaultSpells.DEFAULT,
+            DefaultSpells.DEFAULT
     };
     private int maxMana = 100;
     private int currentMana = 100;
@@ -50,18 +48,23 @@ public class PlayerStats {
     public UUID getUuid() {
         return uuid;
     }
+
     public FactionType getFaction() {
         return faction;
     }
+
     public AffinityType getAffinity() {
         return affinity;
     }
+
     public Spell[] getSpells() {
         return spells;
     }
+
     public int getMaxMana() {
         return maxMana;
     }
+
     public int getMana() {
         return currentMana;
     }
@@ -70,18 +73,23 @@ public class PlayerStats {
     public void setFaction(FactionType faction) {
         this.faction = faction;
     }
+
     public void setAffinity(AffinityType affinity) {
         this.affinity = affinity;
     }
+
     public void setSpells(Spell[] spells) {
         this.spells = spells;
     }
+
     public void setSpells(int index, Spell spell) {
         spells[index] = spell;
     }
+
     public void setMaxMana(int maxMana) {
         this.maxMana = maxMana;
     }
+
     public void setMana(int currentMana) {
         this.currentMana = currentMana;
     }
@@ -92,7 +100,7 @@ public class PlayerStats {
         this.storage = STORAGE_FOLDER.resolve(uuid + ".json");
         this.spellTriggers = new SpellTriggers(Bukkit.getPlayer(uuid));
     }
-    
+
     public static PlayerStats getStats(UUID uuid) {
         PlayerStats data = playerStats.getOrDefault(uuid, null);
         if (data == null) {
