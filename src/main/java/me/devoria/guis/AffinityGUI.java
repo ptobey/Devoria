@@ -1,22 +1,20 @@
 package me.devoria.guis;
 
-import java.util.Arrays;
 import me.devoria.player.AffinityType;
 import me.devoria.player.FactionType;
 import me.devoria.player.PlayerStats;
 import me.devoria.spells.Spell;
+import me.devoria.spells.imanity.demigods.DemigodSpells;
 import me.devoria.spells.imanity.humans.HumanSpells;
 import me.devoria.spells.lightseekers.elves.ElfSpells;
 import me.devoria.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.checkerframework.checker.units.qual.A;
 
 public class AffinityGUI {
     private static final int dpsSlot = 10;
@@ -24,21 +22,22 @@ public class AffinityGUI {
     private static final int tankSlot = 37;
     private static final int balanceSlot = 43;
     public static final String invName = "Affinity Selector";
+
     public static void openGUI(Player player, FactionType type) {
-        ItemStack[] classes = switch(type) {
-            case IMANITY -> new ItemStack[] {
+        ItemStack[] classes = switch (type) {
+            case IMANITY -> new ItemStack[]{
                     ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Demigod", "Lore Required"),
                     ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Mage", "Lore Required"),
                     ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Ancient Knight", "Lore Required"),
                     ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Human", "Lore Required")
             };
-            case LIGHTSEEKER -> new ItemStack[] {
+            case LIGHTSEEKER -> new ItemStack[]{
                     ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Aquan", "Lore Required"),
                     ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Elf", "Lore Required"),
                     ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Angel", "Lore Required"),
                     ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), "Astrean", "Lore Required")
             };
-            default -> new ItemStack[] {
+            default -> new ItemStack[]{
                     ItemUtils.getItem(new ItemStack(Material.BARRIER), "ERROR", "Please contact a moderator if you are seeing this."),
                     ItemUtils.getItem(new ItemStack(Material.BARRIER), "ERROR", "Please contact a moderator if you are seeing this."),
                     ItemUtils.getItem(new ItemStack(Material.BARRIER), "ERROR", "Please contact a moderator if you are seeing this."),
@@ -113,6 +112,12 @@ public class AffinityGUI {
                 switch (stats.getFaction()) {
                     case IMANITY -> {
                         stats.setAffinity(AffinityType.DEMIGOD);
+                        stats.setSpells(new Spell[]{
+                                DemigodSpells.SPINSLASH,
+                                DemigodSpells.GOD_SCREAM,
+                                DemigodSpells.GODS_CLAWS,
+                                DemigodSpells.LUNGE
+                        });
                         stats.save();
                         event.getWhoClicked().closeInventory();
                     }
@@ -136,7 +141,7 @@ public class AffinityGUI {
                     }
                     case LIGHTSEEKER -> {
                         stats.setAffinity(AffinityType.ELF);
-                        stats.setSpells(new Spell[] {
+                        stats.setSpells(new Spell[]{
                                 ElfSpells.LIGHT_SPEAR,
                                 ElfSpells.EYE_OF_LIGHT,
                                 ElfSpells.ARROW_RAIN,
@@ -173,7 +178,7 @@ public class AffinityGUI {
                 switch (stats.getFaction()) {
                     case IMANITY -> {
                         stats.setAffinity(AffinityType.HUMAN);
-                        stats.setSpells(new Spell[] {
+                        stats.setSpells(new Spell[]{
                                 HumanSpells.HEROIC_STRIKE,
                                 HumanSpells.ADVENTURERS_AURA,
                                 HumanSpells.ENERGY_BURST,

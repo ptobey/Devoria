@@ -1,6 +1,5 @@
 package me.devoria.spells;
 
-import javax.annotation.Nullable;
 import me.devoria.cooldowns.CooldownManager;
 import me.devoria.spells.imanity.demigods.DemigodSpells;
 import me.devoria.spells.imanity.humans.HumanSpells;
@@ -14,14 +13,15 @@ import org.bukkit.entity.Player;
 
 public abstract class Spell {
     public abstract void cast(Player p, CooldownManager cooldownManager);
+
     public abstract String toString();
 
     public static Spell fromString(String string) {
         return switch (string) {
-            case "Godswipe" -> DemigodSpells.GODSWIPE;
-            case "GodsWrath" -> DemigodSpells.GODS_WRATH;
-            case "Ascension" -> DemigodSpells.ASCENSION;
-            case "CallOfOrder" -> DemigodSpells.CALL_OF_ORDER;
+            case "SpinSlash" -> DemigodSpells.SPINSLASH;
+            case "GodsClaws" -> DemigodSpells.GODS_CLAWS;
+            case "Lunge" -> DemigodSpells.LUNGE;
+            case "GodScream" -> DemigodSpells.GOD_SCREAM;
             case "HeroicStrike" -> HumanSpells.HEROIC_STRIKE;
             case "EnergyBurst" -> HumanSpells.ENERGY_BURST;
             case "Dash" -> HumanSpells.DASH;
