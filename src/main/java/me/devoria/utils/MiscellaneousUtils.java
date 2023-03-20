@@ -70,7 +70,7 @@ public class MiscellaneousUtils {
         }
     }
 
-    public static String generateWeightedPercentage() {
+    public static String generatePercentage() {
         Random randomNumbers = new Random();
         int randomNumber1 = randomNumbers.ints(0, 101).findAny().getAsInt();
         return String.valueOf(randomNumber1);
