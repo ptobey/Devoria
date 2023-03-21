@@ -9,6 +9,9 @@ import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import com.ticxo.modelengine.api.model.bone.Nameable;
+import com.ticxo.modelengine.api.nms.entity.fake.NametagPoint;
 import me.devoria.Devoria;
 import me.devoria.utils.ItemUtils;
 import me.devoria.utils.PlayerUtils;
@@ -54,8 +57,9 @@ public class SummonMob implements CommandExecutor {
             Object damage = stats.get("damage");
             Object xp = stats.get("xp");
 
-            Material mainHand = stats.get("main_hand") != null ? Material.valueOf(stats.get("main_hand").toUpperCase()) : Material.AIR;
-            Material offHand = stats.get("off_hand") != null ? Material.valueOf(stats.get("off_hand").toUpperCase()) : Material.AIR;
+            //see comment below about ir/ih/il
+            //Material mainHand = stats.get("main_hand") != null ? Material.valueOf(stats.get("main_hand").toUpperCase()) : Material.AIR;
+            //Material offHand = stats.get("off_hand") != null ? Material.valueOf(stats.get("off_hand").toUpperCase()) : Material.AIR;
 
 
             EntityType entityType;
@@ -89,9 +93,9 @@ public class SummonMob implements CommandExecutor {
             mob.setMetadata("healthStats", new FixedMetadataValue(Devoria.getInstance(), ",currentHealth:" + maxHealth));
             mob.setMetadata("attributes", new FixedMetadataValue(Devoria.getInstance(), ",health:" + maxHealth + ",damage:" + damage + ",xp:" + xp));
 
-
-            Objects.requireNonNull(mob.getEquipment()).setItemInMainHand(new ItemStack(mainHand));
-            Objects.requireNonNull(mob.getEquipment()).setItemInOffHand(new ItemStack(offHand));
+            //replace with ir/ih/il bone
+            //Objects.requireNonNull(mob.getEquipment()).setItemInMainHand(new ItemStack(mainHand));
+            //Objects.requireNonNull(mob.getEquipment()).setItemInOffHand(new ItemStack(offHand));
 
             ActiveModel activeModel = ModelEngineAPI.createActiveModel(model);
             if (activeModel == null) {
@@ -108,6 +112,14 @@ public class SummonMob implements CommandExecutor {
             modeledEntity.addModel(activeModel, false);
             modeledEntity.setBaseEntityVisible(false);
             PlayerUtils.updateHealthBar(mob);
+
+
+
+            for(ActiveModel a : modeledEntity.getModels().values()) {
+                        Nameable n = a.getNametagHandler().getBones().get("nametag");
+                        n.setCustomNameVisible(true);
+                        n.setCustomName(name);
+            }
 
             return true;
         } catch (FileNotFoundException e) {
