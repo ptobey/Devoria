@@ -142,67 +142,6 @@ public class PlayerListener implements Listener {
     public void updateIem(PlayerItemHeldEvent e) {
         Player p = e.getPlayer();
         ItemUtils.updateAttributes(p, e.getNewSlot());
-
-        /*
-
-        ItemStack helmet = p.getInventory().getHelmet();
-        ItemStack chestplate = p.getInventory().getChestplate();
-        ItemStack leggings = p.getInventory().getLeggings();
-        ItemStack boots = p.getInventory().getBoots();
-        String weaponStats = null;
-        String helmetStats = null;
-        String chestplateStats = null;
-        String leggingsStats = null;
-        String bootsStats = null;
-
-        if(helmet != null && !helmet.getItemMeta().getLocalizedName().isEmpty()) {
-            helmetStats = helmet.getItemMeta().getLocalizedName();
-        }
-        if(chestplate != null && !chestplate.getItemMeta().getLocalizedName().isEmpty()) {
-            chestplateStats = chestplate.getItemMeta().getLocalizedName();
-        }
-        if(leggings != null && !leggings.getItemMeta().getLocalizedName().isEmpty()) {
-            leggingsStats = leggings.getItemMeta().getLocalizedName();
-        }
-        if(boots != null && !boots.getItemMeta().getLocalizedName().isEmpty()) {
-            bootsStats = boots.getItemMeta().getLocalizedName();
-        }
-
-
-
-        try {
-            int slot = e.getNewSlot();
-
-            if(p.getInventory().getItem(slot) != null && !p.getInventory().getItem(slot).getItemMeta().getLocalizedName().isEmpty()) {
-
-                String stats = p.getInventory().getItem(slot).getItemMeta().getLocalizedName();
-                p.getInventory().setItem(slot, UpdateItem.update(stats));
-
-                HashMap<String, String> weaponStatsMap = MapData.map(stats);
-
-
-                if(!weaponStatsMap.get("unidentified").equals("1")) {
-
-                    p.sendMessage(weaponStatsMap.get("unidentified"));
-                    String type = weaponStatsMap.get("type");
-
-
-                    if (type.equals("bow") || type.equals("sword")) {
-
-                        weaponStats= p.getInventory().getItem(slot).getItemMeta().getLocalizedName();
-                    }
-                }
-
-           }
-
-
-        }
-        catch(Exception ignore){
-        }
-
-        UpdateAttributes.update(p, weaponStats, helmetStats, chestplateStats, leggingsStats, bootsStats);
-
-    **/
     }
 
     @EventHandler

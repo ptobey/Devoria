@@ -109,7 +109,7 @@ public class SummonMob implements CommandExecutor {
                 return false;
             }
 
-            modeledEntity.addModel(activeModel, false);
+            modeledEntity.addModel(activeModel, true);
             modeledEntity.setBaseEntityVisible(false);
             PlayerUtils.updateHealthBar(mob);
 
