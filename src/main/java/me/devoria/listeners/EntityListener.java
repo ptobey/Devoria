@@ -88,8 +88,7 @@ public class EntityListener implements Listener {
         } else {
             e.getDamager();
             Entity damager = e.getDamager();
-            /**damagerStats = String.valueOf(damager.getMetadata("attributes").get(0));
-             System.out.println(damagerStats);**/
+            damagerStats = String.valueOf(damager.getMetadata("attributes").get(0).asString());
         }
         ArrayList<String> damages = ItemUtils.getItemDamage(damagerStats);
 
