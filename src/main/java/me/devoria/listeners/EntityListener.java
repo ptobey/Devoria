@@ -81,18 +81,10 @@ public class EntityListener implements Listener {
         boolean isPlayer = false;
         Entity damagerEntity = e.getDamager();
         Entity victim = e.getEntity();
-        if(e.getDamager() instanceof Player) {
-            Player damager = (Player) e.getDamager();
-            damagerStats = damager.getPlayer().getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
-            isPlayer = true;
-        } else {
-            e.getDamager();
-            Entity damager = e.getDamager();
-            damagerStats = damager.getMetadata("attributes").get(0).asString();
-        }
+        damagerStats = e.getDamager().getMetadata("attributes").get(0).asString();
         ArrayList<String> damages = ItemUtils.getItemDamage(damagerStats, false);
 
-        if(isPlayer) {
+        if(e.getDamager() instanceof Player) {
             MiscellaneousUtils damageIndicator = new MiscellaneousUtils();
 
             damageIndicator.spawnDamageIndicator(victim.getWorld(),damages,victim.getLocation().add(1,1, 0));

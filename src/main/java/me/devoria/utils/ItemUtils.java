@@ -124,6 +124,21 @@ public class ItemUtils {
         int currentHealthHpr = 0;
         int maxHealthHpr = 0;
         int healthPercent = 0;
+        String damage = "0-0";
+        String earthDamage = "0-0";
+        String fireDamage = "0-0";
+        String arcaneDamage = "0-0";
+        String lightDamage = "0-0";
+        String darkDamage = "0-0";
+        String windDamage = "0-0";
+        String thunderDamage = "0-0";
+        int earthDamagePercent = 0;
+        int fireDamagePercent = 0;
+        int arcaneDamagePercent = 0;
+        int lightDamagePercent = 0;
+        int darkDamagePercent = 0;
+        int windDamagePercent = 0;
+        int thunderDamagePercent = 0;
 
 
         if(weaponItemData != null) {
@@ -150,6 +165,53 @@ public class ItemUtils {
             }
             if (weaponStatsMap.get("healthPercent") != null) {
                 healthPercent += Integer.parseInt(weaponStatsMap.get("healthPercent"));
+            }
+            if(weaponStatsMap.get("damage") != null) {
+                damage = weaponStatsMap.get("damage");
+            }
+            if(weaponStatsMap.get("earthDamage") != null) {
+                earthDamage = weaponStatsMap.get("earthDamage");
+            }
+            if(weaponStatsMap.get("fireDamage") != null) {
+                fireDamage = weaponStatsMap.get("fireDamage");
+            }
+            if(weaponStatsMap.get("arcaneDamage") != null) {
+                arcaneDamage = weaponStatsMap.get("arcaneDamage");
+            }
+            if(weaponStatsMap.get("lightDamage") != null) {
+                lightDamage = weaponStatsMap.get("lightDamage");
+            }
+            if(weaponStatsMap.get("darkDamage") != null) {
+                darkDamage = weaponStatsMap.get("darkDamage");
+            }
+            if(weaponStatsMap.get("windDamage") != null) {
+                windDamage = weaponStatsMap.get("windDamage");
+            }
+            if(weaponStatsMap.get("thunderDamage") != null) {
+                thunderDamage = weaponStatsMap.get("thunderDamage");
+            }
+
+            //damage percents
+            if(weaponStatsMap.get("earthDamagePercent") != null) {
+                earthDamagePercent += Integer.parseInt(weaponStatsMap.get("earthDamagePercent"));
+            }
+            if(weaponStatsMap.get("fireDamagePercent") != null) {
+                fireDamagePercent += Integer.parseInt(weaponStatsMap.get("fireDamagePercent"));
+            }
+            if(weaponStatsMap.get("arcaneDamagePercent") != null) {
+                arcaneDamagePercent += Integer.parseInt(weaponStatsMap.get("arcaneDamagePercent"));
+            }
+            if(weaponStatsMap.get("lightDamagePercent") != null) {
+                lightDamagePercent += Integer.parseInt(weaponStatsMap.get("lightDamagePercent"));
+            }
+            if(weaponStatsMap.get("darkDamagePercent") != null) {
+                darkDamagePercent += Integer.parseInt(weaponStatsMap.get("darkDamagePercent"));
+            }
+            if(weaponStatsMap.get("windDamagePercent") != null) {
+                windDamagePercent += Integer.parseInt(weaponStatsMap.get("windDamagePercent"));
+            }
+            if(weaponStatsMap.get("thunderDamagePercent") != null) {
+                thunderDamagePercent += Integer.parseInt(weaponStatsMap.get("thunderDamagePercent"));
             }
         }
 
@@ -180,6 +242,29 @@ public class ItemUtils {
             }
             if (helmetStatsMap.get("healthPercent") != null) {
                 healthPercent += Integer.parseInt(helmetStatsMap.get("healthPercent"));
+            }
+
+            //damage percents
+            if(helmetStatsMap.get("earthDamagePercent") != null) {
+                earthDamagePercent += Integer.parseInt(helmetStatsMap.get("earthDamagePercent"));
+            }
+            if(helmetStatsMap.get("fireDamagePercent") != null) {
+                fireDamagePercent += Integer.parseInt(helmetStatsMap.get("fireDamagePercent"));
+            }
+            if(helmetStatsMap.get("arcaneDamagePercent") != null) {
+                arcaneDamagePercent += Integer.parseInt(helmetStatsMap.get("arcaneDamagePercent"));
+            }
+            if(helmetStatsMap.get("lightDamagePercent") != null) {
+                lightDamagePercent += Integer.parseInt(helmetStatsMap.get("lightDamagePercent"));
+            }
+            if(helmetStatsMap.get("darkDamagePercent") != null) {
+                darkDamagePercent += Integer.parseInt(helmetStatsMap.get("darkDamagePercent"));
+            }
+            if(helmetStatsMap.get("windDamagePercent") != null) {
+                windDamagePercent += Integer.parseInt(helmetStatsMap.get("windDamagePercent"));
+            }
+            if(helmetStatsMap.get("thunderhDamagePercent") != null) {
+                thunderDamagePercent += Integer.parseInt(helmetStatsMap.get("thunderDamagePercent"));
             }
         }
 
@@ -212,6 +297,29 @@ public class ItemUtils {
                 healthPercent += Integer.parseInt(chestplateStatsMap.get("healthPercent"));
             }
 
+            //damage percents
+            if(chestplateStatsMap.get("earthDamagePercent") != null) {
+                earthDamagePercent += Integer.parseInt(chestplateStatsMap.get("earthDamagePercent"));
+            }
+            if(chestplateStatsMap.get("fireDamagePercent") != null) {
+                fireDamagePercent += Integer.parseInt(chestplateStatsMap.get("fireDamagePercent"));
+            }
+            if(chestplateStatsMap.get("arcaneDamagePercent") != null) {
+                arcaneDamagePercent += Integer.parseInt(chestplateStatsMap.get("arcaneDamagePercent"));
+            }
+            if(chestplateStatsMap.get("lightDamagePercent") != null) {
+                lightDamagePercent += Integer.parseInt(chestplateStatsMap.get("lightDamagePercent"));
+            }
+            if(chestplateStatsMap.get("darkDamagePercent") != null) {
+                darkDamagePercent += Integer.parseInt(chestplateStatsMap.get("darkDamagePercent"));
+            }
+            if(chestplateStatsMap.get("windDamagePercent") != null) {
+                windDamagePercent += Integer.parseInt(chestplateStatsMap.get("windDamagePercent"));
+            }
+            if(chestplateStatsMap.get("thunderhDamagePercent") != null) {
+                thunderDamagePercent += Integer.parseInt(chestplateStatsMap.get("thunderDamagePercent"));
+            }
+
         }
 
         if(leggingsItemData != null) {
@@ -241,6 +349,29 @@ public class ItemUtils {
             }
             if (leggingsStatsMap.get("healthPercent") != null) {
                 healthPercent += Integer.parseInt(leggingsStatsMap.get("healthPercent"));
+            }
+
+            //damage percents
+            if(leggingsStatsMap.get("earthDamagePercent") != null) {
+                earthDamagePercent += Integer.parseInt(leggingsStatsMap.get("earthDamagePercent"));
+            }
+            if(leggingsStatsMap.get("fireDamagePercent") != null) {
+                fireDamagePercent += Integer.parseInt(leggingsStatsMap.get("fireDamagePercent"));
+            }
+            if(leggingsStatsMap.get("arcaneDamagePercent") != null) {
+                arcaneDamagePercent += Integer.parseInt(leggingsStatsMap.get("arcaneDamagePercent"));
+            }
+            if(leggingsStatsMap.get("lightDamagePercent") != null) {
+                lightDamagePercent += Integer.parseInt(leggingsStatsMap.get("lightDamagePercent"));
+            }
+            if(leggingsStatsMap.get("darkDamagePercent") != null) {
+                darkDamagePercent += Integer.parseInt(leggingsStatsMap.get("darkDamagePercent"));
+            }
+            if(leggingsStatsMap.get("windDamagePercent") != null) {
+                windDamagePercent += Integer.parseInt(leggingsStatsMap.get("windDamagePercent"));
+            }
+            if(leggingsStatsMap.get("thunderhDamagePercent") != null) {
+                thunderDamagePercent += Integer.parseInt(leggingsStatsMap.get("thunderDamagePercent"));
             }
         }
 
@@ -272,6 +403,29 @@ public class ItemUtils {
             if (bootsStatsMap.get("healthPercent") != null) {
                 healthPercent += Integer.parseInt(bootsStatsMap.get("healthPercent"));
             }
+
+            //damage percents
+            if(bootsStatsMap.get("earthDamagePercent") != null) {
+                earthDamagePercent += Integer.parseInt(bootsStatsMap.get("earthDamagePercent"));
+            }
+            if(bootsStatsMap.get("fireDamagePercent") != null) {
+                fireDamagePercent += Integer.parseInt(bootsStatsMap.get("fireDamagePercent"));
+            }
+            if(bootsStatsMap.get("arcaneDamagePercent") != null) {
+                arcaneDamagePercent += Integer.parseInt(bootsStatsMap.get("arcaneDamagePercent"));
+            }
+            if(bootsStatsMap.get("lightDamagePercent") != null) {
+                lightDamagePercent += Integer.parseInt(bootsStatsMap.get("lightDamagePercent"));
+            }
+            if(bootsStatsMap.get("darkDamagePercent") != null) {
+                darkDamagePercent += Integer.parseInt(bootsStatsMap.get("darkDamagePercent"));
+            }
+            if(bootsStatsMap.get("windDamagePercent") != null) {
+                windDamagePercent += Integer.parseInt(bootsStatsMap.get("windDamagePercent"));
+            }
+            if(bootsStatsMap.get("thunderhDamagePercent") != null) {
+                thunderDamagePercent += Integer.parseInt(bootsStatsMap.get("thunderDamagePercent"));
+            }
         }
 
 
@@ -281,7 +435,9 @@ public class ItemUtils {
 
         maxHealth += maxHealth*(healthPercent/100.0);
 
-        attributes += ",health:"+maxHealth+",walkSpeed:"+walkSpeed+",hpr:"+hpr+",maxHealthHpr:"+maxHealthHpr+",currentHealthHpr:"+currentHealthHpr+",hprPercent:"+hprPercent+",healthPercent:"+healthPercent;
+        attributes += ",health:"+maxHealth+",walkSpeed:"+walkSpeed+",hpr:"+hpr+",maxHealthHpr:"+maxHealthHpr+",currentHealthHpr:"+currentHealthHpr+",hprPercent:"+hprPercent+",healthPercent:"+healthPercent+
+                ",damage:"+damage+ ",earthDamage:"+earthDamage+",fireDamage:"+fireDamage+",arcaneDamage:"+arcaneDamage+",lightDamage:"+lightDamage+",darkDamage:"+darkDamage+",windDamage:"+windDamage+",thunderDamage:"+thunderDamage+
+                ",earthDamagePercent:"+earthDamagePercent+",fireDamagePercent:"+fireDamagePercent+",arcaneDamagePercent:"+arcaneDamagePercent+",lightDamagePercent:"+lightDamagePercent+",darkDamagePercent:"+darkDamagePercent+",windDamagePercent:"+windDamagePercent+",thunderDamagePercent:"+thunderDamagePercent;
 
         p.setMetadata("attributes", new FixedMetadataValue(Devoria.getInstance(), attributes));
         String s = ItemUtils.calculateStatsWithRange("12-30", String.valueOf(walkSpeed), "-");
@@ -612,12 +768,180 @@ public class ItemUtils {
             itemInfo += ",healthPercent:"+healthPercent;
         }
 
-        //damages instead
-        if(walkSpeed != null || hpr != null|| hprPercent != null) {
+        if(earthDamagePercent != null) {
             lore.add("");
         }
 
+
         //damages here
+
+        if(earthDamagePercent != null || fireDamagePercent != null || arcaneDamagePercent != null || lightDamagePercent != null || darkDamagePercent != null || windDamagePercent != null || thunderDamagePercent != null) {
+
+            String earthDamagePercentPercentage;
+
+            if(map.get("earthDamagePercentPercentage") != null) {
+                earthDamagePercentPercentage = map.get("earthDamagePercentPercentage");
+            }
+            else {
+                earthDamagePercentPercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedEarthDamagePercent = calculateStatsWithRange(earthDamagePercent, earthDamagePercentPercentage, ",");
+
+            plusOrMinusFinder(calculatedEarthDamagePercent);
+
+            starsColorFinder(Integer.parseInt(earthDamagePercentPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedEarthDamagePercent+"% "+ChatColor.GRAY+"Earth Damage"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(earthDamagePercentPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",earthDamagePercent:"+calculatedEarthDamagePercent+",earthDamagePercentPercentage:"+earthDamagePercentPercentage;
+        }
+
+        if(fireDamagePercent != null) {
+
+            String fireDamagePercentPercentage;
+
+            if(map.get("fireDamagePercentPercentage") != null) {
+                fireDamagePercentPercentage = map.get("fireDamagePercentPercentage");
+            }
+            else {
+                fireDamagePercentPercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedFireDamagePercent = calculateStatsWithRange(fireDamagePercent, fireDamagePercentPercentage, ",");
+
+            plusOrMinusFinder(calculatedFireDamagePercent);
+
+            starsColorFinder(Integer.parseInt(fireDamagePercentPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedFireDamagePercent+"% "+ChatColor.GRAY+"Fire Damage"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(fireDamagePercentPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",fireDamagePercent:"+calculatedFireDamagePercent+",fireDamagePercentPercentage:"+fireDamagePercentPercentage;
+        }
+
+        if(arcaneDamagePercent != null) {
+
+            String arcaneDamagePercentPercentage;
+
+            if(map.get("arcaneDamagePercentPercentage") != null) {
+                arcaneDamagePercentPercentage = map.get("arcaneDamagePercentPercentage");
+            }
+            else {
+                arcaneDamagePercentPercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedArcaneDamagePercent = calculateStatsWithRange(arcaneDamagePercent, arcaneDamagePercentPercentage, ",");
+
+            plusOrMinusFinder(calculatedArcaneDamagePercent);
+
+            starsColorFinder(Integer.parseInt(arcaneDamagePercentPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedArcaneDamagePercent+"% "+ChatColor.GRAY+"Arcane Damage"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(arcaneDamagePercentPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",arcaneDamagePercent:"+calculatedArcaneDamagePercent+",arcaneDamagePercentPercentage:"+arcaneDamagePercentPercentage;
+        }
+
+        if(lightDamagePercent != null) {
+
+            String lightDamagePercentPercentage;
+
+            if(map.get("lightDamagePercentPercentage") != null) {
+                lightDamagePercentPercentage = map.get("lightDamagePercentPercentage");
+            }
+            else {
+                lightDamagePercentPercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedLightDamagePercent = calculateStatsWithRange(lightDamagePercent, lightDamagePercentPercentage, ",");
+
+            plusOrMinusFinder(calculatedLightDamagePercent);
+
+            starsColorFinder(Integer.parseInt(lightDamagePercentPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedLightDamagePercent+"% "+ChatColor.GRAY+"Light Damage"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(lightDamagePercentPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",lightDamagePercent:"+calculatedLightDamagePercent+",lightDamagePercentPercentage:"+lightDamagePercentPercentage;
+        }
+
+        if(darkDamagePercent != null) {
+
+            String darkDamagePercentPercentage;
+
+            if(map.get("darkDamagePercentPercentage") != null) {
+                darkDamagePercentPercentage = map.get("darkDamagePercentPercentage");
+            }
+            else {
+                darkDamagePercentPercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedDarkDamagePercent = calculateStatsWithRange(darkDamagePercent, darkDamagePercentPercentage, ",");
+
+            plusOrMinusFinder(calculatedDarkDamagePercent);
+
+            starsColorFinder(Integer.parseInt(darkDamagePercentPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedDarkDamagePercent+"% "+ChatColor.GRAY+"Dark Damage"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(darkDamagePercentPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",darkDamagePercent:"+calculatedDarkDamagePercent+",darkDamagePercentPercentage:"+darkDamagePercentPercentage;
+        }
+
+        if(windDamagePercent != null) {
+
+            String windDamagePercentPercentage;
+
+            if(map.get("windDamagePercentPercentage") != null) {
+                windDamagePercentPercentage = map.get("windDamagePercentPercentage");
+            }
+            else {
+                windDamagePercentPercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedWindDamagePercent = calculateStatsWithRange(windDamagePercent, windDamagePercentPercentage, ",");
+
+            plusOrMinusFinder(calculatedWindDamagePercent);
+
+            starsColorFinder(Integer.parseInt(windDamagePercentPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedWindDamagePercent+"% "+ChatColor.GRAY+"Wind Damage"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(windDamagePercentPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",windDamagePercent:"+calculatedWindDamagePercent+",windDamagePercentPercentage:"+windDamagePercentPercentage;
+        }
+
+        if(thunderDamagePercent != null) {
+
+            String thunderDamagePercentPercentage;
+
+            if(map.get("thunderDamagePercentPercentage") != null) {
+                thunderDamagePercentPercentage = map.get("thunderDamagePercentPercentage");
+            }
+            else {
+                thunderDamagePercentPercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedThunderDamagePercent = calculateStatsWithRange(thunderDamagePercent, thunderDamagePercentPercentage, ",");
+
+            plusOrMinusFinder(calculatedThunderDamagePercent);
+
+            starsColorFinder(Integer.parseInt(thunderDamagePercentPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedThunderDamagePercent+"% "+ChatColor.GRAY+"Lightning Damage"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(thunderDamagePercentPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",thunderDamagePercent:"+calculatedThunderDamagePercent+",thunderDamagePercentPercentage:"+thunderDamagePercentPercentage;
+        }
 
         if(walkSpeed != null || hpr != null|| hprPercent != null) {
             lore.add("");
