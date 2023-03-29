@@ -88,18 +88,18 @@ public class EntityListener implements Listener {
         } else {
             e.getDamager();
             Entity damager = e.getDamager();
-            damagerStats = String.valueOf(damager.getMetadata("attributes").get(0).asString());
+            damagerStats = damager.getMetadata("attributes").get(0).asString();
         }
-        ArrayList<String> damages = ItemUtils.getItemDamage(damagerStats);
+        ArrayList<String> damages = ItemUtils.getItemDamage(damagerStats, false);
 
         if(isPlayer) {
             MiscellaneousUtils damageIndicator = new MiscellaneousUtils();
 
             damageIndicator.spawnDamageIndicator(victim.getWorld(),damages,victim.getLocation().add(1,1, 0));
-            e.getDamager().sendMessage(damages.get(6));
+            e.getDamager().sendMessage(damages.get(8));
         }
 
-        PlayerUtils.changeHealth(victim, Integer.parseInt("-"+damages.get(6)), damagerEntity, true);
+        PlayerUtils.changeHealth(victim, Integer.parseInt("-"+damages.get(8)), damagerEntity, true);
 
         if(victim instanceof Player) {
             PlayerUtils.updateHealthBar((Player) e.getEntity());

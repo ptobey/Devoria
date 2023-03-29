@@ -55,7 +55,7 @@ public class MiscellaneousUtils {
             as5.setInvisible(true);
             as5.setCustomNameVisible(true);
             as5.setMarker(true);
-            as5.setCustomName(ChatColor.YELLOW + "-" + damages.get(4) + " ✦");
+            as5.setCustomName(ChatColor.WHITE + "-" + damages.get(4) + " ✦");
 
             Bukkit.getScheduler().runTaskLater(Devoria.getInstance(), as5::remove, delay);
         }
@@ -65,6 +65,24 @@ public class MiscellaneousUtils {
             as6.setCustomNameVisible(true);
             as6.setMarker(true);
             as6.setCustomName(ChatColor.DARK_PURPLE + "-" + damages.get(5) + " ✺ ");
+
+            Bukkit.getScheduler().runTaskLater(Devoria.getInstance(), as6::remove, delay);
+        }
+        if (Integer.parseInt(damages.get(6)) > 0) {
+            ArmorStand as6 = world.spawn(location.subtract(0, distance, 0), ArmorStand.class);
+            as6.setInvisible(true);
+            as6.setCustomNameVisible(true);
+            as6.setMarker(true);
+            as6.setCustomName(ChatColor.GRAY + "-" + damages.get(6) + " ✺ ");
+
+            Bukkit.getScheduler().runTaskLater(Devoria.getInstance(), as6::remove, delay);
+        }
+        if (Integer.parseInt(damages.get(7)) > 0) {
+            ArmorStand as6 = world.spawn(location.subtract(0, distance, 0), ArmorStand.class);
+            as6.setInvisible(true);
+            as6.setCustomNameVisible(true);
+            as6.setMarker(true);
+            as6.setCustomName(ChatColor.YELLOW + "-" + damages.get(7) + " ✺ ");
 
             Bukkit.getScheduler().runTaskLater(Devoria.getInstance(), as6::remove, delay);
         }
