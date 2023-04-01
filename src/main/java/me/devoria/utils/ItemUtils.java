@@ -139,6 +139,10 @@ public class ItemUtils {
         int darkDamagePercent = 0;
         int windDamagePercent = 0;
         int thunderDamagePercent = 0;
+        int rawMelee = 0;
+        int meleePercent = 0;
+        int rawSpell = 0;
+        int spellPercent = 0;
 
 
         if(weaponItemData != null) {
@@ -213,6 +217,18 @@ public class ItemUtils {
             if(weaponStatsMap.get("thunderDamagePercent") != null) {
                 thunderDamagePercent += Integer.parseInt(weaponStatsMap.get("thunderDamagePercent"));
             }
+            if(weaponStatsMap.get("rawMelee") != null) {
+                rawMelee += Integer.parseInt(weaponStatsMap.get("rawMelee"));
+            }
+            if(weaponStatsMap.get("rawSpell") != null) {
+                rawSpell += Integer.parseInt(weaponStatsMap.get("rawSpell"));
+            }
+            if(weaponStatsMap.get("meleePercent") != null) {
+                meleePercent += Integer.parseInt(weaponStatsMap.get("meleePercent"));
+            }
+            if(weaponStatsMap.get("spellPercent") != null) {
+                spellPercent += Integer.parseInt(weaponStatsMap.get("spellPercent"));
+            }
         }
 
         if(helmetItemData != null) {
@@ -266,6 +282,18 @@ public class ItemUtils {
             if(helmetStatsMap.get("thunderhDamagePercent") != null) {
                 thunderDamagePercent += Integer.parseInt(helmetStatsMap.get("thunderDamagePercent"));
             }
+            if(helmetStatsMap.get("rawMelee") != null) {
+                rawMelee += Integer.parseInt(helmetStatsMap.get("rawMelee"));
+            }
+            if(helmetStatsMap.get("rawSpell") != null) {
+                rawSpell += Integer.parseInt(helmetStatsMap.get("rawSpell"));
+            }
+            if(helmetStatsMap.get("meleePercent") != null) {
+                meleePercent += Integer.parseInt(helmetStatsMap.get("meleePercent"));
+            }
+            if(helmetStatsMap.get("spellPercent") != null) {
+                spellPercent += Integer.parseInt(helmetStatsMap.get("spellPercent"));
+            }
         }
 
         if(chestplateItemData != null) {
@@ -318,6 +346,18 @@ public class ItemUtils {
             }
             if(chestplateStatsMap.get("thunderhDamagePercent") != null) {
                 thunderDamagePercent += Integer.parseInt(chestplateStatsMap.get("thunderDamagePercent"));
+            }
+            if(chestplateStatsMap.get("rawMelee") != null) {
+                rawMelee += Integer.parseInt(chestplateStatsMap.get("rawMelee"));
+            }
+            if(chestplateStatsMap.get("rawSpell") != null) {
+                rawSpell += Integer.parseInt(chestplateStatsMap.get("rawSpell"));
+            }
+            if(chestplateStatsMap.get("meleePercent") != null) {
+                meleePercent += Integer.parseInt(chestplateStatsMap.get("meleePercent"));
+            }
+            if(chestplateStatsMap.get("spellPercent") != null) {
+                spellPercent += Integer.parseInt(chestplateStatsMap.get("spellPercent"));
             }
 
         }
@@ -373,6 +413,18 @@ public class ItemUtils {
             if(leggingsStatsMap.get("thunderhDamagePercent") != null) {
                 thunderDamagePercent += Integer.parseInt(leggingsStatsMap.get("thunderDamagePercent"));
             }
+            if(leggingsStatsMap.get("rawMelee") != null) {
+                rawMelee += Integer.parseInt(leggingsStatsMap.get("rawMelee"));
+            }
+            if(leggingsStatsMap.get("rawSpell") != null) {
+                rawSpell += Integer.parseInt(leggingsStatsMap.get("rawSpell"));
+            }
+            if(leggingsStatsMap.get("meleePercent") != null) {
+                meleePercent += Integer.parseInt(leggingsStatsMap.get("meleePercent"));
+            }
+            if(leggingsStatsMap.get("spellPercent") != null) {
+                spellPercent += Integer.parseInt(leggingsStatsMap.get("spellPercent"));
+            }
         }
 
         if(bootsItemData != null) {
@@ -426,6 +478,18 @@ public class ItemUtils {
             if(bootsStatsMap.get("thunderhDamagePercent") != null) {
                 thunderDamagePercent += Integer.parseInt(bootsStatsMap.get("thunderDamagePercent"));
             }
+            if(bootsStatsMap.get("rawMelee") != null) {
+                rawMelee += Integer.parseInt(bootsStatsMap.get("rawMelee"));
+            }
+            if(bootsStatsMap.get("rawSpell") != null) {
+                rawSpell += Integer.parseInt(bootsStatsMap.get("rawSpell"));
+            }
+            if(bootsStatsMap.get("meleePercent") != null) {
+                meleePercent += Integer.parseInt(bootsStatsMap.get("meleePercent"));
+            }
+            if(bootsStatsMap.get("spellPercent") != null) {
+                spellPercent += Integer.parseInt(bootsStatsMap.get("spellPercent"));
+            }
         }
 
 
@@ -437,7 +501,8 @@ public class ItemUtils {
 
         attributes += ",health:"+maxHealth+",walkSpeed:"+walkSpeed+",hpr:"+hpr+",maxHealthHpr:"+maxHealthHpr+",currentHealthHpr:"+currentHealthHpr+",hprPercent:"+hprPercent+",healthPercent:"+healthPercent+
                 ",damage:"+damage+ ",earthDamage:"+earthDamage+",fireDamage:"+fireDamage+",arcaneDamage:"+arcaneDamage+",lightDamage:"+lightDamage+",darkDamage:"+darkDamage+",windDamage:"+windDamage+",thunderDamage:"+thunderDamage+
-                ",earthDamagePercent:"+earthDamagePercent+",fireDamagePercent:"+fireDamagePercent+",arcaneDamagePercent:"+arcaneDamagePercent+",lightDamagePercent:"+lightDamagePercent+",darkDamagePercent:"+darkDamagePercent+",windDamagePercent:"+windDamagePercent+",thunderDamagePercent:"+thunderDamagePercent;
+                ",earthDamagePercent:"+earthDamagePercent+",fireDamagePercent:"+fireDamagePercent+",arcaneDamagePercent:"+arcaneDamagePercent+",lightDamagePercent:"+lightDamagePercent+",darkDamagePercent:"+darkDamagePercent+",windDamagePercent:"+windDamagePercent+",thunderDamagePercent:"+thunderDamagePercent+
+                ",rawMelee:"+rawMelee+",rawSpell:"+rawSpell+",meleePercent:"+meleePercent+",spellPercent:"+spellPercent;
 
         p.setMetadata("attributes", new FixedMetadataValue(Devoria.getInstance(), attributes));
         String s = ItemUtils.calculateStatsWithRange("12-30", String.valueOf(walkSpeed), "-");
@@ -554,18 +619,18 @@ public class ItemUtils {
         Object lightDamage = attributes.get("light_damage");
         Object darkDamage = attributes.get("dark_damage");
         Object windDamage = attributes.get("wind_damage");
-        Object thunderDamage = attributes.get("thunder_damage");
+        Object thunderDamage = attributes.get("electric_damage");
         Object rawMelee = attributes.get("raw_melee");
         Object rawSpell = attributes.get("raw_spell");
-        Object earthDamagePercent = attributes.get("earth_damage_percent");
-        Object fireDamagePercent = attributes.get("fire_damage_percent");
-        Object arcaneDamagePercent = attributes.get("arcane_damage_percent");
-        Object lightDamagePercent = attributes.get("light_damage_percent");
-        Object darkDamagePercent = attributes.get("dark_damage_percent");
-        Object windDamagePercent = attributes.get("wind_damage_percent");
-        Object thunderDamagePercent = attributes.get("thunder_damage_percent");
-        Object meleePercent = attributes.get("melee_damage_percent");
-        Object spellPercent = attributes.get("spell_damage_percent");
+        Object earthDamagePercent = attributes.get("earth_percent");
+        Object fireDamagePercent = attributes.get("fire_percent");
+        Object arcaneDamagePercent = attributes.get("arcane_percent");
+        Object lightDamagePercent = attributes.get("light_percent");
+        Object darkDamagePercent = attributes.get("dark_percent");
+        Object windDamagePercent = attributes.get("wind_percent");
+        Object thunderDamagePercent = attributes.get("electric_percent");
+        Object meleePercent = attributes.get("melee_percent");
+        Object spellPercent = attributes.get("spell_percent");
         Object walkSpeed = attributes.get("walk_speed");
         Object healthBonus = attributes.get("health_bonus");
         Object hpr = attributes.get("hpr");
@@ -720,7 +785,7 @@ public class ItemUtils {
                 itemInfo += ",windDamage:" + windDamage;
             }
             if (thunderDamage != null) {
-                lore.add(ChatColor.YELLOW+ "✺ Thunder " + ChatColor.GRAY + "Damage: " + thunderDamage);
+                lore.add(ChatColor.YELLOW+ "⚡ Electric " + ChatColor.GRAY + "Damage: " + thunderDamage);
                 itemInfo += ",thunderDamage:" + thunderDamage;
             }
             lore.add("");
@@ -768,7 +833,7 @@ public class ItemUtils {
             itemInfo += ",healthPercent:"+healthPercent;
         }
 
-        if(earthDamagePercent != null || fireDamagePercent != null || arcaneDamagePercent != null || lightDamagePercent != null || darkDamagePercent != null || windDamagePercent != null || thunderDamagePercent != null) {
+        if(earthDamagePercent != null || fireDamagePercent != null || arcaneDamagePercent != null || lightDamagePercent != null || darkDamagePercent != null || windDamagePercent != null || thunderDamagePercent != null || rawMelee != null || meleePercent != null || rawSpell != null || spellPercent != null) {
             lore.add("");
         }
 
@@ -936,11 +1001,107 @@ public class ItemUtils {
 
             starsColorFinder(Integer.parseInt(thunderDamagePercentPercentage));
 
-            lore.add(statColor+plusOrMinus+calculatedThunderDamagePercent+"% "+ChatColor.GRAY+"Lightning Damage"+starsColor+" ✯");
+            lore.add(statColor+plusOrMinus+calculatedThunderDamagePercent+"% "+ChatColor.GRAY+"Electric Damage"+starsColor+" ✯");
             totalPercent += Integer.parseInt(thunderDamagePercentPercentage);
             numberOfStats += 1;
 
             itemInfo += ",thunderDamagePercent:"+calculatedThunderDamagePercent+",thunderDamagePercentPercentage:"+thunderDamagePercentPercentage;
+        }
+
+        if(rawMelee != null) {
+
+            String rawMeleePercentage;
+
+            if(map.get("rawMeleePercentage") != null) {
+                rawMeleePercentage = map.get("rawMeleePercentage");
+            }
+            else {
+                rawMeleePercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedRawMelee = calculateStatsWithRange(rawMelee, rawMeleePercentage, ",");
+
+            plusOrMinusFinder(calculatedRawMelee);
+
+            starsColorFinder(Integer.parseInt(rawMeleePercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedRawMelee+" "+ChatColor.GRAY+"Melee Damage"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(rawMeleePercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",rawMelee:"+calculatedRawMelee+",rawMeleePercentage:"+rawMeleePercentage;
+        }
+
+        if(meleePercent != null) {
+
+            String meleePercentPercentage;
+
+            if(map.get("meleePercentPercentage") != null) {
+                meleePercentPercentage = map.get("meleePercentPercentage");
+            }
+            else {
+                meleePercentPercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedMeleePercent = calculateStatsWithRange(meleePercent, meleePercentPercentage, ",");
+
+            plusOrMinusFinder(calculatedMeleePercent);
+
+            starsColorFinder(Integer.parseInt(meleePercentPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedMeleePercent+"% "+ChatColor.GRAY+"Melee Damage"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(meleePercentPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",meleePercent:"+calculatedMeleePercent+",meleePercentPercentage:"+meleePercentPercentage;
+        }
+
+        if(rawSpell != null) {
+
+            String rawSpellPercentage;
+
+            if(map.get("rawSpellPercentage") != null) {
+                rawSpellPercentage = map.get("rawSpellPercentage");
+            }
+            else {
+                rawSpellPercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedRawSpell = calculateStatsWithRange(rawSpell, rawSpellPercentage, ",");
+
+            plusOrMinusFinder(calculatedRawSpell);
+
+            starsColorFinder(Integer.parseInt(rawSpellPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedRawSpell+" "+ChatColor.GRAY+"Spell Damage"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(rawSpellPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",rawSpell:"+calculatedRawSpell+",rawSpellPercentage:"+rawSpellPercentage;
+        }
+
+        if(spellPercent != null) {
+
+            String spellPercentPercentage;
+
+            if(map.get("spellPercentPercentage") != null) {
+                spellPercentPercentage = map.get("spellPercentPercentage");
+            }
+            else {
+                spellPercentPercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedSpellPercent = calculateStatsWithRange(spellPercent, spellPercentPercentage, ",");
+
+            plusOrMinusFinder(calculatedSpellPercent);
+
+            starsColorFinder(Integer.parseInt(spellPercentPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedSpellPercent+"% "+ChatColor.GRAY+"Spell Damage"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(spellPercentPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",spellPercent:"+calculatedSpellPercent+",spellPercentPercentage:"+spellPercentPercentage;
         }
 
 
@@ -1150,7 +1311,7 @@ public class ItemUtils {
         int darkDamage;
         int windDamage;
         int thunderDamage;
-        float rawDamage;
+        int rawDamage;
         float earthDamagePercent;
         float fireDamagePercent;
         float arcaneDamagePercent;
@@ -1176,8 +1337,8 @@ public class ItemUtils {
         String dd = map.get("darkDamage");
         String wd = map.get("windDamage");
         String td = map.get("thunderDamage");
-        String rmd = map.get("rawMeleeDamage");
-        String rsd = map.get("rawSpellDamage");
+        String rmd = map.get("rawMelee");
+        String rsd = map.get("rawSpell");
         String edp = map.get("earthDamagePercent");
         String fdp = map.get("fireDamagePercent");
         String adp = map.get("arcaneDamagePercent");
@@ -1185,8 +1346,8 @@ public class ItemUtils {
         String ddp = map.get("darkDamagePercent");
         String wdp = map.get("windDamagePercent");
         String tdp = map.get("thunderDamagePercent");
-        String sdp = map.get("spellDamagePercent");
-        String mdp = map.get("meleeDamagePercent");
+        String sdp = map.get("spellPercent");
+        String mdp = map.get("meleePercent");
 
 
         String generatedPercentage = MiscellaneousUtils.generatePercentage();
@@ -1305,14 +1466,14 @@ public class ItemUtils {
                 rawDamage = 0;
             }
             else {
-                rawDamage = (Float.parseFloat(map.get("rawMeleeDamage")) + 100) / 100;
+                rawDamage = Integer.parseInt(map.get("rawMelee"));
             }
 
             if(mdp == null) {
                 damagePercent = 1;
             }
             else {
-                damagePercent = (Float.parseFloat(map.get("meleeDamagePercent")) + 100) / 100;
+                damagePercent = (Float.parseFloat(map.get("meleePercent")) + 100) / 100;
             }
         }
 
@@ -1322,14 +1483,14 @@ public class ItemUtils {
                 rawDamage = 0;
             }
             else {
-                rawDamage = (Float.parseFloat(map.get("rawSpellDamage")) + 100) / 100;
+                rawDamage = Integer.parseInt(map.get("rawSpell"));
             }
 
             if(sdp == null) {
                 damagePercent = 1;
             }
             else {
-                damagePercent = (Float.parseFloat(map.get("spellDamagePercent")) + 100) / 100;
+                damagePercent = (Float.parseFloat(map.get("spellPercent")) + 100) / 100;
             }
         }
 

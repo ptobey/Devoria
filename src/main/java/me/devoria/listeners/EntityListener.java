@@ -78,11 +78,10 @@ public class EntityListener implements Listener {
     public void hit(EntityDamageByEntityEvent e) {
         e.setDamage(0);
         String damagerStats = "";
-        boolean isPlayer = false;
         Entity damagerEntity = e.getDamager();
         Entity victim = e.getEntity();
         damagerStats = e.getDamager().getMetadata("attributes").get(0).asString();
-        ArrayList<String> damages = ItemUtils.getItemDamage(damagerStats, false);
+        ArrayList<String> damages = ItemUtils.getItemDamage(damagerStats, true);
 
         if(e.getDamager() instanceof Player) {
             MiscellaneousUtils damageIndicator = new MiscellaneousUtils();
