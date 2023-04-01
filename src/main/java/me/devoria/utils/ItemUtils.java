@@ -768,14 +768,14 @@ public class ItemUtils {
             itemInfo += ",healthPercent:"+healthPercent;
         }
 
-        if(earthDamagePercent != null) {
+        if(earthDamagePercent != null || fireDamagePercent != null || arcaneDamagePercent != null || lightDamagePercent != null || darkDamagePercent != null || windDamagePercent != null || thunderDamagePercent != null) {
             lore.add("");
         }
 
 
         //damages here
 
-        if(earthDamagePercent != null || fireDamagePercent != null || arcaneDamagePercent != null || lightDamagePercent != null || darkDamagePercent != null || windDamagePercent != null || thunderDamagePercent != null) {
+        if(earthDamagePercent != null) {
 
             String earthDamagePercentPercentage;
 
@@ -942,6 +942,8 @@ public class ItemUtils {
 
             itemInfo += ",thunderDamagePercent:"+calculatedThunderDamagePercent+",thunderDamagePercentPercentage:"+thunderDamagePercentPercentage;
         }
+
+
 
         if(walkSpeed != null || hpr != null|| hprPercent != null) {
             lore.add("");
