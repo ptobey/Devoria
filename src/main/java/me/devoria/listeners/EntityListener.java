@@ -77,11 +77,11 @@ public class EntityListener implements Listener {
     @EventHandler
     public void hit(EntityDamageByEntityEvent e) {
         e.setDamage(0);
-        String damagerStats = "";
-        Entity damagerEntity = e.getDamager();
+        Entity damager = e.getDamager();
         Entity victim = e.getEntity();
-        damagerStats = e.getDamager().getMetadata("attributes").get(0).asString();
-        ArrayList<String> damages = ItemUtils.getItemDamage(damagerStats, true);
+        String damagerStats = damager.getMetadata("attributes").get(0).asString();
+        String victimStats = victim.getMetadata("attributes").get(0).asString();
+        ArrayList<String> damages = ItemUtils.getDamage(damagerStats, victimStats, true);
 
         if(e.getDamager() instanceof Player) {
             MiscellaneousUtils damageIndicator = new MiscellaneousUtils();
@@ -90,7 +90,7 @@ public class EntityListener implements Listener {
             e.getDamager().sendMessage(damages.get(8));
         }
 
-        PlayerUtils.changeHealth(victim, Integer.parseInt("-"+damages.get(8)), damagerEntity, true);
+        PlayerUtils.changeHealth(victim, Integer.parseInt("-"+damages.get(8)), damager, true);
 
         if(victim instanceof Player) {
             PlayerUtils.updateHealthBar((Player) e.getEntity());

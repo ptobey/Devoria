@@ -1650,9 +1650,11 @@ public class ItemUtils {
     }
 
 
-    public static ArrayList<String> getItemDamage(String itemData, boolean isSpell) {
+    public static ArrayList<String> getDamage(String damagerStats, String victimStats, boolean isSpell) {
 
-        HashMap<String,String> map = new HashMap<>();
+        HashMap<String,String> damagerMap = new HashMap<>();
+        HashMap<String,String> victimMap = new HashMap<>();
+
         ArrayList<String> damages = new ArrayList<>();
 
         int normalDamage;
@@ -1672,34 +1674,45 @@ public class ItemUtils {
         float windDamagePercent;
         float thunderDamagePercent;
         float damagePercent;
+        float strengthPercent;
+        float defensePercent;
 
 
-        String[] seperatedStats = itemData.split(",");
+        String[] seperatedDamagerStats = damagerStats.split(",");
 
-        for(int i=1;i<seperatedStats.length;i++){
-            String[] arr = seperatedStats[i].split(":");
-            map.put(arr[0], arr[1]);
+        for(int i=1;i<seperatedDamagerStats.length;i++){
+            String[] damagerArr = seperatedDamagerStats[i].split(":");
+            damagerMap.put(damagerArr[0], damagerArr[1]);
         }
 
-        String nd = map.get("damage");
-        String ed = map.get("earthDamage");
-        String fd = map.get("fireDamage");
-        String ad = map.get("arcaneDamage");
-        String ld = map.get("lightDamage");
-        String dd = map.get("darkDamage");
-        String wd = map.get("windDamage");
-        String td = map.get("thunderDamage");
-        String rmd = map.get("rawMelee");
-        String rsd = map.get("rawSpell");
-        String edp = map.get("earthDamagePercent");
-        String fdp = map.get("fireDamagePercent");
-        String adp = map.get("arcaneDamagePercent");
-        String ldp = map.get("lightDamagePercent");
-        String ddp = map.get("darkDamagePercent");
-        String wdp = map.get("windDamagePercent");
-        String tdp = map.get("thunderDamagePercent");
-        String sdp = map.get("spellPercent");
-        String mdp = map.get("meleePercent");
+        String[] seperatedVictimStats = victimStats.split(",");
+
+        for(int i=1;i<seperatedVictimStats.length;i++){
+            String[] victimArr = seperatedVictimStats[i].split(":");
+            victimMap.put(victimArr[0], victimArr[1]);
+        }
+
+        String nd = damagerMap.get("damage");
+        String ed = damagerMap.get("earthDamage");
+        String fd = damagerMap.get("fireDamage");
+        String ad = damagerMap.get("arcaneDamage");
+        String ld = damagerMap.get("lightDamage");
+        String dd = damagerMap.get("darkDamage");
+        String wd = damagerMap.get("windDamage");
+        String td = damagerMap.get("thunderDamage");
+        String rmd = damagerMap.get("rawMelee");
+        String rsd = damagerMap.get("rawSpell");
+        String edp = damagerMap.get("earthDamagePercent");
+        String fdp = damagerMap.get("fireDamagePercent");
+        String adp = damagerMap.get("arcaneDamagePercent");
+        String ldp = damagerMap.get("lightDamagePercent");
+        String ddp = damagerMap.get("darkDamagePercent");
+        String wdp = damagerMap.get("windDamagePercent");
+        String tdp = damagerMap.get("thunderDamagePercent");
+        String sdp = damagerMap.get("spellPercent");
+        String mdp = damagerMap.get("meleePercent");
+        String str = damagerMap.get("strength");
+        String def = victimMap.get("defense");
 
 
         String generatedPercentage = MiscellaneousUtils.generatePercentage();
@@ -1708,7 +1721,7 @@ public class ItemUtils {
         if(nd == null)
             normalDamage = 0;
         else {
-            normalDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(map.get("damage"), generatedPercentage, "-"));
+            normalDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(damagerMap.get("damage"), generatedPercentage, "-"));
         }
 
         generatedPercentage = MiscellaneousUtils.generatePercentage();
@@ -1717,7 +1730,7 @@ public class ItemUtils {
         if(ed == null)
             earthDamage = 0;
         else {
-            earthDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(map.get("earthDamage"), generatedPercentage, "-"));
+            earthDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(damagerMap.get("earthDamage"), generatedPercentage, "-"));
         }
 
         generatedPercentage = MiscellaneousUtils.generatePercentage();
@@ -1725,7 +1738,7 @@ public class ItemUtils {
         if(fd == null)
             fireDamage = 0;
         else {
-            fireDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(map.get("fireDamage"), generatedPercentage, "-"));
+            fireDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(damagerMap.get("fireDamage"), generatedPercentage, "-"));
         }
 
         generatedPercentage = MiscellaneousUtils.generatePercentage();
@@ -1733,7 +1746,7 @@ public class ItemUtils {
         if(ad == null)
             arcaneDamage = 0;
         else {
-            arcaneDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(map.get("arcaneDamage"), generatedPercentage, "-"));
+            arcaneDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(damagerMap.get("arcaneDamage"), generatedPercentage, "-"));
         }
 
         generatedPercentage = MiscellaneousUtils.generatePercentage();
@@ -1741,7 +1754,7 @@ public class ItemUtils {
         if(ld == null)
             lightDamage = 0;
         else {
-            lightDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(map.get("lightDamage"), generatedPercentage, "-"));
+            lightDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(damagerMap.get("lightDamage"), generatedPercentage, "-"));
         }
 
         generatedPercentage = MiscellaneousUtils.generatePercentage();
@@ -1749,7 +1762,7 @@ public class ItemUtils {
         if(dd == null)
             darkDamage = 0;
         else {
-            darkDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(map.get("darkDamage"), generatedPercentage, "-"));
+            darkDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(damagerMap.get("darkDamage"), generatedPercentage, "-"));
         }
 
         generatedPercentage = MiscellaneousUtils.generatePercentage();
@@ -1757,7 +1770,7 @@ public class ItemUtils {
         if(wd == null)
             windDamage = 0;
         else {
-            windDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(map.get("windDamage"), generatedPercentage, "-"));
+            windDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(damagerMap.get("windDamage"), generatedPercentage, "-"));
         }
 
         generatedPercentage = MiscellaneousUtils.generatePercentage();
@@ -1765,51 +1778,76 @@ public class ItemUtils {
         if(td == null)
             thunderDamage = 0;
         else {
-            thunderDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(map.get("thunderDamage"), generatedPercentage, "-"));
+            thunderDamage = Integer.parseInt(ItemUtils.calculateStatsWithRange(damagerMap.get("thunderDamage"), generatedPercentage, "-"));
         }
 
         if(edp == null)
             earthDamagePercent = 1;
         else {
-            earthDamagePercent = (Float.parseFloat(map.get("earthDamagePercent")) + 100) / 100;
+            earthDamagePercent = (Float.parseFloat(damagerMap.get("earthDamagePercent")) + 100) / 100;
         }
 
         if(fdp == null)
             fireDamagePercent = 1;
         else {
-            fireDamagePercent = (Float.parseFloat(map.get("fireDamagePercent")) + 100) / 100;
+            fireDamagePercent = (Float.parseFloat(damagerMap.get("fireDamagePercent")) + 100) / 100;
         }
 
 
         if(adp == null)
             arcaneDamagePercent = 1;
         else {
-            arcaneDamagePercent = (Float.parseFloat(map.get("arcaneDamagePercent")) + 100) / 100;
+            arcaneDamagePercent = (Float.parseFloat(damagerMap.get("arcaneDamagePercent")) + 100) / 100;
         }
 
 
         if(ldp == null)
             lightDamagePercent = 1;
         else {
-            lightDamagePercent = (Float.parseFloat(map.get("lightDamagePercent")) + 100) / 100;
+            lightDamagePercent = (Float.parseFloat(damagerMap.get("lightDamagePercent")) + 100) / 100;
         }
 
         if(ddp == null)
             darkDamagePercent = 1;
         else {
-            darkDamagePercent =(Float.parseFloat(map.get("darkDamagePercent")) + 100) / 100;
+            darkDamagePercent =(Float.parseFloat(damagerMap.get("darkDamagePercent")) + 100) / 100;
         }
 
         if(wdp == null)
             windDamagePercent = 1;
         else {
-            windDamagePercent = (Float.parseFloat(map.get("windDamagePercent")) + 100) / 100;
+            windDamagePercent = (Float.parseFloat(damagerMap.get("windDamagePercent")) + 100) / 100;
         }
 
         if(tdp == null)
             thunderDamagePercent = 1;
         else {
-            thunderDamagePercent = (Float.parseFloat(map.get("thunderDamagePercent")) + 100) / 100;
+            thunderDamagePercent = (Float.parseFloat(damagerMap.get("thunderDamagePercent")) + 100) / 100;
+        }
+
+        if(str == null)
+            strengthPercent = 1;
+        else {
+            strengthPercent = (((Float.parseFloat(damagerMap.get("strength")) / 2) + 100) / 100);
+            if(strengthPercent < 1) {
+                strengthPercent = 1;
+            }
+            else if(strengthPercent > 1.75) {
+                strengthPercent = 1.75F;
+            }
+        }
+
+        if(def == null) {
+            defensePercent = 1;
+        }
+        else {
+            defensePercent = (((Float.parseFloat(victimMap.get("defense")) / 2) + 100) / 100);
+            if(defensePercent < 1) {
+                defensePercent = 1;
+            }
+            else if(defensePercent > 1.75) {
+                defensePercent = 1.75F;
+            }
         }
 
         if(!isSpell) {
@@ -1818,14 +1856,14 @@ public class ItemUtils {
                 rawDamage = 0;
             }
             else {
-                rawDamage = Integer.parseInt(map.get("rawMelee"));
+                rawDamage = Integer.parseInt(damagerMap.get("rawMelee"));
             }
 
             if(mdp == null) {
                 damagePercent = 1;
             }
             else {
-                damagePercent = (Float.parseFloat(map.get("meleePercent")) + 100) / 100;
+                damagePercent = (Float.parseFloat(damagerMap.get("meleePercent")) + 100) / 100;
             }
         }
 
@@ -1835,32 +1873,33 @@ public class ItemUtils {
                 rawDamage = 0;
             }
             else {
-                rawDamage = Integer.parseInt(map.get("rawSpell"));
+                rawDamage = Integer.parseInt(damagerMap.get("rawSpell"));
             }
 
             if(sdp == null) {
                 damagePercent = 1;
             }
             else {
-                damagePercent = (Float.parseFloat(map.get("spellPercent")) + 100) / 100;
+                damagePercent = (Float.parseFloat(damagerMap.get("spellPercent")) + 100) / 100;
             }
         }
 
-        normalDamage = (int) ((normalDamage + rawDamage) * damagePercent);
 
-        earthDamage = (int) (earthDamage * earthDamagePercent * damagePercent);
+        normalDamage = (int) ((normalDamage + rawDamage) * damagePercent * ((strengthPercent-defensePercent)+1));
 
-        fireDamage = (int) (fireDamage * fireDamagePercent * damagePercent);
+        earthDamage = (int) (earthDamage * earthDamagePercent * damagePercent * ((strengthPercent-defensePercent)+1));
 
-        arcaneDamage = (int) (arcaneDamage * arcaneDamagePercent * damagePercent);
+        fireDamage = (int) (fireDamage * fireDamagePercent * damagePercent * ((strengthPercent-defensePercent)+1));
 
-        lightDamage = (int) (lightDamage * lightDamagePercent * damagePercent);
+        arcaneDamage = (int) (arcaneDamage * arcaneDamagePercent * damagePercent * ((strengthPercent-defensePercent)+1));
 
-        darkDamage = (int) (darkDamage * darkDamagePercent * damagePercent);
+        lightDamage = (int) (lightDamage * lightDamagePercent * damagePercent * ((strengthPercent-defensePercent)+1));
 
-        windDamage = (int) (windDamage * windDamagePercent * damagePercent);
+        darkDamage = (int) (darkDamage * darkDamagePercent * damagePercent * ((strengthPercent-defensePercent)+1));
 
-        thunderDamage = (int) (thunderDamage * thunderDamagePercent * damagePercent);
+        windDamage = (int) (windDamage * windDamagePercent * damagePercent * ((strengthPercent-defensePercent)+1));
+
+        thunderDamage = (int) (thunderDamage * thunderDamagePercent * damagePercent * ((strengthPercent-defensePercent)+1));
 
 
         int totalDamage = (normalDamage+earthDamage+fireDamage+arcaneDamage+lightDamage+darkDamage+windDamage+thunderDamage);

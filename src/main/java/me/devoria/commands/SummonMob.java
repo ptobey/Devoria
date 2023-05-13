@@ -56,6 +56,7 @@ public class SummonMob implements CommandExecutor {
             Object maxHealth = stats.get("max_health");
             Object damage = stats.get("damage");
             Object xp = stats.get("xp");
+            Object defense = stats.get("defense");
 
             //see comment below about ir/ih/il
             //Material mainHand = stats.get("main_hand") != null ? Material.valueOf(stats.get("main_hand").toUpperCase()) : Material.AIR;
@@ -91,7 +92,7 @@ public class SummonMob implements CommandExecutor {
 
 
             mob.setMetadata("healthStats", new FixedMetadataValue(Devoria.getInstance(), ",currentHealth:" + maxHealth));
-            mob.setMetadata("attributes", new FixedMetadataValue(Devoria.getInstance(), ",health:" + maxHealth + ",damage:" + damage + ",xp:" + xp));
+            mob.setMetadata("attributes", new FixedMetadataValue(Devoria.getInstance(), ",health:" + maxHealth + ",damage:" + damage + ",xp:" + xp + ",defense:" + defense));
 
             //replace with ir/ih/il bone
             //Objects.requireNonNull(mob.getEquipment()).setItemInMainHand(new ItemStack(mainHand));
