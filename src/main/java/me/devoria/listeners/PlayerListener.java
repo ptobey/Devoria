@@ -80,7 +80,7 @@ public class PlayerListener implements Listener {
         if (p.getMetadata("healthStats").size() == 0) {
             p.setMetadata("healthStats", new FixedMetadataValue(Devoria.getInstance(), ",currentHealth:1000"));
         }
-        ItemUtils.updateAttributes(p, -1);
+        ItemUtils.updateOnlyWeaponAttributes(p, -1);
     }
 
     @EventHandler
@@ -141,7 +141,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void updateIem(PlayerItemHeldEvent e) {
         Player p = e.getPlayer();
-        ItemUtils.updateAttributes(p, e.getNewSlot());
+        ItemUtils.updateOnlyWeaponAttributes(p, e.getNewSlot());
     }
 
     @EventHandler

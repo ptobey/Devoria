@@ -117,6 +117,12 @@ public class ItemUtils {
     public static void updateAttributes(Player p, String weaponItemData, String helmetItemData, String chestplateItemData, String leggingsItemData, String bootsItemData) {
 
         String attributes = "";
+        int defense = 0;
+        int strength = 0;
+        int spirit = 0;
+        int dexterity = 0;
+        int endurance = 0;
+
         int walkSpeed = 0;
         int maxHealth = 5;
         int hpr = 0;
@@ -143,6 +149,12 @@ public class ItemUtils {
         int meleePercent = 0;
         int rawSpell = 0;
         int spellPercent = 0;
+
+        int xpBonus = 0;
+        int lootChance = 0;
+        int lootQuality = 0;
+        int coinChance = 0;
+        int coinQuality = 0;
 
 
         if(weaponItemData != null) {
@@ -229,6 +241,38 @@ public class ItemUtils {
             if(weaponStatsMap.get("spellPercent") != null) {
                 spellPercent += Integer.parseInt(weaponStatsMap.get("spellPercent"));
             }
+            // next 5 stats were added xp, lc, cc, etc
+            if(weaponStatsMap.get("xpBonus") != null) {
+                xpBonus += Integer.parseInt(weaponStatsMap.get("xpBonus"));
+            }
+            if(weaponStatsMap.get("lootChance") != null) {
+                lootChance += Integer.parseInt(weaponStatsMap.get("lootChance"));
+            }
+            if(weaponStatsMap.get("lootQuality") != null) {
+                lootQuality += Integer.parseInt(weaponStatsMap.get("lootQuality"));
+            }
+            if(weaponStatsMap.get("coinChance") != null) {
+                coinChance += Integer.parseInt(weaponStatsMap.get("coinChance"));
+            }
+            if(weaponStatsMap.get("coinQuality") != null) {
+                coinQuality += Integer.parseInt(weaponStatsMap.get("coinQuality"));
+            }
+            // +elemental stats
+            if(weaponStatsMap.get("strength") != null) {
+                strength += Integer.parseInt(weaponStatsMap.get("strength"));
+            }
+            if(weaponStatsMap.get("defense") != null) {
+                defense += Integer.parseInt(weaponStatsMap.get("defense"));
+            }
+            if(weaponStatsMap.get("spirit") != null) {
+                spirit += Integer.parseInt(weaponStatsMap.get("spirit"));
+            }
+            if(weaponStatsMap.get("dexterity") != null) {
+                dexterity += Integer.parseInt(weaponStatsMap.get("dexterity"));
+            }
+            if(weaponStatsMap.get("endurance") != null) {
+                endurance += Integer.parseInt(weaponStatsMap.get("endurance"));
+            }
         }
 
         if(helmetItemData != null) {
@@ -294,6 +338,38 @@ public class ItemUtils {
             if(helmetStatsMap.get("spellPercent") != null) {
                 spellPercent += Integer.parseInt(helmetStatsMap.get("spellPercent"));
             }
+            // next 5 stats were added xp, lc, cc, etc
+            if(helmetStatsMap.get("xpBonus") != null) {
+                xpBonus += Integer.parseInt(helmetStatsMap.get("xpBonus"));
+            }
+            if(helmetStatsMap.get("lootChance") != null) {
+                lootChance += Integer.parseInt(helmetStatsMap.get("lootChance"));
+            }
+            if(helmetStatsMap.get("lootQuality") != null) {
+                lootQuality += Integer.parseInt(helmetStatsMap.get("lootQuality"));
+            }
+            if(helmetStatsMap.get("coinChance") != null) {
+                coinChance += Integer.parseInt(helmetStatsMap.get("coinChance"));
+            }
+            if(helmetStatsMap.get("coinQuality") != null) {
+                coinQuality += Integer.parseInt(helmetStatsMap.get("coinQuality"));
+            }
+            // +elemental stats
+            if(helmetStatsMap.get("strength") != null) {
+                strength += Integer.parseInt(helmetStatsMap.get("strength"));
+            }
+            if(helmetStatsMap.get("defense") != null) {
+                defense += Integer.parseInt(helmetStatsMap.get("defense"));
+            }
+            if(helmetStatsMap.get("spirit") != null) {
+                spirit += Integer.parseInt(helmetStatsMap.get("spirit"));
+            }
+            if(helmetStatsMap.get("dexterity") != null) {
+                dexterity += Integer.parseInt(helmetStatsMap.get("dexterity"));
+            }
+            if(helmetStatsMap.get("endurance") != null) {
+                endurance += Integer.parseInt(helmetStatsMap.get("endurance"));
+            }
         }
 
         if(chestplateItemData != null) {
@@ -358,6 +434,38 @@ public class ItemUtils {
             }
             if(chestplateStatsMap.get("spellPercent") != null) {
                 spellPercent += Integer.parseInt(chestplateStatsMap.get("spellPercent"));
+            }
+            // next 5 stats were added xp, lc, cc, etc
+            if(chestplateStatsMap.get("xpBonus") != null) {
+                xpBonus += Integer.parseInt(chestplateStatsMap.get("xpBonus"));
+            }
+            if(chestplateStatsMap.get("lootChance") != null) {
+                lootChance += Integer.parseInt(chestplateStatsMap.get("lootChance"));
+            }
+            if(chestplateStatsMap.get("lootQuality") != null) {
+                lootQuality += Integer.parseInt(chestplateStatsMap.get("lootQuality"));
+            }
+            if(chestplateStatsMap.get("coinChance") != null) {
+                coinChance += Integer.parseInt(chestplateStatsMap.get("coinChance"));
+            }
+            if(chestplateStatsMap.get("coinQuality") != null) {
+                coinQuality += Integer.parseInt(chestplateStatsMap.get("coinQuality"));
+            }
+            // +elemental stats
+            if(chestplateStatsMap.get("strength") != null) {
+                strength += Integer.parseInt(chestplateStatsMap.get("strength"));
+            }
+            if(chestplateStatsMap.get("defense") != null) {
+                defense += Integer.parseInt(chestplateStatsMap.get("defense"));
+            }
+            if(chestplateStatsMap.get("spirit") != null) {
+                spirit += Integer.parseInt(chestplateStatsMap.get("spirit"));
+            }
+            if(chestplateStatsMap.get("dexterity") != null) {
+                dexterity += Integer.parseInt(chestplateStatsMap.get("dexterity"));
+            }
+            if(chestplateStatsMap.get("endurance") != null) {
+                endurance += Integer.parseInt(chestplateStatsMap.get("endurance"));
             }
 
         }
@@ -425,6 +533,38 @@ public class ItemUtils {
             if(leggingsStatsMap.get("spellPercent") != null) {
                 spellPercent += Integer.parseInt(leggingsStatsMap.get("spellPercent"));
             }
+            // next 5 stats were added xp, lc, cc, etc
+            if(leggingsStatsMap.get("xpBonus") != null) {
+                xpBonus += Integer.parseInt(leggingsStatsMap.get("xpBonus"));
+            }
+            if(leggingsStatsMap.get("lootChance") != null) {
+                lootChance += Integer.parseInt(leggingsStatsMap.get("lootChance"));
+            }
+            if(leggingsStatsMap.get("lootQuality") != null) {
+                lootQuality += Integer.parseInt(leggingsStatsMap.get("lootQuality"));
+            }
+            if(leggingsStatsMap.get("coinChance") != null) {
+                coinChance += Integer.parseInt(leggingsStatsMap.get("coinChance"));
+            }
+            if(leggingsStatsMap.get("coinQuality") != null) {
+                coinQuality += Integer.parseInt(leggingsStatsMap.get("coinQuality"));
+            }
+            // +elemental stats
+            if(leggingsStatsMap.get("strength") != null) {
+                strength += Integer.parseInt(leggingsStatsMap.get("strength"));
+            }
+            if(leggingsStatsMap.get("defense") != null) {
+                defense += Integer.parseInt(leggingsStatsMap.get("defense"));
+            }
+            if(leggingsStatsMap.get("spirit") != null) {
+                spirit += Integer.parseInt(leggingsStatsMap.get("spirit"));
+            }
+            if(leggingsStatsMap.get("dexterity") != null) {
+                dexterity += Integer.parseInt(leggingsStatsMap.get("dexterity"));
+            }
+            if(leggingsStatsMap.get("endurance") != null) {
+                endurance += Integer.parseInt(leggingsStatsMap.get("endurance"));
+            }
         }
 
         if(bootsItemData != null) {
@@ -490,6 +630,38 @@ public class ItemUtils {
             if(bootsStatsMap.get("spellPercent") != null) {
                 spellPercent += Integer.parseInt(bootsStatsMap.get("spellPercent"));
             }
+            // next 5 stats were added xp, lc, cc, etc
+            if(bootsStatsMap.get("xpBonus") != null) {
+                xpBonus += Integer.parseInt(bootsStatsMap.get("xpBonus"));
+            }
+            if(bootsStatsMap.get("lootChance") != null) {
+                lootChance += Integer.parseInt(bootsStatsMap.get("lootChance"));
+            }
+            if(bootsStatsMap.get("lootQuality") != null) {
+                lootQuality += Integer.parseInt(bootsStatsMap.get("lootQuality"));
+            }
+            if(bootsStatsMap.get("coinChance") != null) {
+                coinChance += Integer.parseInt(bootsStatsMap.get("coinChance"));
+            }
+            if(bootsStatsMap.get("coinQuality") != null) {
+                coinQuality += Integer.parseInt(bootsStatsMap.get("coinQuality"));
+            }
+            // +elemental stats
+            if(bootsStatsMap.get("strength") != null) {
+                strength += Integer.parseInt(bootsStatsMap.get("strength"));
+            }
+            if(bootsStatsMap.get("defense") != null) {
+                defense += Integer.parseInt(bootsStatsMap.get("defense"));
+            }
+            if(bootsStatsMap.get("spirit") != null) {
+                spirit += Integer.parseInt(bootsStatsMap.get("spirit"));
+            }
+            if(bootsStatsMap.get("dexterity") != null) {
+                dexterity += Integer.parseInt(bootsStatsMap.get("dexterity"));
+            }
+            if(bootsStatsMap.get("endurance") != null) {
+                endurance += Integer.parseInt(bootsStatsMap.get("endurance"));
+            }
         }
 
 
@@ -502,14 +674,15 @@ public class ItemUtils {
         attributes += ",health:"+maxHealth+",walkSpeed:"+walkSpeed+",hpr:"+hpr+",maxHealthHpr:"+maxHealthHpr+",currentHealthHpr:"+currentHealthHpr+",hprPercent:"+hprPercent+",healthPercent:"+healthPercent+
                 ",damage:"+damage+ ",earthDamage:"+earthDamage+",fireDamage:"+fireDamage+",arcaneDamage:"+arcaneDamage+",lightDamage:"+lightDamage+",darkDamage:"+darkDamage+",windDamage:"+windDamage+",thunderDamage:"+thunderDamage+
                 ",earthDamagePercent:"+earthDamagePercent+",fireDamagePercent:"+fireDamagePercent+",arcaneDamagePercent:"+arcaneDamagePercent+",lightDamagePercent:"+lightDamagePercent+",darkDamagePercent:"+darkDamagePercent+",windDamagePercent:"+windDamagePercent+",thunderDamagePercent:"+thunderDamagePercent+
-                ",rawMelee:"+rawMelee+",rawSpell:"+rawSpell+",meleePercent:"+meleePercent+",spellPercent:"+spellPercent;
+                ",rawMelee:"+rawMelee+",rawSpell:"+rawSpell+",meleePercent:"+meleePercent+",spellPercent:"+spellPercent+",xpBonus:"+xpBonus+",lootChance:"+lootChance+",lootQuality:"+lootQuality+",coinChance:"+coinChance+",coinQuality:"+coinQuality
+                +",defense:"+defense+",strength:"+strength+",spirit:"+spirit+",dexterity:"+dexterity+",endurance:"+endurance;
 
         p.setMetadata("attributes", new FixedMetadataValue(Devoria.getInstance(), attributes));
         String s = ItemUtils.calculateStatsWithRange("12-30", String.valueOf(walkSpeed), "-");
         p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue((float)Integer.parseInt(s)/100);
     }
 
-    public static void updateAttributes(Player p, int slot) {
+    public static void updateOnlyWeaponAttributes(Player p, int slot) {
         ItemStack helmet = p.getInventory().getHelmet();
         ItemStack chestplate = p.getInventory().getChestplate();
         ItemStack leggings = p.getInventory().getLeggings();
@@ -639,6 +812,17 @@ public class ItemUtils {
         Object currentHealthHpr = attributes.get("current_health_hpr");
         Object healthPercent = attributes.get("health_percent");
 
+        Object xpBonus = attributes.get("xp_bonus");
+        Object lootChance = attributes.get("loot_chance");
+        Object lootQuality = attributes.get("loot_quality");
+        Object coinChance = attributes.get("coin_chance");
+        Object coinQuality = attributes.get("coin_quality");
+
+        Object defense = attributes.get("defense");
+        Object strength = attributes.get("strength");
+        Object spirit = attributes.get("spirit");
+        Object dexterity = attributes.get("dexterity");
+        Object endurance = attributes.get("endurance");
 
 
 
@@ -802,6 +986,48 @@ public class ItemUtils {
                 lore.add(ChatColor.GRAY + "   Rune Slots: [" + ChatColor.WHITE + "0/" + runeSlots + ChatColor.GRAY + "]");
             }
         }
+
+        if(defense != null || strength != null || spirit != null || dexterity != null || endurance != null) {
+            lore.add("");
+        }
+
+        if(defense != null) {
+            plusOrMinusFinder(defense.toString());
+            lore.add(statColor+plusOrMinus+defense+ChatColor.GRAY+" Defense");
+
+            itemInfo += ",defense:"+defense;
+        }
+
+        if(strength != null) {
+            plusOrMinusFinder(strength.toString());
+            lore.add(statColor+plusOrMinus+strength+ChatColor.GRAY+" Strength");
+
+            itemInfo += ",strength:"+strength;
+        }
+
+        if(spirit != null) {
+            plusOrMinusFinder(spirit.toString());
+            lore.add(statColor+plusOrMinus+spirit+ChatColor.GRAY+" Spirit");
+
+            itemInfo += ",spirit:"+spirit;
+        }
+        if(dexterity != null) {
+            plusOrMinusFinder(dexterity.toString());
+            lore.add(statColor+plusOrMinus+dexterity+ChatColor.GRAY+" Dexterity");
+
+            itemInfo += ",dexterity:"+dexterity;
+        }
+        if(endurance != null) {
+            plusOrMinusFinder(endurance.toString());
+            lore.add(statColor+plusOrMinus+endurance+ChatColor.GRAY+" Endurance");
+
+            itemInfo += ",endurance:"+endurance;
+        }
+
+
+
+
+
 
         if(currentHealthHpr != null || maxHealthHpr != null || healthPercent != null) {
             lore.add("");
@@ -1210,7 +1436,133 @@ public class ItemUtils {
             itemInfo += ",hprPercent:"+calculatedHprPercent+",hprPercentPercentage:"+hprPercentPercentage;
         }
 
+        if(xpBonus != null || lootChance != null || lootQuality != null || coinChance != null || coinQuality != null) {
+            lore.add("");
+        }
+        //Xp bonus
+        if(xpBonus != null) {
 
+            String xpBonusPercentage;
+
+            if(map.get("xpBonusPercentage") != null) {
+                xpBonusPercentage = map.get("xpBonusPercentage");
+            }
+            else {
+                xpBonusPercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedXpBonusPercent = calculateStatsWithRange(xpBonus, xpBonusPercentage, ",");
+
+            plusOrMinusFinder(calculatedXpBonusPercent);
+
+            starsColorFinder(Integer.parseInt(xpBonusPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedXpBonusPercent+"% "+ChatColor.GRAY+"XP Bonus"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(xpBonusPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",xpBonus:"+calculatedXpBonusPercent+",xpBonusPercentage:"+xpBonusPercentage;
+        }
+
+        //Loot chance
+        if(lootChance != null) {
+
+            String lootChancePercentage;
+
+            if(map.get("lootChancePercentage") != null) {
+                lootChancePercentage = map.get("lootChancePercentage");
+            }
+            else {
+                lootChancePercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedLootChancePercent = calculateStatsWithRange(lootChance, lootChancePercentage, ",");
+
+            plusOrMinusFinder(calculatedLootChancePercent);
+
+            starsColorFinder(Integer.parseInt(lootChancePercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedLootChancePercent+"% "+ChatColor.GRAY+"Loot Chance"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(lootChancePercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",lootChance:"+calculatedLootChancePercent+",lootChancePercentage:"+lootChancePercentage;
+        }
+
+        //Loot quality
+        if(lootQuality != null) {
+
+            String lootQualityPercentage;
+
+            if(map.get("lootQualityPercentage") != null) {
+                lootQualityPercentage = map.get("lootQualityPercentage");
+            }
+            else {
+                lootQualityPercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedLootQualityPercent = calculateStatsWithRange(lootQuality, lootQualityPercentage, ",");
+
+            plusOrMinusFinder(calculatedLootQualityPercent);
+
+            starsColorFinder(Integer.parseInt(lootQualityPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedLootQualityPercent+"% "+ChatColor.GRAY+"Loot Quality"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(lootQualityPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",lootQuality:"+calculatedLootQualityPercent+",lootQualityPercentage:"+lootQualityPercentage;
+        }
+
+        //Coin chance
+        if(coinChance != null) {
+
+            String coinChancePercentage;
+
+            if(map.get("coinChancePercentage") != null) {
+                coinChancePercentage = map.get("coinChancePercentage");
+            }
+            else {
+                coinChancePercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedCoinChancePercent = calculateStatsWithRange(coinChance, coinChancePercentage, ",");
+
+            plusOrMinusFinder(calculatedCoinChancePercent);
+
+            starsColorFinder(Integer.parseInt(coinChancePercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedCoinChancePercent+"% "+ChatColor.GRAY+"Coin Chance"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(coinChancePercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",coinChance:"+calculatedCoinChancePercent+",coinChancePercentage:"+coinChancePercentage;
+        }
+
+        //Coin quality
+        if(coinQuality != null) {
+
+            String coinQualityPercentage;
+
+            if(map.get("coinQualityPercentage") != null) {
+                coinQualityPercentage = map.get("coinQualityPercentage");
+            }
+            else {
+                coinQualityPercentage = MiscellaneousUtils.generatePercentage();
+            }
+
+            String calculatedCoinQualityPercent = calculateStatsWithRange(coinQuality, coinQualityPercentage, ",");
+
+            plusOrMinusFinder(calculatedCoinQualityPercent);
+
+            starsColorFinder(Integer.parseInt(coinQualityPercentage));
+
+            lore.add(statColor+plusOrMinus+calculatedCoinQualityPercent+"% "+ChatColor.GRAY+"Coin Quality"+starsColor+" ✯");
+            totalPercent += Integer.parseInt(coinQualityPercentage);
+            numberOfStats += 1;
+
+            itemInfo += ",coinQuality:"+calculatedCoinQualityPercent+",coinQualityPercentage:"+coinQualityPercentage;
+        }
 
 
         float itemPercentage = totalPercent/numberOfStats;
