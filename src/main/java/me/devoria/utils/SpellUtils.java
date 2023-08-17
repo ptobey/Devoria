@@ -15,6 +15,7 @@ public class SpellUtils {
         spell.cast(player, Devoria.getInstance().getCdInstance());
     }
 
+
     public static Spell getSpell(SpellType spellType, PlayerStats stats) {
         switch(spellType) {
             case BASE:
