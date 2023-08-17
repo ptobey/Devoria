@@ -179,10 +179,11 @@ public class PlayerListener implements Listener {
             return;
         long cooldown = 10;
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
-
-        if (playerStats.spellTriggers.spellMode) {
-            playerStats.spellTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR);
-            cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
+        if (playerStats.spellMode) {
+            if (playerStats.spellTriggers.spellMode) {
+                playerStats.spellTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR);
+                cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
+            }
         }
     }
 
@@ -190,6 +191,10 @@ public class PlayerListener implements Listener {
     public void playerHitByEntity(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Arrow && event.getDamager().getScoreboardTags().contains("arrowRainArrow")) {
             event.setDamage(5);
+        }
+
+        if (event.getDamager() instanceof Arrow && event.getDamager().getScoreboardTags().contains("nodamage")) {
+            event.setCancelled(true);
         }
 
         if (!(event.getEntity() instanceof Player)) return;
@@ -206,15 +211,16 @@ public class PlayerListener implements Listener {
             return;
         long cooldown = (10);
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
+        if (playerStats.spellMode) {
+            cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
 
-        cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
+            if (playerStats.spellTriggers.spellMode) {
+                playerStats.spellTriggers.continueNormalSpell(action);
+                return;
+            }
 
-        if (playerStats.spellTriggers.spellMode) {
-            playerStats.spellTriggers.continueNormalSpell(action);
-            return;
+            playerStats.spellTriggers.enterSpellMode(player);
         }
-
-        playerStats.spellTriggers.enterSpellMode();
     }
 
 

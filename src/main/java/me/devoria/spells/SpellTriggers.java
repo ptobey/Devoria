@@ -29,7 +29,8 @@ public class SpellTriggers {
     public boolean[] spellClicks = new boolean[2]; //left = false, right = true.
     private BukkitTask inactivityTimer;
 
-    public void enterSpellMode() {
+    public void enterSpellMode(Player player) {
+        this.player = player;
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_LEVER_CLICK, 0.5f, 1f);
         spellMode = true;
         PlayerUtils.updateHealthBar(player);

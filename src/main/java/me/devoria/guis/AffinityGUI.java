@@ -6,6 +6,11 @@ import me.devoria.player.PlayerStats;
 import me.devoria.spells.Spell;
 import me.devoria.spells.imanity.demigods.DemigodSpells;
 import me.devoria.spells.imanity.humans.HumanSpells;
+import me.devoria.spells.imanity.knights.KnightSpells;
+import me.devoria.spells.imanity.mages.MageSpells;
+import me.devoria.spells.lightseekers.angels.AngelSpells;
+import me.devoria.spells.lightseekers.aquans.AquanSpells;
+import me.devoria.spells.lightseekers.astreans.AstreanSpells;
 import me.devoria.spells.lightseekers.elves.ElfSpells;
 import me.devoria.utils.ItemUtils;
 import org.bukkit.Bukkit;
@@ -123,6 +128,12 @@ public class AffinityGUI {
                     }
                     case LIGHTSEEKER -> {
                         stats.setAffinity(AffinityType.AQUAN);
+                        stats.setSpells(new Spell[]{
+                                AquanSpells.AQUAJET,
+                                AquanSpells.OCEAN_POWER,
+                                AquanSpells.WATER_PRISON,
+                                AquanSpells.RIPWHIRL,
+                        });
                         stats.save();
                         event.getWhoClicked().closeInventory();
                     }
@@ -136,6 +147,12 @@ public class AffinityGUI {
                 switch (stats.getFaction()) {
                     case IMANITY -> {
                         stats.setAffinity(AffinityType.MAGE);
+                        stats.setSpells(new Spell[]{
+                                MageSpells.MANA_PULL,
+                                MageSpells.CHANNELING,
+                                MageSpells.MANA_BURST,
+                                MageSpells.TELEPORT,
+                        });
                         stats.save();
                         event.getWhoClicked().closeInventory();
                     }
@@ -160,11 +177,23 @@ public class AffinityGUI {
                 switch (stats.getFaction()) {
                     case IMANITY -> {
                         stats.setAffinity(AffinityType.KNIGHT);
+                        stats.setSpells(new Spell[]{
+                                KnightSpells.HEAVY_SLAM,
+                                KnightSpells.DIVINE_PROTECTION,
+                                KnightSpells.KNIGHTS_JUSTICE,
+                                KnightSpells.RAGE_LEAP,
+                        });
                         stats.save();
                         event.getWhoClicked().closeInventory();
                     }
                     case LIGHTSEEKER -> {
                         stats.setAffinity(AffinityType.ANGEL);
+                        stats.setSpells(new Spell[]{
+                                AngelSpells.ANGELIC_CHAOS,
+                                AngelSpells.LAMENT,
+                                AngelSpells.DIVINE_WRATH,
+                                AngelSpells.FLIGHT,
+                        });
                         stats.save();
                         event.getWhoClicked().closeInventory();
                     }
@@ -189,6 +218,12 @@ public class AffinityGUI {
                     }
                     case LIGHTSEEKER -> {
                         stats.setAffinity(AffinityType.ASTREAN);
+                        stats.setSpells(new Spell[]{
+                                AstreanSpells.LIGHT_SURGE,
+                                AstreanSpells.LIGHT_PLAGUE,
+                                AstreanSpells.OMNIBLAST,
+                                AstreanSpells.WARP
+                        });
                         stats.save();
                         event.getWhoClicked().closeInventory();
                     }

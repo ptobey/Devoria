@@ -37,22 +37,22 @@ public class EntityListener implements Listener {
         LivingEntity e = event.getEntity();
 
         String damagers = e.getMetadata("damagers").get(0).asString();
-        HashMap<String,String> damagersMap = FastUtils.map(damagers);
+        HashMap<String, String> damagersMap = FastUtils.map(damagers);
 
         String entityStats = e.getMetadata("attributes").get(0).asString();
-        HashMap<String,String> entityStatsMap = FastUtils.map(entityStats);
+        HashMap<String, String> entityStatsMap = FastUtils.map(entityStats);
 
         int xp = Integer.parseInt(entityStatsMap.get("xp"));
 
 
-        for(String d : damagersMap.keySet()) {
+        for (String d : damagersMap.keySet()) {
 
-            if(!d.equals("total")) {
+            if (!d.equals("total")) {
                 if ((Integer.parseInt(damagersMap.get(d)) <= (Integer.parseInt(damagersMap.get("total")) * 0.15))) {
                     try {
                         Collection<ItemStack> drops = ItemUtils.generate("huntsman", "15");
 
-                        for(ItemStack drop : drops) {
+                        for (ItemStack drop : drops) {
 
                             ItemMeta itemMeta = drop.getItemMeta();
                             String itemInfo = drop.getItemMeta().getLocalizedName() + ",owner:" + d;
@@ -68,7 +68,7 @@ public class EntityListener implements Listener {
                     }
                 }
                 int percentXp = (int) (xp * (Double.parseDouble(damagersMap.get(d)) / Double.parseDouble(damagersMap.get("total"))));
-                Bukkit.getPlayer(UUID.fromString(d)).sendMessage("+"+percentXp+" xp!");
+                Bukkit.getPlayer(UUID.fromString(d)).sendMessage("+" + percentXp + " xp!");
 
             }
         }
@@ -81,7 +81,7 @@ public class EntityListener implements Listener {
         boolean isPlayer = false;
         Entity damagerEntity = e.getDamager();
         Entity victim = e.getEntity();
-        if(e.getDamager() instanceof Player) {
+        if (e.getDamager() instanceof Player) {
             Player damager = (Player) e.getDamager();
             damagerStats = damager.getPlayer().getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
             isPlayer = true;
@@ -92,19 +92,18 @@ public class EntityListener implements Listener {
         }
         ArrayList<String> damages = ItemUtils.getItemDamage(damagerStats);
 
-        if(isPlayer) {
+        if (isPlayer) {
             MiscellaneousUtils damageIndicator = new MiscellaneousUtils();
 
-            damageIndicator.spawnDamageIndicator(victim.getWorld(),damages,victim.getLocation().add(1,1, 0));
+            damageIndicator.spawnDamageIndicator(victim.getWorld(), damages, victim.getLocation().add(1, 1, 0));
             e.getDamager().sendMessage(damages.get(6));
         }
 
-        PlayerUtils.changeHealth(victim, Integer.parseInt("-"+damages.get(6)), damagerEntity, true);
+        PlayerUtils.changeHealth(victim, Integer.parseInt("-" + damages.get(6)), damagerEntity, true);
 
-        if(victim instanceof Player) {
+        if (victim instanceof Player) {
             PlayerUtils.updateHealthBar((Player) e.getEntity());
-        }
-        else {
+        } else {
             PlayerUtils.updateHealthBar(victim);
         }
 

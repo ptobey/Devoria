@@ -34,10 +34,10 @@ public abstract class Spell {
             case "ManaBurst" -> MageSpells.MANA_BURST;
             case "Teleport" -> MageSpells.TELEPORT;
             case "Channeling" -> MageSpells.CHANNELING;
-            case "AngelicVoice" -> AngelSpells.ANGELIC_VOICE;
-            case "CurseOfTheDamned" -> AngelSpells.CURSE_OF_THE_DAMNED;
+            case "AngelicChaos" -> AngelSpells.ANGELIC_CHAOS;
+            case "DivineWrath" -> AngelSpells.DIVINE_WRATH;
             case "Flight" -> AngelSpells.FLIGHT;
-            case "Aura" -> AngelSpells.AURA;
+            case "Lament" -> AngelSpells.LAMENT;
             case "AquaJet" -> AquanSpells.AQUAJET;
             case "WaterPrison" -> AquanSpells.WATER_PRISON;
             case "Ripwhirl" -> AquanSpells.RIPWHIRL;

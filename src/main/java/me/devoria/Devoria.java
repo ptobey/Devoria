@@ -1,5 +1,7 @@
 package me.devoria;
 
+import java.io.File;
+import java.io.IOException;
 import me.devoria.commands.Adventure;
 import me.devoria.commands.Creative;
 import me.devoria.commands.GetItemInfo;
@@ -17,12 +19,13 @@ import me.devoria.listeners.EntityListener;
 import me.devoria.listeners.GUIListener;
 import me.devoria.listeners.PlayerListener;
 import me.devoria.player.PlayerStats;
+import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
+import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import java.io.File;
-import java.io.IOException;
 
 public class Devoria extends JavaPlugin {
 
@@ -40,7 +43,15 @@ public class Devoria extends JavaPlugin {
         createCustomConfig();
         registerListeners();
         registerCommands();
+
+        for (World world : Bukkit.getWorlds()) {
+            world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+            world.setGameRule(GameRule.DO_FIRE_TICK, false);
+            world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+            world.setGameRule(GameRule.MOB_GRIEFING, false);
+        }
     }
+
     public void onDisable() {
         PlayerStats.saveAll();
     }
@@ -102,6 +113,7 @@ public class Devoria extends JavaPlugin {
         }
 
     }
+
     public static Devoria getInstance() {
         return instance;
     }

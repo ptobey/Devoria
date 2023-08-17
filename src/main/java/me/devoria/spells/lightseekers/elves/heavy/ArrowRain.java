@@ -1,12 +1,10 @@
 package me.devoria.spells.lightseekers.elves.heavy;
 
-import com.destroystokyo.paper.ParticleBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import me.devoria.Devoria;
 import me.devoria.cooldowns.CooldownManager;
 import me.devoria.spells.Spell;
-import me.devoria.utils.FastUtils;
 import me.devoria.utils.ParticleUtils;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -29,30 +27,11 @@ public class ArrowRain extends Spell {
             @Override
             public void run() {
                 List<Arrow> arrows = new ArrayList<>();
-                ParticleBuilder particleBuilder = new ParticleBuilder(Particle.CLOUD);
-                particleBuilder.count(20);
-                particleBuilder.extra(0);
-                particleBuilder.location(location);
-                ParticleUtils.filledCircle(particleBuilder, 10);
-                int partialCount = 1;
-                int revolutionDegrees = 360;
-                double currentDegrees = 0;
-
-                for (int i = 0; i < partialCount; i++) {
-                    // Always rerandomise rotation
-                    currentDegrees = FastUtils.randomDoubleInRange(0, revolutionDegrees);
-
-                    double offsetX = FastUtils.sinDeg(currentDegrees) * 10;
-                    double offsetZ = FastUtils.cosDeg(currentDegrees) * 10;
-                    // Randomly move inwards
-                    double inwardFactor = Math.sqrt(FastUtils.RANDOM.nextDouble());
-                    offsetX *= inwardFactor;
-                    offsetZ *= inwardFactor;
-
-                    Location currentLocation = location.clone();
-                    currentLocation.add(offsetX, 0, offsetZ);
-                    arrows.add(player.getWorld().spawnArrow(currentLocation, new Vector(0, -1, 0), 1, 1));
+                for (Vector vector : ParticleUtils.getFilledCirclePoints(10, 20)) {
+                    player.getWorld().spawnParticle(Particle.CLOUD, location.add(vector), 1);
+                    arrows.add(player.getWorld().spawnArrow(location.add(vector), new Vector(0, -1, 0), 1, 1));
                 }
+
                 for (Arrow arrow : arrows) {
                     arrow.addScoreboardTag(player.getUniqueId().toString());
                     arrow.addScoreboardTag("arrowRainArrow");

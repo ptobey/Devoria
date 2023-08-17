@@ -1,14 +1,14 @@
 package me.devoria.spells.lightseekers.angels;
 
 import me.devoria.spells.Spell;
-import me.devoria.spells.lightseekers.angels.base.AngelicVoice;
-import me.devoria.spells.lightseekers.angels.heavy.CurseoftheDamned;
+import me.devoria.spells.lightseekers.angels.base.AngelicChaos;
+import me.devoria.spells.lightseekers.angels.heavy.DivineWrath;
 import me.devoria.spells.lightseekers.angels.movement.Flight;
-import me.devoria.spells.lightseekers.angels.util.Aura;
+import me.devoria.spells.lightseekers.angels.util.Lament;
 
 public interface AngelSpells {
-    Spell ANGELIC_VOICE = new AngelicVoice();
-    Spell AURA = new Aura();
+    Spell ANGELIC_CHAOS = new AngelicChaos();
+    Spell LAMENT = new Lament();
     Spell FLIGHT = new Flight();
-    Spell CURSE_OF_THE_DAMNED = new CurseoftheDamned();
+    Spell DIVINE_WRATH = new DivineWrath();
 }

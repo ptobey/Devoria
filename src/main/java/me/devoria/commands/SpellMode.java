@@ -15,7 +15,7 @@ public class SpellMode implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         for (String string : strings) {
             if (Bukkit.getPlayer(string) != null) {
-                //PlayerStats.getStats(Bukkit.getPlayer(string), Bukkit.getPlayerUniqueId(string)).spellMode = !PlayerStats.getStats(Bukkit.getPlayer(string), Bukkit.getPlayerUniqueId(string)).spellMode;
+                PlayerStats.getStats(Bukkit.getPlayer(string).getUniqueId()).spellMode = !PlayerStats.getStats(Bukkit.getPlayer(string).getUniqueId()).spellMode;
                 Bukkit.getPlayer(string).sendMessage("SpellMode Toggled!");
                 return true;
             }
@@ -23,7 +23,7 @@ public class SpellMode implements CommandExecutor {
 
         if (commandSender instanceof Player) {
             Player sender = (Player) commandSender;
-            //PlayerStats.getStats(sender, sender.getUniqueId()).spellMode = !PlayerStats.getStats(sender, sender.getUniqueId()).spellMode;
+            PlayerStats.getStats(sender.getUniqueId()).spellMode = !PlayerStats.getStats(sender.getUniqueId()).spellMode;
             sender.sendMessage("SpellMode Toggled!");
             return true;
         }

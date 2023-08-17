@@ -19,6 +19,7 @@ public class PlayerStats {
     private final Path storage;
     private final UUID uuid;
     public SpellTriggers spellTriggers;
+    public boolean spellMode;
     private FactionType faction = FactionType.NONE;
     private AffinityType affinity = AffinityType.NONE;
     private Spell[] spells = {
