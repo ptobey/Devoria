@@ -26,14 +26,25 @@ scripts/smoke-test.sh target/Devoria-1.0.jar
 
 The smoke test downloads checksum-pinned Paper build 448 into a temporary
 directory, starts Devoria without ModelEngine, verifies the model-backed mob
-fallback, and shuts the server down cleanly. ModelEngine is optional at runtime
-and can also be disabled through `integrations.model-engine.enabled` in
-`config.yml`.
+fallback and operator diagnostics, and shuts the server down cleanly.
 
-ModelEngine is expected on production servers and is required for the complete
-model-backed mob feature set. The soft dependency exists so development,
-diagnostics, and recovery can run in a clearly reported degraded mode. Operators
-can inspect the current runtime state from the server console with:
+ModelEngine is expected on production servers and is required for Devoria's
+complete model-backed mob feature set. The plugin supports a clearly reported
+degraded startup mode for development and recovery. To verify the full
+integration with a legitimately obtained ModelEngine runtime, keep its JAR
+outside the repository and pass its absolute path explicitly:
+
+```bash
+MODELENGINE_JAR=/secure/path/ModelEngine.jar \
+  scripts/smoke-test.sh target/Devoria-1.0.jar
+```
+
+The runtime JAR is copied only into the disposable server and is deleted with
+that server when the test finishes. Never commit third-party plugin binaries.
+The integration can be disabled through `integrations.model-engine.enabled` in
+`config.yml` when a degraded runtime is intentional.
+
+Operators can inspect the current runtime state from the server console with:
 
 ```text
 devoria status

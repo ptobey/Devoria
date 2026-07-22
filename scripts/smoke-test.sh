@@ -10,8 +10,13 @@ readonly USER_AGENT="Devoria-Smoke-Test/1.0 (https://github.com/ptobey/Devoria)"
 readonly STARTUP_TIMEOUT_SECONDS="${DEVORIA_SMOKE_TIMEOUT_SECONDS:-180}"
 
 plugin_jar="${1:-target/Devoria-1.0.jar}"
+model_engine_jar="${MODELENGINE_JAR:-}"
 if [[ ! -f "$plugin_jar" ]]; then
     echo "Plugin JAR not found: $plugin_jar" >&2
+    exit 1
+fi
+if [[ -n "$model_engine_jar" && ! -f "$model_engine_jar" ]]; then
+    echo "ModelEngine JAR not found: $model_engine_jar" >&2
     exit 1
 fi
 
@@ -31,6 +36,9 @@ trap cleanup EXIT INT TERM
 
 mkdir -p "$server_directory/plugins"
 cp "$plugin_jar" "$server_directory/plugins/Devoria.jar"
+if [[ -n "$model_engine_jar" ]]; then
+    cp "$model_engine_jar" "$server_directory/plugins/ModelEngine.jar"
+fi
 
 curl --fail --location --silent --show-error \
     --header "User-Agent: $USER_AGENT" \
@@ -68,6 +76,7 @@ server_pid=$!
 deadline=$((SECONDS + STARTUP_TIMEOUT_SECONDS))
 while kill -0 "$server_pid" 2>/dev/null; do
     if grep -Fq "Error occurred while enabling Devoria" "$server_directory/server.log" \
+        || grep -Fq "Error occurred while enabling ModelEngine" "$server_directory/server.log" \
         || grep -Fq "UnknownDependencyException" "$server_directory/server.log" \
         || grep -Fq "NoClassDefFoundError: com/ticxo/modelengine" "$server_directory/server.log"; then
         echo "Devoria failed during Paper startup:" >&2
@@ -76,20 +85,57 @@ while kill -0 "$server_pid" 2>/dev/null; do
     fi
 
     if grep -Fq "[Devoria] Enabling Devoria v" "$server_directory/server.log" \
-        && grep -Fq "ModelEngine is not installed; model-backed mobs are disabled." "$server_directory/server.log" \
         && grep -Fq "Done (" "$server_directory/server.log"; then
-        printf 'devoria status\n' >&3
-        printf 'summonmob example_mob\n' >&3
-        command_deadline=$((SECONDS + 10))
-        while ! grep -Fq "ModelEngine: unavailable (required for full feature set; degraded mode active)" "$server_directory/server.log" \
-            || ! grep -Fq "ModelEngine is unavailable; model-backed mobs cannot be summoned." "$server_directory/server.log"; do
-            if ! kill -0 "$server_pid" 2>/dev/null || (( SECONDS >= command_deadline )); then
-                echo "The operator status or unavailable ModelEngine command did not return its expected message:" >&2
-                tail -n 200 "$server_directory/server.log" >&2
-                exit 1
+        if [[ -n "$model_engine_jar" ]]; then
+            if ! grep -Fq "[ModelEngine] Enabling ModelEngine v" "$server_directory/server.log" \
+                || ! grep -Fq "ModelEngine integration is enabled." "$server_directory/server.log"; then
+                if (( SECONDS >= deadline )); then
+                    echo "ModelEngine did not become ready within ${STARTUP_TIMEOUT_SECONDS} seconds:" >&2
+                    tail -n 200 "$server_directory/server.log" >&2
+                    exit 1
+                fi
+                sleep 1
+                continue
             fi
-            sleep 1
-        done
+
+            printf 'devoria status\n' >&3
+            printf 'summonmob example_mob\n' >&3
+            command_deadline=$((SECONDS + 10))
+            while ! grep -Fq "ModelEngine: available (full model-backed features enabled)" "$server_directory/server.log" \
+                || ! grep -Fq "ERROR: May only be used in-game" "$server_directory/server.log"; do
+                if grep -Fq "ModelEngine is unavailable; model-backed mobs cannot be summoned." "$server_directory/server.log" \
+                    || ! kill -0 "$server_pid" 2>/dev/null \
+                    || (( SECONDS >= command_deadline )); then
+                    echo "The available ModelEngine status or command did not return its expected message:" >&2
+                    tail -n 200 "$server_directory/server.log" >&2
+                    exit 1
+                fi
+                sleep 1
+            done
+        else
+            if ! grep -Fq "ModelEngine is not installed; model-backed mobs are disabled." "$server_directory/server.log"; then
+                if (( SECONDS >= deadline )); then
+                    echo "Devoria did not enter degraded mode within ${STARTUP_TIMEOUT_SECONDS} seconds:" >&2
+                    tail -n 200 "$server_directory/server.log" >&2
+                    exit 1
+                fi
+                sleep 1
+                continue
+            fi
+
+            printf 'devoria status\n' >&3
+            printf 'summonmob example_mob\n' >&3
+            command_deadline=$((SECONDS + 10))
+            while ! grep -Fq "ModelEngine: unavailable (required for full feature set; degraded mode active)" "$server_directory/server.log" \
+                || ! grep -Fq "ModelEngine is unavailable; model-backed mobs cannot be summoned." "$server_directory/server.log"; do
+                if ! kill -0 "$server_pid" 2>/dev/null || (( SECONDS >= command_deadline )); then
+                    echo "The unavailable ModelEngine status or command did not return its expected message:" >&2
+                    tail -n 200 "$server_directory/server.log" >&2
+                    exit 1
+                fi
+                sleep 1
+            done
+        fi
 
         printf 'stop\n' >&3
         wait "$server_pid"
@@ -101,7 +147,11 @@ while kill -0 "$server_pid" 2>/dev/null; do
             exit 1
         fi
 
-        echo "Devoria Paper ${PAPER_VERSION} smoke test passed without ModelEngine."
+        if [[ -n "$model_engine_jar" ]]; then
+            echo "Devoria Paper ${PAPER_VERSION} smoke test passed with ModelEngine."
+        else
+            echo "Devoria Paper ${PAPER_VERSION} smoke test passed without ModelEngine."
+        fi
         exit 0
     fi
 
