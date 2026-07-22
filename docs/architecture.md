@@ -107,6 +107,8 @@ server effects.
   failures or silent feature loss.
 - Full production readiness includes a compatible ModelEngine runtime.
 - Player saves are atomic and bounded serialized input is rejected.
+- Invalid player profiles are preserved before defaults can replace them; a
+  failed quarantine blocks that profile's writes and retains state for retry.
 - Custom listeners do not override unrelated vanilla entities or items.
 - Admin-capable commands are permission-gated and console-safe where practical.
 - The Maven build and Paper lifecycle must remain reproducible in CI.

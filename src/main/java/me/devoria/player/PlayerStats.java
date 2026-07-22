@@ -1,7 +1,9 @@
 package me.devoria.player;
 
+import com.google.gson.JsonParseException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +21,7 @@ public class PlayerStats {
     private static final Path STORAGE_FOLDER = Devoria.getInstance().getDataFolder().toPath().resolve("PlayerData");
     private final Path storage;
     private final UUID uuid;
+    private transient boolean quarantineRequired;
     public SpellTriggers spellTriggers;
     public boolean spellMode;
     private FactionType faction = FactionType.NONE;
@@ -113,16 +116,20 @@ public class PlayerStats {
                 return data;
             }
             try {
-                String json = Files.readString(path);
+                String json = BoundedProfileReader.read(path);
                 data = JsonUtils.GSON.fromJson(json, PlayerStats.class);
                 if (data == null) {
                     throw new IOException("Player data was empty");
                 }
                 PlayerProfileDocument.requireIdentity(uuid, data.getUuid());
-            } catch (IOException | RuntimeException e) {
+            } catch (IOException | JsonParseException e) {
                 Devoria.getInstance().getLogger().warning(
-                        "Could not load player data for " + uuid + ": " + e.getMessage());
+                        "Player data for " + uuid + " failed validation ("
+                                + e.getClass().getSimpleName()
+                                + "); preserving it before creating defaults.");
                 data = new PlayerStats(uuid);
+                data.quarantineRequired = true;
+                data.quarantineInvalidProfile();
             }
             playerStats.put(uuid, data);
         }
@@ -134,6 +141,9 @@ public class PlayerStats {
     }
 
     public boolean save() {
+        if (quarantineRequired && !quarantineInvalidProfile()) {
+            return false;
+        }
         try {
             AtomicProfileWriter.write(storage, JsonUtils.GSON.toJson(this));
             return true;
@@ -159,5 +169,26 @@ public class PlayerStats {
             throw new IllegalArgumentException("Cannot bind a different player UUID");
         }
         spellTriggers = new SpellTriggers(player);
+    }
+
+    private boolean quarantineInvalidProfile() {
+        try {
+            Path backup = InvalidProfileQuarantine.moveAside(storage);
+            quarantineRequired = false;
+            Devoria.getInstance().getLogger().warning(
+                    "Invalid player data for " + uuid + " was moved to "
+                            + backup.getFileName() + ".");
+            return true;
+        } catch (NoSuchFileException e) {
+            quarantineRequired = false;
+            return true;
+        } catch (IOException | RuntimeException e) {
+            quarantineRequired = true;
+            Devoria.getInstance().getLogger().severe(
+                    "Could not preserve invalid player data for " + uuid + " at "
+                            + storage + " (" + e.getClass().getSimpleName()
+                            + "). Saves are blocked and state is retained in memory for retry.");
+            return false;
+        }
     }
 }

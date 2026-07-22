@@ -94,6 +94,17 @@ class PlayerProfileDocumentTest {
     }
 
     @Test
+    void rejectsUnknownSpells() {
+        JsonObject json = validProfile(UUID.randomUUID());
+        json.addProperty("spellRRL", "FutureUnmigratedSpell");
+
+        JsonParseException error = assertThrows(JsonParseException.class,
+                () -> PlayerProfileDocument.fromJson(json));
+
+        assertEquals("Unsupported spell: FutureUnmigratedSpell", error.getMessage());
+    }
+
+    @Test
     void rejectsIdentityThatDoesNotMatchStorageKey() {
         UUID storedUuid = UUID.randomUUID();
 

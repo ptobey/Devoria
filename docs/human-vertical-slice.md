@@ -144,6 +144,15 @@ identity/ownership data.
 - Persist absolute cooldown expiry timestamps so relog/restart cannot bypass a
   cooldown.
 
+The current filesystem recovery path accepts strict UTF-8 profiles up to 64 KiB
+and moves malformed, oversized, or unsupported JSON beside the original as
+`<uuid>.json.invalid-<timestamp>` before a default profile may be saved. Existing
+recovery files are never replaced. If Devoria cannot move the invalid file, it
+keeps the player's replacement state in memory, blocks writes to that path, and
+retries preservation on later saves. Operators should retain the quarantine file
+for diagnosis or manual migration; restoring it requires stopping the server and
+validating its UUID and schema first.
+
 ## VS-07 — Admin and operator behavior
 
 Permission-gated tooling must allow an admin to:
