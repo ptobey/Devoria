@@ -119,6 +119,7 @@ public class PlayerStats {
                 if (data == null) {
                     throw new IOException("Player data was empty");
                 }
+                PlayerProfileDocument.requireIdentity(uuid, data.getUuid());
             } catch (IOException | RuntimeException e) {
                 Devoria.getInstance().getLogger().warning(
                         "Could not load player data for " + uuid + ": " + e.getMessage());

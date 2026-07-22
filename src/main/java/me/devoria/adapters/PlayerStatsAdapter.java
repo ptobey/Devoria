@@ -8,10 +8,9 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.UUID;
 import me.devoria.player.AffinityType;
 import me.devoria.player.FactionType;
+import me.devoria.player.PlayerProfileDocument;
 import me.devoria.player.PlayerStats;
 import me.devoria.spells.Spell;
 
@@ -20,6 +19,7 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
     public JsonElement serialize(PlayerStats data, Type type, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
 
+        object.addProperty("schemaVersion", PlayerProfileDocument.CURRENT_SCHEMA_VERSION);
         object.addProperty("uuid", data.getUuid().toString());
         object.addProperty("maxMana", data.getMaxMana());
         object.addProperty("mana", data.getMana());
@@ -34,22 +34,18 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
 
     @Override
     public PlayerStats deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        if (json.isJsonObject()) {
-            JsonObject object = json.getAsJsonObject();
-
-            PlayerStats playerDataJSON = new PlayerStats(UUID.fromString(object.get("uuid").getAsString()));
-            playerDataJSON.setMaxMana(object.get("maxMana").getAsInt());
-            playerDataJSON.setMana(object.get("mana").getAsInt());
-            playerDataJSON.setFaction(FactionType.fromString(object.get("faction").getAsString()));
-            playerDataJSON.setAffinity(AffinityType.fromString(object.get("affinity").getAsString()));
-            playerDataJSON.setSpells(new Spell[] {
-                    Spell.fromString(object.get("spellRLR").getAsString()),
-                    Spell.fromString(object.get("spellRRL").getAsString()),
-                    Spell.fromString(object.get("spellRLL").getAsString()),
-                    Spell.fromString(object.get("spellRRR").getAsString())
-            });
-            return playerDataJSON;
-        }
-        return null;
+        PlayerProfileDocument document = PlayerProfileDocument.fromJson(json);
+        PlayerStats playerData = new PlayerStats(document.uuid());
+        playerData.setMaxMana(document.maxMana());
+        playerData.setMana(document.mana());
+        playerData.setFaction(FactionType.fromString(document.faction()));
+        playerData.setAffinity(AffinityType.fromString(document.affinity()));
+        playerData.setSpells(new Spell[] {
+                Spell.fromString(document.spells().get(0)),
+                Spell.fromString(document.spells().get(1)),
+                Spell.fromString(document.spells().get(2)),
+                Spell.fromString(document.spells().get(3))
+        });
+        return playerData;
     }
 }
