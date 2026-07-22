@@ -4,17 +4,21 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Map;
 
 
 public class InventoryUtils {
     private static final int MAX_SERIALIZED_CHARACTERS = 2_000_000;
     private static final int MAX_ITEM_STACKS = 256;
+    private static final String BASE64_LINE_SEPARATOR = System.lineSeparator();
+    private static final Base64.Encoder BASE64_ENCODER =
+            Base64.getMimeEncoder(76, BASE64_LINE_SEPARATOR.getBytes(StandardCharsets.US_ASCII));
+    private static final Base64.Decoder BASE64_DECODER = Base64.getMimeDecoder();
     /**
      * Converts the player inventory to a Base64 encoded string.
      *
@@ -51,7 +55,8 @@ public class InventoryUtils {
             }
 
             dataOutput.close();
-            return Base64Coder.encodeLines(outputStream.toByteArray());
+            String encoded = BASE64_ENCODER.encodeToString(outputStream.toByteArray());
+            return encoded.isEmpty() ? encoded : encoded + BASE64_LINE_SEPARATOR;
         } catch (Exception e) {
             throw new IllegalStateException("Unable to save item stacks.", e);
         }
@@ -68,8 +73,15 @@ public class InventoryUtils {
         if (data == null || data.length() > MAX_SERIALIZED_CHARACTERS) {
             throw new IOException("Serialized inventory is missing or exceeds the size limit.");
         }
+        byte[] decoded;
         try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
+            decoded = BASE64_DECODER.decode(data);
+        } catch (IllegalArgumentException exception) {
+            throw new IOException("Serialized inventory is not valid Base64.", exception);
+        }
+
+        try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(decoded);
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
             int itemCount = dataInput.readInt();
             if (itemCount < 0 || itemCount > MAX_ITEM_STACKS) {
