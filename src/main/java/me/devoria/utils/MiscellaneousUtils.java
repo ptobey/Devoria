@@ -1,8 +1,9 @@
 package me.devoria.utils;
 
-import java.util.ArrayList;
 import java.util.Random;
 import me.devoria.Devoria;
+import me.devoria.combat.DamageRoll;
+import me.devoria.combat.DamageType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -10,64 +11,49 @@ import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 
 public class MiscellaneousUtils {
-    public void spawnDamageIndicator(World world, ArrayList<String> damages, Location location) {
+    public void spawnDamageIndicator(World world, DamageRoll damages, Location location) {
         double distance = 0.25;
         int delay = 10;
 
-        if (Integer.parseInt(damages.get(0)) > 0) {
-            ArmorStand as1 = world.spawn(location.subtract(0, distance, 0), ArmorStand.class);
-            as1.setInvisible(true);
-            as1.setCustomNameVisible(true);
-            as1.setMarker(true);
-            as1.setCustomName(ChatColor.GOLD + "-" + damages.get(0) + " ✸");
+        for (DamageType type : DamageType.values()) {
+            int amount = damages.amount(type);
+            if (amount == 0) {
+                continue;
+            }
 
-            Bukkit.getScheduler().runTaskLater(Devoria.getInstance(), as1::remove, delay);
+            ArmorStand indicator = world.spawn(location.add(0, distance, 0), ArmorStand.class);
+            indicator.setInvisible(true);
+            indicator.setCustomNameVisible(true);
+            indicator.setMarker(true);
+            indicator.setCustomName(color(type) + "-" + amount + " " + symbol(type));
+            Bukkit.getScheduler().runTaskLater(Devoria.getInstance(), indicator::remove, delay);
         }
-        if (Integer.parseInt(damages.get(1)) > 0) {
-            ArmorStand as2 = world.spawn(location.subtract(0, distance, 0), ArmorStand.class);
-            as2.setInvisible(true);
-            as2.setCustomNameVisible(true);
-            as2.setMarker(true);
-            as2.setCustomName(ChatColor.DARK_GREEN + "-" + damages.get(1) + " ✿");
+    }
 
-            Bukkit.getScheduler().runTaskLater(Devoria.getInstance(), as2::remove, delay);
-        }
-        if (Integer.parseInt(damages.get(2)) > 0) {
-            ArmorStand as3 = world.spawn(location.subtract(0, distance, 0), ArmorStand.class);
-            as3.setInvisible(true);
-            as3.setCustomNameVisible(true);
-            as3.setMarker(true);
-            as3.setCustomName(ChatColor.DARK_RED + "-" + damages.get(2) + " ✹");
+    private ChatColor color(DamageType type) {
+        return switch (type) {
+            case PHYSICAL -> ChatColor.GOLD;
+            case EARTH -> ChatColor.DARK_GREEN;
+            case FIRE -> ChatColor.DARK_RED;
+            case ARCANE -> ChatColor.AQUA;
+            case LIGHT -> ChatColor.YELLOW;
+            case DARK -> ChatColor.DARK_PURPLE;
+            case WIND -> ChatColor.GRAY;
+            case ELECTRIC -> ChatColor.YELLOW;
+        };
+    }
 
-            Bukkit.getScheduler().runTaskLater(Devoria.getInstance(), as3::remove, delay);
-        }
-        if (Integer.parseInt(damages.get(3)) > 0) {
-            ArmorStand as4 = world.spawn(location.subtract(0, distance, 0), ArmorStand.class);
-            as4.setInvisible(true);
-            as4.setCustomNameVisible(true);
-            as4.setMarker(true);
-            as4.setCustomName(ChatColor.AQUA + "-" + damages.get(3) + " ❆");
-
-            Bukkit.getScheduler().runTaskLater(Devoria.getInstance(), as4::remove, delay);
-        }
-        if (Integer.parseInt(damages.get(4)) > 0) {
-            ArmorStand as5 = world.spawn(location.subtract(0, distance, 0), ArmorStand.class);
-            as5.setInvisible(true);
-            as5.setCustomNameVisible(true);
-            as5.setMarker(true);
-            as5.setCustomName(ChatColor.YELLOW + "-" + damages.get(4) + " ✦");
-
-            Bukkit.getScheduler().runTaskLater(Devoria.getInstance(), as5::remove, delay);
-        }
-        if (Integer.parseInt(damages.get(5)) > 0) {
-            ArmorStand as6 = world.spawn(location.subtract(0, distance, 0), ArmorStand.class);
-            as6.setInvisible(true);
-            as6.setCustomNameVisible(true);
-            as6.setMarker(true);
-            as6.setCustomName(ChatColor.DARK_PURPLE + "-" + damages.get(5) + " ✺ ");
-
-            Bukkit.getScheduler().runTaskLater(Devoria.getInstance(), as6::remove, delay);
-        }
+    private String symbol(DamageType type) {
+        return switch (type) {
+            case PHYSICAL -> "✸";
+            case EARTH -> "✿";
+            case FIRE -> "✹";
+            case ARCANE -> "❆";
+            case LIGHT -> "✦";
+            case DARK -> "✺";
+            case WIND -> "➶";
+            case ELECTRIC -> "⚡";
+        };
     }
 
     public static String generatePercentage() {

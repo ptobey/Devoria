@@ -1,11 +1,11 @@
 package me.devoria.listeners;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 import me.devoria.Devoria;
+import me.devoria.combat.DamageRoll;
 import me.devoria.utils.FastUtils;
 import me.devoria.utils.ItemUtils;
 import me.devoria.utils.MiscellaneousUtils;
@@ -125,16 +125,12 @@ public class EntityListener implements Listener {
             damagerStats = damager.getMetadata("attributes").get(0).asString();
         }
 
-        ArrayList<String> damages = ItemUtils.getItemDamage(damagerStats);
-        if (damages.size() <= 6) {
-            return;
-        }
-
-        int damage;
+        DamageRoll damages;
         try {
-            damage = Integer.parseInt(damages.get(6));
-        } catch (NumberFormatException exception) {
-            Devoria.getInstance().getLogger().warning("Ignored invalid damage metadata");
+            damages = ItemUtils.rollItemDamage(damagerStats);
+        } catch (IllegalArgumentException | ArithmeticException exception) {
+            Devoria.getInstance().getLogger().warning(
+                    "Ignored invalid damage metadata: " + exception.getMessage());
             return;
         }
 
@@ -144,10 +140,10 @@ public class EntityListener implements Listener {
             MiscellaneousUtils damageIndicator = new MiscellaneousUtils();
 
             damageIndicator.spawnDamageIndicator(victim.getWorld(), damages, victim.getLocation().add(1, 1, 0));
-            e.getDamager().sendMessage(damages.get(6));
+            e.getDamager().sendMessage(String.valueOf(damages.total()));
         }
 
-        PlayerUtils.changeHealth(victim, -Math.abs(damage), damagerEntity, true);
+        PlayerUtils.changeHealth(victim, -damages.total(), damagerEntity, true);
 
         if (victim instanceof Player) {
             PlayerUtils.updateHealthBar((Player) e.getEntity());

@@ -108,14 +108,19 @@ public class FastUtils {
         return fact[num];
     }
     public static HashMap<String, String> map(String data) {
-
+        if (data == null) {
+            throw new IllegalArgumentException("Metadata is required.");
+        }
         HashMap<String, String> map = new HashMap<>();
-
         String[] separatedStats = data.split(",");
 
         for (int i = 1; i < separatedStats.length; i++) {
-            String[] arr = separatedStats[i].split(":");
-            map.put(arr[0], arr[1]);
+            String entry = separatedStats[i];
+            int separator = entry.indexOf(':');
+            if (separator <= 0 || separator == entry.length() - 1) {
+                throw new IllegalArgumentException("Invalid metadata entry: " + entry);
+            }
+            map.put(entry.substring(0, separator), entry.substring(separator + 1));
         }
         return map;
     }

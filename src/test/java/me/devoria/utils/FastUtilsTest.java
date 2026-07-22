@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class FastUtilsTest {
@@ -28,5 +29,19 @@ class FastUtilsTest {
         assertThrows(IllegalArgumentException.class, () -> FastUtils.randomIntInRange(4, 3));
         assertThrows(IllegalArgumentException.class, () -> FastUtils.randomDoubleInRange(Double.NaN, 1));
         assertThrows(IllegalArgumentException.class, () -> FastUtils.randomFloatInRange(2, Float.POSITIVE_INFINITY));
+    }
+
+    @Test
+    void metadataParsingPreservesValuesAfterTheFirstSeparator() {
+        assertEquals(
+                Map.of("health", "100", "note", "value:with:colons"),
+                FastUtils.map(",health:100,note:value:with:colons"));
+    }
+
+    @Test
+    void malformedMetadataIsRejectedExplicitly() {
+        assertThrows(IllegalArgumentException.class, () -> FastUtils.map(null));
+        assertThrows(IllegalArgumentException.class, () -> FastUtils.map(",missing-separator"));
+        assertThrows(IllegalArgumentException.class, () -> FastUtils.map(",missing-value:"));
     }
 }

@@ -19,6 +19,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import me.devoria.Devoria;
+import me.devoria.combat.DamageCalculator;
+import me.devoria.combat.DamageRoll;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -993,6 +995,12 @@ public class ItemUtils {
         damages.add(String.valueOf(totalDamage));
 
         return damages;
+    }
+
+    public static DamageRoll rollItemDamage(String itemData) {
+        return DamageCalculator.roll(
+                FastUtils.map(itemData),
+                () -> FastUtils.randomIntInRange(0, 101));
     }
 
     public static Map<String, String> parseItemFile(String folder, String name) throws FileNotFoundException {
