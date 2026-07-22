@@ -16,6 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.build.outputTimestamp>2024-01-01T00:00:00Z</project.build.outputTimestamp>
+        <junit.version>6.1.2</junit.version>
     </properties>
 
     <build>
@@ -107,6 +108,12 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
