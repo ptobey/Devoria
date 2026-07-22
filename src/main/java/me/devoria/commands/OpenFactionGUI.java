@@ -11,14 +11,25 @@ import org.jetbrains.annotations.NotNull;
 public class OpenFactionGUI implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        for (String string : args) {
-            if (Bukkit.getPlayer(string) != null) {
-                FactionGUI.openGUI(Bukkit.getPlayer(string));
+        if (args.length > 0) {
+            if (!sender.hasPermission("devoria.command.factions.others")) {
+                sender.sendMessage("You do not have permission to change another player's faction.");
                 return true;
             }
+
+            Player target = Bukkit.getPlayerExact(args[0]);
+            if (target == null) {
+                sender.sendMessage("Player not found.");
+                return true;
+            }
+            FactionGUI.openGUI(target);
+            return true;
         }
 
-        if (!(sender instanceof Player)) return false;
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("Specify an online player when using this command from the console.");
+            return true;
+        }
         FactionGUI.openGUI((Player) sender);
         return true;
     }

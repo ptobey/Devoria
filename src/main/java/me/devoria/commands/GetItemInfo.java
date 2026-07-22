@@ -1,6 +1,7 @@
 package me.devoria.commands;
 
-import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,14 +12,23 @@ public class GetItemInfo implements CommandExecutor {
     //Sets your class
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
-
-            Player p = ((Player) sender).getPlayer();
-            sender.sendMessage(((Player) sender).getInventory().getItemInMainHand().getItemMeta().getLocalizedName());
-
-            p.sendMessage(p.getMetadata("attributes").get(0).asString());
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("This command may only be used in-game.");
             return true;
         }
-        return false;
-    }
+
+        Player player = (Player) sender;
+        ItemStack heldItem = player.getInventory().getItemInMainHand();
+        ItemMeta itemMeta = heldItem.getItemMeta();
+        if (itemMeta == null || !itemMeta.hasLocalizedName()) {
+            sender.sendMessage("The held item does not contain Devoria metadata.");
+            return true;
         }
+
+        sender.sendMessage(itemMeta.getLocalizedName());
+        if (!player.getMetadata("attributes").isEmpty()) {
+            player.sendMessage(player.getMetadata("attributes").get(0).asString());
+        }
+        return true;
+    }
+}

@@ -15,27 +15,38 @@ public class ItemCommand implements CommandExecutor {
     //Gives you a custom item
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("This command may only be used in-game.");
+            return true;
+        }
+        if (args.length == 0) {
+            sender.sendMessage("Usage: /item <name>");
+            return true;
+        }
+
         if (sender instanceof Player) {
             try {
                 ((Player) sender).getInventory().addItem((ItemUtils.updateItem(",fileName:"+args[0])));
                 return true;
             } catch (Exception e) {
-                e.printStackTrace();
+                Devoria.getInstance().getLogger().warning("Could not grant item '" + args[0] + "': " + e.getMessage());
 
                 File itemsFolder = new File(Devoria.dataFolder, "/items");
 
                 String[] names = itemsFolder.list();
                 StringBuilder list = new StringBuilder();
 
-                for (String name : names) {
-                    list.append(name).append(" ");
+                if (names != null) {
+                    for (String name : names) {
+                        list.append(name).append(" ");
+                    }
                 }
 
-                sender.sendMessage(list.toString());
+                sender.sendMessage(list.length() == 0 ? "No item definitions are available." : list.toString());
 
-                return false;
+                return true;
             }
         }
-        return false;
+        return true;
     }
 }

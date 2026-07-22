@@ -2,7 +2,7 @@ package me.devoria.commands;
 
 
 import me.devoria.utils.DatabaseUtils;
-import org.bukkit.Bukkit;
+import me.devoria.Devoria;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,10 +18,11 @@ public class RegisterCommand implements CommandExecutor {
 
         try {
             DatabaseUtils.connect();
-            Bukkit.getLogger().info("Database Connected!");
+            Devoria.getInstance().getLogger().info("Database connected");
 
         } catch (ClassNotFoundException | SQLException e) {
-            Bukkit.getLogger().info("Database NOT Connected!");
+            sender.sendMessage("Database registration is unavailable: " + e.getMessage());
+            return true;
         }
 
 
@@ -55,11 +56,16 @@ public class RegisterCommand implements CommandExecutor {
                 }
             } catch (SQLException throwables) {
                 //throwables.printStackTrace();
-                Bukkit.getLogger().info("Problem verifying player!");
+                Devoria.getInstance().getLogger().warning("Problem verifying player: " + throwables.getMessage());
+                sender.sendMessage("Could not verify registration status.");
+                return true;
             }
 
-            DatabaseUtils.register(uuid,username);
-            sender.sendMessage("You have been registered!");
+            if (DatabaseUtils.register(uuid, username)) {
+                sender.sendMessage("You have been registered!");
+            } else {
+                sender.sendMessage("Registration failed. Contact an administrator.");
+            }
             return true;
 
 

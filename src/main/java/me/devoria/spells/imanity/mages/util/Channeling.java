@@ -117,15 +117,15 @@ public class Channeling extends Spell {
                  }
                  for (int i = 0; i <= 60; i++) {
                      
-                  	Double angle = (i*Math.PI*2)/60;
-                  	Double x = Math.cos(angle)*radius;
-                      Double z = Math.sin(angle)*radius;
+                      double angle = (i*Math.PI*2)/60;
+                      double x = Math.cos(angle)*radius;
+                      double z = Math.sin(angle)*radius;
                       Location points = new Location(p.getWorld(),finalLoc.getX() + x + FastUtils.randomDoubleInRange(-0.05, 0.05) , finalLoc.getY(),finalLoc.getZ() + z + FastUtils.randomDoubleInRange(-0.05, 0.05));
                       
                       p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, points, 1, blueToDarkBlue);
                       
                       if (mTick <= 8) {
-                    	  Double decreasingY = 1 - mTick * 0.12;
+                          double decreasingY = 1 - mTick * 0.12;
                           p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, finalLoc.getX() + x + FastUtils.randomDoubleInRange(-0.05, 0.05), finalLoc.getY(), finalLoc.getZ() + z + FastUtils.randomDoubleInRange(-0.05, 0.05), 0, 0, decreasingY, 0, FastUtils.randomDoubleInRange(0.45, 0.8));
                       }
              }
