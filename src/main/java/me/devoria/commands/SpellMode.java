@@ -2,6 +2,7 @@ package me.devoria.commands;
 
 
 import me.devoria.player.PlayerStats;
+import me.devoria.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -39,6 +40,10 @@ public class SpellMode implements CommandExecutor {
     private void toggleSpellMode(Player player) {
         PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
         stats.spellMode = !stats.spellMode;
+        if (!stats.spellMode) {
+            stats.cancelPendingSpellInput();
+            PlayerUtils.updateHealthBar(player);
+        }
         player.sendMessage("Spell mode " + (stats.spellMode ? "enabled" : "disabled") + ".");
     }
 }

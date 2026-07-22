@@ -33,6 +33,7 @@ public class Devoria extends JavaPlugin {
 
     private static Devoria instance;
     private CooldownManager cdInstance;
+    private RuntimeConfiguration runtimeConfiguration;
     private boolean modelEngineAvailable;
     public static File dataFolder;
 
@@ -43,7 +44,7 @@ public class Devoria extends JavaPlugin {
         instance = this;
 
         saveDefaultConfig();
-        RuntimeConfiguration runtimeConfiguration = loadRuntimeConfiguration();
+        runtimeConfiguration = loadRuntimeConfiguration();
         configureOptionalIntegrations(runtimeConfiguration);
         createDataDirectories();
         registerListeners();
@@ -78,6 +79,7 @@ public class Devoria extends JavaPlugin {
     }
 
     public void onDisable() {
+        PlayerStats.cancelAllPendingSpellInput();
         PlayerStats.saveAll();
         DatabaseUtils.disconnect();
     }
@@ -161,6 +163,11 @@ public class Devoria extends JavaPlugin {
 
     public CooldownManager getCdInstance() {
         return cdInstance;
+    }
+
+    public RuntimeConfiguration getRuntimeConfiguration() {
+        return Objects.requireNonNull(runtimeConfiguration,
+                "Runtime configuration has not been loaded");
     }
 
     public boolean isModelEngineAvailable() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import me.devoria.spells.SpellCastRule;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -29,6 +30,8 @@ public final class RuntimeConfigurationValidator {
         requireBoolean(config, "integrations.model-engine.enabled", errors);
         requireBoolean(config, "database.enabled", errors);
 
+        validateSpellRules(config, errors);
+
         if (!config.isInt("world-rules.random-tick-speed")) {
             errors.add("world-rules.random-tick-speed must be an integer");
         } else if (config.getInt("world-rules.random-tick-speed") < 0
@@ -44,6 +47,25 @@ public final class RuntimeConfigurationValidator {
         }
 
         return List.copyOf(errors);
+    }
+
+    private static void validateSpellRules(ConfigurationSection config,
+            List<String> errors) {
+        for (String slot : List.of("base", "utility", "heavy", "movement")) {
+            requireBoundedInteger(config, "spells." + slot + ".mana-cost",
+                    SpellCastRule.MAX_MANA_COST, errors);
+            requireBoundedInteger(config, "spells." + slot + ".cooldown-millis",
+                    SpellCastRule.MAX_COOLDOWN_MILLIS, errors);
+        }
+    }
+
+    private static void requireBoundedInteger(ConfigurationSection config,
+            String path, int maximum, List<String> errors) {
+        if (!config.isInt(path)) {
+            errors.add(path + " must be an integer");
+        } else if (config.getInt(path) < 0 || config.getInt(path) > maximum) {
+            errors.add(path + " must be between 0 and " + maximum);
+        }
     }
 
     private static void validateDatabase(ConfigurationSection config,
