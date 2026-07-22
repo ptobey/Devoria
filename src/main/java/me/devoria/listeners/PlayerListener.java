@@ -3,6 +3,7 @@ package me.devoria.listeners;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import me.devoria.Devoria;
 import me.devoria.cooldowns.CooldownManager;
@@ -10,12 +11,10 @@ import me.devoria.player.PlayerStats;
 import me.devoria.utils.FastUtils;
 import me.devoria.utils.ItemUtils;
 import me.devoria.utils.PlayerUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.Statistic;
 import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -36,11 +35,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class PlayerListener implements Listener {
     private final Devoria plugin = Devoria.getInstance();
-    CooldownManager cooldownManager = plugin.getCdInstance();
+    private final CooldownManager cooldownManager = plugin.getCdInstance();
+    private final Map<UUID, List<BukkitTask>> recurringPlayerTasks = new HashMap<>();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
@@ -50,33 +51,23 @@ public class PlayerListener implements Listener {
         pData.save();
 
         p.sendMessage("§aWelcome to Eternia!");
-        //Health Bar
-        new BukkitRunnable() {
-            final int log = p.getStatistic(Statistic.LEAVE_GAME);
-
+        cancelRecurringTasks(p.getUniqueId());
+        BukkitTask healthBarTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (p.getStatistic(Statistic.LEAVE_GAME) != log) {
-                    cancel(); // this cancels it when they leave
-                }
                 PlayerUtils.updateHealthBar(p);
             }
-        }.runTaskTimer(Devoria.getInstance(), 0L, 40L);
-        //HPR
-        new BukkitRunnable() {
-            final int log = p.getStatistic(Statistic.LEAVE_GAME);
-
+        }.runTaskTimer(plugin, 0L, 40L);
+        BukkitTask healthRegenerationTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (p.getStatistic(Statistic.LEAVE_GAME) != log) {
-                    cancel(); // this cancels it when they leave
-                }
-
                 int hpr = PlayerUtils.calculate(p);
                 PlayerUtils.changeHealth(p, hpr, null, false);
                 PlayerUtils.updateHealthBar(p);
             }
-        }.runTaskTimer(Devoria.getInstance(), 100L, 100L);
+        }.runTaskTimer(plugin, 100L, 100L);
+        recurringPlayerTasks.put(p.getUniqueId(),
+                List.of(healthBarTask, healthRegenerationTask));
 
         if (p.getMetadata("healthStats").size() == 0) {
             p.setMetadata("healthStats", new FixedMetadataValue(Devoria.getInstance(), ",currentHealth:1000"));
@@ -87,10 +78,17 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void playerQuit(PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        CooldownManager cooldownManager = plugin.getCdInstance();
+        cancelRecurringTasks(uuid);
         cooldownManager.removeContainer(uuid);
         PlayerStats playerData = PlayerStats.getStats(uuid);
         playerData.saveAndDelete();
+    }
+
+    private void cancelRecurringTasks(UUID uuid) {
+        List<BukkitTask> tasks = recurringPlayerTasks.remove(uuid);
+        if (tasks != null) {
+            tasks.forEach(BukkitTask::cancel);
+        }
     }
 
     @EventHandler
