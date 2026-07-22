@@ -22,12 +22,14 @@ import me.devoria.utils.DatabaseUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Devoria extends JavaPlugin {
 
     private static Devoria instance;
     private CooldownManager cdInstance;
+    private boolean modelEngineAvailable;
     public static File dataFolder;
 
 
@@ -37,6 +39,7 @@ public class Devoria extends JavaPlugin {
         instance = this;
 
         saveDefaultConfig();
+        configureOptionalIntegrations();
         createDataDirectories();
         registerListeners();
         registerCommands();
@@ -71,13 +74,46 @@ public class Devoria extends JavaPlugin {
         Objects.requireNonNull(getCommand("register")).setExecutor(new RegisterCommand());
         Objects.requireNonNull(getCommand("getinfo")).setExecutor(new GetItemInfo());
         Objects.requireNonNull(getCommand("identify")).setExecutor(new IdentifyCommand());
-        Objects.requireNonNull(getCommand("summonmob")).setExecutor(new SummonMob());
+        registerSummonMobCommand();
         Objects.requireNonNull(getCommand("spellmode")).setExecutor(new SpellMode());
         Objects.requireNonNull(getCommand("survival")).setExecutor(new Survival());
         Objects.requireNonNull(getCommand("creative")).setExecutor(new Creative());
         Objects.requireNonNull(getCommand("adventure")).setExecutor(new Adventure());
         Objects.requireNonNull(getCommand("spectator")).setExecutor(new Spectator());
         Objects.requireNonNull(getCommand("factions")).setExecutor(new OpenFactionGUI());
+    }
+
+    private void configureOptionalIntegrations() {
+        if (!getConfig().getBoolean("integrations.model-engine.enabled", true)) {
+            getLogger().info("ModelEngine integration is disabled by configuration.");
+            modelEngineAvailable = false;
+            return;
+        }
+
+        modelEngineAvailable = getServer().getPluginManager().isPluginEnabled("ModelEngine");
+        if (modelEngineAvailable) {
+            getLogger().info("ModelEngine integration is enabled.");
+        } else {
+            getLogger().warning("ModelEngine is not installed; model-backed mobs are disabled.");
+        }
+    }
+
+    private void registerSummonMobCommand() {
+        PluginCommand command = Objects.requireNonNull(getCommand("summonmob"));
+        if (modelEngineAvailable) {
+            try {
+                command.setExecutor(new SummonMob());
+                return;
+            } catch (LinkageError error) {
+                modelEngineAvailable = false;
+                getLogger().severe("ModelEngine was detected, but its API is incompatible: " + error.getMessage());
+            }
+        }
+
+        command.setExecutor((sender, ignoredCommand, ignoredLabel, ignoredArgs) -> {
+            sender.sendMessage("ModelEngine is unavailable; model-backed mobs cannot be summoned.");
+            return true;
+        });
     }
 
     private void createDataDirectories() {
@@ -105,5 +141,9 @@ public class Devoria extends JavaPlugin {
 
     public CooldownManager getCdInstance() {
         return cdInstance;
+    }
+
+    public boolean isModelEngineAvailable() {
+        return modelEngineAvailable;
     }
 }
