@@ -1,6 +1,7 @@
 package me.devoria;
 
 import java.io.File;
+import java.util.List;
 import java.util.Objects;
 import me.devoria.commands.Adventure;
 import me.devoria.commands.Creative;
@@ -13,6 +14,7 @@ import me.devoria.commands.Spectator;
 import me.devoria.commands.SpellMode;
 import me.devoria.commands.SummonMob;
 import me.devoria.commands.Survival;
+import me.devoria.config.RuntimeConfigurationValidator;
 import me.devoria.cooldowns.CooldownManager;
 import me.devoria.listeners.EntityListener;
 import me.devoria.listeners.GUIListener;
@@ -39,6 +41,7 @@ public class Devoria extends JavaPlugin {
         instance = this;
 
         saveDefaultConfig();
+        validateConfiguration();
         configureOptionalIntegrations();
         createDataDirectories();
         registerListeners();
@@ -56,6 +59,20 @@ public class Devoria extends JavaPlugin {
                         getConfig().getBoolean("world-rules.mob-griefing", false));
             }
         }
+    }
+
+    private void validateConfiguration() {
+        List<String> errors = RuntimeConfigurationValidator.validate(
+                getConfig(), System.getenv());
+        if (errors.isEmpty()) {
+            return;
+        }
+
+        for (String error : errors) {
+            getLogger().severe("Configuration error: " + error);
+        }
+        throw new IllegalStateException(
+                "Invalid config.yml; correct the errors above and restart Devoria");
     }
 
     public void onDisable() {
