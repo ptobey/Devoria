@@ -3,8 +3,6 @@ package me.devoria.player;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -14,6 +12,7 @@ import me.devoria.spells.Spell;
 import me.devoria.spells.SpellTriggers;
 import me.devoria.utils.JsonUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class PlayerStats {
     public static Map<UUID, PlayerStats> playerStats = new HashMap<>();
@@ -130,36 +129,35 @@ public class PlayerStats {
         return data;
     }
 
-    public void createJSON() throws IOException {
-        Files.createDirectories(this.storage.getParent());
-    }
-
     public static void saveAll() {
-        for (PlayerStats stats : new ArrayList<>(playerStats.values())) {
-            stats.save();
-        }
-        playerStats.clear();
+        SaveBatch.saveAndRemoveSuccessful(playerStats, PlayerStats::save);
     }
 
-    public void save() {
+    public boolean save() {
         try {
-            createJSON();
-            Path temporary = Files.createTempFile(storage.getParent(), uuid.toString(), ".tmp");
-            Files.writeString(temporary, JsonUtils.GSON.toJson(this));
-            try {
-                Files.move(temporary, storage, StandardCopyOption.ATOMIC_MOVE,
-                        StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException atomicMoveFailure) {
-                Files.move(temporary, storage, StandardCopyOption.REPLACE_EXISTING);
-            }
-        } catch (IOException e) {
+            AtomicProfileWriter.write(storage, JsonUtils.GSON.toJson(this));
+            return true;
+        } catch (IOException | RuntimeException e) {
             Devoria.getInstance().getLogger().severe(
-                    "Could not save player data for " + uuid + ": " + e.getMessage());
+                    "Could not save player data for " + uuid + " at " + storage
+                            + ": " + e.getMessage()
+                            + ". State retained in memory for retry.");
+            return false;
         }
     }
 
-    public void saveAndDelete() {
-        save();
+    public boolean saveAndDelete() {
+        if (!save()) {
+            return false;
+        }
         playerStats.remove(uuid, this);
+        return true;
+    }
+
+    public void bindPlayer(Player player) {
+        if (!uuid.equals(player.getUniqueId())) {
+            throw new IllegalArgumentException("Cannot bind a different player UUID");
+        }
+        spellTriggers = new SpellTriggers(player);
     }
 }

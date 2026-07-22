@@ -48,6 +48,7 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         cooldownManager.createContainer(p.getUniqueId());
         PlayerStats pData = PlayerStats.getStats(p.getUniqueId());
+        pData.bindPlayer(p);
         pData.save();
 
         p.sendMessage("§aWelcome to Eternia!");
