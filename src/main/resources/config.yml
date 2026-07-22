@@ -20,3 +20,19 @@ database:
 integrations:
   model-engine:
     enabled: true
+
+# A cast commits its effect, mana cost, and independent slot cooldown together.
+# Cooldowns are milliseconds so existing timing behavior remains explicit.
+spells:
+  base:
+    mana-cost: 10
+    cooldown-millis: 1000
+  utility:
+    mana-cost: 20
+    cooldown-millis: 4000
+  heavy:
+    mana-cost: 30
+    cooldown-millis: 3000
+  movement:
+    mana-cost: 15
+    cooldown-millis: 1000
