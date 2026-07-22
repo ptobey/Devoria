@@ -11,6 +11,7 @@ import me.devoria.player.PlayerStats;
 import me.devoria.utils.FastUtils;
 import me.devoria.utils.ItemUtils;
 import me.devoria.utils.PlayerUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -26,13 +27,17 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -82,7 +87,18 @@ public class PlayerListener implements Listener {
         cancelRecurringTasks(uuid);
         cooldownManager.removeContainer(uuid);
         PlayerStats playerData = PlayerStats.getStats(uuid);
+        playerData.cancelPendingSpellInput();
         playerData.saveAndDelete();
+    }
+
+    @EventHandler
+    public void playerDied(PlayerDeathEvent event) {
+        cancelPendingSpellInput(event.getEntity());
+    }
+
+    @EventHandler
+    public void playerChangedWorld(PlayerChangedWorldEvent event) {
+        cancelPendingSpellInput(event.getPlayer());
     }
 
     private void cancelRecurringTasks(UUID uuid) {
@@ -141,7 +157,27 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void updateIem(PlayerItemHeldEvent e) {
         Player p = e.getPlayer();
+        cancelPendingSpellInput(p);
         ItemUtils.updateAttributes(p, e.getNewSlot());
+    }
+
+    @EventHandler
+    public void playerSwappedHands(PlayerSwapHandItemsEvent event) {
+        cancelPendingSpellInput(event.getPlayer());
+    }
+
+    @EventHandler
+    public void playerDroppedItem(PlayerDropItemEvent event) {
+        cancelPendingSpellInput(event.getPlayer());
+    }
+
+    private void cancelPendingSpellInput(Player player) {
+        PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
+        if (!stats.cancelPendingSpellInput()) {
+            return;
+        }
+        player.sendMessage(ChatColor.RED + "Spell input cancelled.");
+        PlayerUtils.updateHealthBar(player);
     }
 
     @EventHandler

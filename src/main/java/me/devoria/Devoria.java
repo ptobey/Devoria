@@ -78,6 +78,7 @@ public class Devoria extends JavaPlugin {
     }
 
     public void onDisable() {
+        PlayerStats.cancelAllPendingSpellInput();
         PlayerStats.saveAll();
         DatabaseUtils.disconnect();
     }

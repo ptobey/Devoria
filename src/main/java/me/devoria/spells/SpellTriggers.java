@@ -14,6 +14,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 public class SpellTriggers {
+    private static final String EMPTY_INPUT_MESSAGE = ChatColor.GREEN.toString()
+            + ChatColor.UNDERLINE + "R" + ChatColor.RESET + ChatColor.RED + " _ _";
+
     public Devoria plugin = Devoria.getInstance();
     public CooldownManager cooldownManager = plugin.getCdInstance();
     public Player player;
@@ -23,13 +26,14 @@ public class SpellTriggers {
     }
 
     //region Normal Spell
-    public String currentMessage = ChatColor.GREEN.toString() + ChatColor.UNDERLINE + "R" + ChatColor.RESET + ChatColor.RED + " _ _";
+    public String currentMessage = EMPTY_INPUT_MESSAGE;
     public boolean spellMode = false;
     public int clicksSoFar = 0;
     public boolean[] spellClicks = new boolean[2]; //left = false, right = true.
     private BukkitTask inactivityTimer;
 
     public void enterSpellMode(Player player) {
+        cancelPendingInput();
         this.player = player;
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_LEVER_CLICK, 0.5f, 1f);
         spellMode = true;
@@ -38,10 +42,9 @@ public class SpellTriggers {
             @Override
             public void run() {
                 player.sendMessage(ChatColor.RED + "Spell cancelled due to inactivity.");
-                spellMode = false;
-                clicksSoFar = 0;
-                spellClicks = new boolean[2];
-                currentMessage = ChatColor.GREEN.toString() + ChatColor.UNDERLINE + "R" + ChatColor.RESET + ChatColor.RED + " _ _";
+                inactivityTimer = null;
+                resetInputState();
+                PlayerUtils.updateHealthBar(player);
             }
         }.runTaskLater(plugin, 60L);
     }
@@ -72,15 +75,12 @@ public class SpellTriggers {
         clicksSoFar += 1;
         if (clicksSoFar == 2) {
             finishSpell();
-            spellMode = false;
-            clicksSoFar = 0;
-            spellClicks = new boolean[2];
-            currentMessage = ChatColor.GREEN.toString() + ChatColor.UNDERLINE + "R" + ChatColor.RESET + ChatColor.RED + " _ _";
+            resetInputState();
         }
     }
 
     public void finishSpell() {
-        inactivityTimer.cancel();
+        cancelInactivityTimer();
         boolean firstClick = spellClicks[0];
         boolean secondClick = spellClicks[1];
 
@@ -152,6 +152,30 @@ public class SpellTriggers {
             SpellUtils.redirect(player, player.getUniqueId(), SpellType.MOVEMENT);
             cooldownManager.setCooldownFromNow(player.getUniqueId(), "Movement Spell", cooldown);
         }
+    }
+
+    /** Cancels an unfinished click sequence without casting or starting cooldowns. */
+    public void cancelPendingInput() {
+        cancelInactivityTimer();
+        resetInputState();
+    }
+
+    public boolean hasPendingInput() {
+        return spellMode;
+    }
+
+    private void cancelInactivityTimer() {
+        if (inactivityTimer != null) {
+            inactivityTimer.cancel();
+            inactivityTimer = null;
+        }
+    }
+
+    private void resetInputState() {
+        spellMode = false;
+        clicksSoFar = 0;
+        spellClicks = new boolean[2];
+        currentMessage = EMPTY_INPUT_MESSAGE;
     }
     //endregion
     //region Weapon Spell

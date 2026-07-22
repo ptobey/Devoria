@@ -171,6 +171,19 @@ public class PlayerStats {
         spellTriggers = new SpellTriggers(player);
     }
 
+    /** Clears scheduler-backed state that must never survive player lifecycle changes. */
+    public boolean cancelPendingSpellInput() {
+        if (spellTriggers == null || !spellTriggers.hasPendingInput()) {
+            return false;
+        }
+        spellTriggers.cancelPendingInput();
+        return true;
+    }
+
+    public static void cancelAllPendingSpellInput() {
+        playerStats.values().forEach(PlayerStats::cancelPendingSpellInput);
+    }
+
     private boolean quarantineInvalidProfile() {
         try {
             Path backup = InvalidProfileQuarantine.moveAside(storage);
