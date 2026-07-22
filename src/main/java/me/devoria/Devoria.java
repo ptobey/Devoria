@@ -1,6 +1,7 @@
 package me.devoria;
 
 import java.io.File;
+import java.util.List;
 import java.util.Objects;
 import me.devoria.commands.Adventure;
 import me.devoria.commands.Creative;
@@ -14,6 +15,8 @@ import me.devoria.commands.Spectator;
 import me.devoria.commands.SpellMode;
 import me.devoria.commands.SummonMob;
 import me.devoria.commands.Survival;
+import me.devoria.config.RuntimeConfiguration;
+import me.devoria.config.RuntimeConfigurationValidator;
 import me.devoria.cooldowns.CooldownManager;
 import me.devoria.listeners.EntityListener;
 import me.devoria.listeners.GUIListener;
@@ -40,23 +43,38 @@ public class Devoria extends JavaPlugin {
         instance = this;
 
         saveDefaultConfig();
-        configureOptionalIntegrations();
+        RuntimeConfiguration runtimeConfiguration = loadRuntimeConfiguration();
+        configureOptionalIntegrations(runtimeConfiguration);
         createDataDirectories();
         registerListeners();
         registerCommands();
+        applyWorldRules(runtimeConfiguration);
+    }
 
-        if (getConfig().getBoolean("world-rules.enabled", false)) {
-            for (World world : Bukkit.getWorlds()) {
-                world.setGameRule(GameRule.DO_MOB_SPAWNING,
-                        getConfig().getBoolean("world-rules.do-mob-spawning", false));
-                world.setGameRule(GameRule.DO_FIRE_TICK,
-                        getConfig().getBoolean("world-rules.do-fire-tick", false));
-                world.setGameRule(GameRule.RANDOM_TICK_SPEED,
-                        getConfig().getInt("world-rules.random-tick-speed", 0));
-                world.setGameRule(GameRule.MOB_GRIEFING,
-                        getConfig().getBoolean("world-rules.mob-griefing", false));
-            }
+    private void applyWorldRules(RuntimeConfiguration config) {
+        if (!config.worldRulesEnabled()) {
+            return;
         }
+        for (World world : Bukkit.getWorlds()) {
+            world.setGameRule(GameRule.DO_MOB_SPAWNING, config.mobSpawning());
+            world.setGameRule(GameRule.DO_FIRE_TICK, config.fireTick());
+            world.setGameRule(GameRule.RANDOM_TICK_SPEED, config.randomTickSpeed());
+            world.setGameRule(GameRule.MOB_GRIEFING, config.mobGriefing());
+        }
+    }
+
+    private RuntimeConfiguration loadRuntimeConfiguration() {
+        List<String> errors = RuntimeConfigurationValidator.validate(
+                getConfig(), System.getenv());
+        if (errors.isEmpty()) {
+            return RuntimeConfiguration.from(getConfig());
+        }
+
+        for (String error : errors) {
+            getLogger().severe("Configuration error: " + error);
+        }
+        throw new IllegalStateException(
+                "Invalid config.yml; correct the errors above and restart Devoria");
     }
 
     public void onDisable() {
@@ -85,8 +103,8 @@ public class Devoria extends JavaPlugin {
         Objects.requireNonNull(getCommand("factions")).setExecutor(new OpenFactionGUI());
     }
 
-    private void configureOptionalIntegrations() {
-        if (!getConfig().getBoolean("integrations.model-engine.enabled", true)) {
+    private void configureOptionalIntegrations(RuntimeConfiguration config) {
+        if (!config.modelEngineEnabled()) {
             getLogger().info("ModelEngine integration is disabled by configuration.");
             modelEngineAvailable = false;
             return;
