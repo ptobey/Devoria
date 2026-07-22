@@ -27,6 +27,16 @@ public record PlayerProfileDocument(
     private static final Set<String> AFFINITIES = Set.of(
             "demigod", "human", "knight", "mage", "angel", "aquan",
             "astrean", "elf", "none");
+    private static final Set<String> SPELLS = Set.of(
+            "SpinSlash", "GodsClaws", "Lunge", "GodScream",
+            "HeroicStrike", "EnergyBurst", "Dash", "AdventurersAura",
+            "HeavySlam", "KnightsJustice", "RageLeap", "DivineProtection",
+            "ManaPull", "ManaBurst", "Teleport", "Channeling",
+            "AngelicChaos", "DivineWrath", "Flight", "Lament",
+            "AquaJet", "WaterPrison", "Ripwhirl", "OceanPower",
+            "LightSurge", "Omniblast", "Warp", "LightPlague",
+            "LightSpear", "ArrowRain", "LeapOfFate", "EyeOfLight",
+            "Default");
 
     public PlayerProfileDocument {
         if (schemaVersion < 0 || schemaVersion > CURRENT_SCHEMA_VERSION) {
@@ -57,6 +67,11 @@ public record PlayerProfileDocument(
         if (spells == null || spells.size() != SPELL_SLOT_COUNT
                 || spells.stream().anyMatch(value -> value == null || value.isBlank())) {
             throw new JsonParseException("exactly four spell slots must be configured");
+        }
+        for (String spell : spells) {
+            if (!SPELLS.contains(spell)) {
+                throw new JsonParseException("Unsupported spell: " + spell);
+            }
         }
         spells = List.copyOf(spells);
     }
