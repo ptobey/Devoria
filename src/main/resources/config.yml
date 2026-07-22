@@ -1,4 +1,5 @@
 # Devoria does not modify world rules unless this switch is explicitly enabled.
+# Invalid types or out-of-range values stop startup with path-specific errors.
 world-rules:
   enabled: false
   do-mob-spawning: false

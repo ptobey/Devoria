@@ -16,7 +16,12 @@ class RuntimeConfigurationValidatorTest {
 
     @Test
     void bundledDefaultsAreValid() {
-        assertTrue(validate(defaultConfig(), Map.of()).isEmpty());
+        MemoryConfiguration config = defaultConfig();
+
+        assertTrue(validate(config, Map.of()).isEmpty());
+        assertEquals(new RuntimeConfiguration(
+                false, false, false, 0, false, true),
+                RuntimeConfiguration.from(config));
     }
 
     @Test
@@ -29,7 +34,19 @@ class RuntimeConfigurationValidatorTest {
         assertEquals(List.of(
                 "world-rules.enabled must be true or false",
                 "integrations.model-engine.enabled must be true or false",
-                "world-rules.random-tick-speed must not be negative"),
+                "world-rules.random-tick-speed must be between 0 and 4096"),
+                validate(config, Map.of()));
+    }
+
+    @Test
+    void boundsRandomTickSpeedForServerSafety() {
+        MemoryConfiguration config = defaultConfig();
+        config.set("world-rules.random-tick-speed", 4096);
+        assertTrue(validate(config, Map.of()).isEmpty());
+
+        config.set("world-rules.random-tick-speed", 4097);
+        assertEquals(List.of(
+                "world-rules.random-tick-speed must be between 0 and 4096"),
                 validate(config, Map.of()));
     }
 

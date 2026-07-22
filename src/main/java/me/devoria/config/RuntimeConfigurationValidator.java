@@ -11,6 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
  * listeners or commands.
  */
 public final class RuntimeConfigurationValidator {
+    private static final int MAX_RANDOM_TICK_SPEED = 4096;
     private static final String DATABASE_USERNAME_ENV = "DEVORIA_DB_USERNAME";
     private static final String DATABASE_PASSWORD_ENV = "DEVORIA_DB_PASSWORD";
 
@@ -30,8 +31,11 @@ public final class RuntimeConfigurationValidator {
 
         if (!config.isInt("world-rules.random-tick-speed")) {
             errors.add("world-rules.random-tick-speed must be an integer");
-        } else if (config.getInt("world-rules.random-tick-speed") < 0) {
-            errors.add("world-rules.random-tick-speed must not be negative");
+        } else if (config.getInt("world-rules.random-tick-speed") < 0
+                || config.getInt("world-rules.random-tick-speed")
+                        > MAX_RANDOM_TICK_SPEED) {
+            errors.add("world-rules.random-tick-speed must be between 0 and "
+                    + MAX_RANDOM_TICK_SPEED);
         }
 
         if (config.isBoolean("database.enabled")
