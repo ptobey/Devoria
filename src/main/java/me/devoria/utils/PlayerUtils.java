@@ -1,12 +1,9 @@
 package me.devoria.utils;
 
-import com.ticxo.modelengine.api.ModelEngineAPI;
-import com.ticxo.modelengine.api.model.ActiveModel;
-import com.ticxo.modelengine.api.model.ModeledEntity;
 import java.util.HashMap;
 
-import com.ticxo.modelengine.api.model.bone.Nameable;
 import me.devoria.Devoria;
+import me.devoria.integrations.modelengine.ModelEngineHealthBar;
 import me.devoria.player.PlayerStats;
 import me.devoria.spells.SpellTriggers;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -233,17 +230,8 @@ public class PlayerUtils {
         String maxHealth = playerStatsMap.get("health");
         String currentHealth = healthStatsMap.get("currentHealth");
 
-        ModeledEntity m = ModelEngineAPI.getModeledEntity(e.getUniqueId());
-
-        for(ActiveModel a : m.getModels().values()) {
-            Nameable n = a.getNametagHandler().getBones().get("healthbar");
-            n.setCustomNameVisible(true);
-            n.setCustomName(ChatColor.DARK_RED + "❤ " + currentHealth + "/" + maxHealth);
+        if (Devoria.getInstance().isModelEngineAvailable()) {
+            ModelEngineHealthBar.update(e, currentHealth, maxHealth);
         }
-
-        //(IModel m.getNametagHandler().setCustomName("healthbar", ChatColor.DARK_RED + "❤ " + currentHealth + "/" + maxHealth);
-
-
     }
 }
-

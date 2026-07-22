@@ -6,7 +6,7 @@ prefix: Devoria
 api-version: 1.19
 main: me.devoria.Devoria
 authors: [ ptobey, SleepingRaven ]
-depend: [ ModelEngine ]
+softdepend: [ ModelEngine ]
 
 commands:
   item:
