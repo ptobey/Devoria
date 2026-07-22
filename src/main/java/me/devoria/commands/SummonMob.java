@@ -5,14 +5,13 @@ import com.google.common.collect.ImmutableSet;
 import com.ticxo.modelengine.api.ModelEngineAPI;
 import com.ticxo.modelengine.api.model.ActiveModel;
 import com.ticxo.modelengine.api.model.ModeledEntity;
-import java.io.FileNotFoundException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
 import com.ticxo.modelengine.api.model.bone.Nameable;
-import com.ticxo.modelengine.api.nms.entity.fake.NametagPoint;
+import java.io.FileNotFoundException;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import me.devoria.Devoria;
+import me.devoria.mobs.MobDefinition;
 import me.devoria.utils.ItemUtils;
 import me.devoria.utils.PlayerUtils;
 import org.bukkit.ChatColor;
@@ -26,7 +25,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,89 +40,119 @@ public class SummonMob implements CommandExecutor {
             return false;
         }
 
+        if (!(sender instanceof Player player)) {
+            sendError(sender, "May only be used in-game");
+            return true;
+        }
+
+        MobDefinition definition;
         try {
             Map<String, String> stats = ItemUtils.parseItemFile("mobs", args[0]);
-
-            if (!(sender instanceof Player)) {
-                sendError(sender, "May only be used in-game");
-                return true;
-            }
-
-            String name = stats.get("name");
-            String model = stats.get("model");
-            String type = stats.get("type");
-            Object maxHealth = stats.get("max_health");
-            Object damage = stats.get("damage");
-            Object xp = stats.get("xp");
-
-            //see comment below about ir/ih/il
-            //Material mainHand = stats.get("main_hand") != null ? Material.valueOf(stats.get("main_hand").toUpperCase()) : Material.AIR;
-            //Material offHand = stats.get("off_hand") != null ? Material.valueOf(stats.get("off_hand").toUpperCase()) : Material.AIR;
-
-
-            EntityType entityType;
-            try {
-                entityType = EntityType.valueOf(type.toUpperCase());
-            } catch (Exception ex) {
-                sendError(sender, "Invalid mob type: " + ChatColor.WHITE + type);
-                return true;
-            }
-
-            Player player = (Player) sender;
-            Block block = player.getTargetBlock(transparent, MAX_RANGE);
-            if (transparent.contains(block.getType())) {
-                sendError(sender, "You must be looking at a block");
-                return true;
-            }
-            block = block.getRelative(BlockFace.UP);
-
-
-            Entity entity = block.getWorld().spawnEntity(block.getLocation(), entityType);
-
-
-            Mob mob;
-            if (entity instanceof Mob) {
-                mob = (Mob) entity;
-            } else {
-                return true;
-            }
-
-
-            mob.setMetadata("healthStats", new FixedMetadataValue(Devoria.getInstance(), ",currentHealth:" + maxHealth));
-            mob.setMetadata("attributes", new FixedMetadataValue(Devoria.getInstance(), ",health:" + maxHealth + ",damage:" + damage + ",xp:" + xp));
-
-            //replace with ir/ih/il bone
-            //Objects.requireNonNull(mob.getEquipment()).setItemInMainHand(new ItemStack(mainHand));
-            //Objects.requireNonNull(mob.getEquipment()).setItemInOffHand(new ItemStack(offHand));
-
-            ActiveModel activeModel = ModelEngineAPI.createActiveModel(model);
-            if (activeModel == null) {
-                sendError(sender, "Failed to load model: " + ChatColor.WHITE + model);
-                return true;
-            }
-
-            ModeledEntity modeledEntity = ModelEngineAPI.createModeledEntity(mob);
-            if (modeledEntity == null) {
-                sendError(sender, "Failed to create modelled entity");
-                return false;
-            }
-
-            modeledEntity.addModel(activeModel, true);
-            modeledEntity.setBaseEntityVisible(false);
-            PlayerUtils.updateHealthBar(mob);
-
-
-
-            for(ActiveModel a : modeledEntity.getModels().values()) {
-                        Nameable n = a.getNametagHandler().getBones().get("nametag");
-                        n.setCustomNameVisible(true);
-                        n.setCustomName(name);
-            }
-
+            definition = MobDefinition.from(stats);
+        } catch (FileNotFoundException | IllegalArgumentException exception) {
+            sendError(sender, "Invalid mob definition '" + args[0] + "': "
+                    + exception.getMessage());
             return true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
+        }
+
+        EntityType entityType;
+        try {
+            entityType = EntityType.valueOf(
+                    definition.entityType().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException exception) {
+            sendError(sender, "Invalid mob type: " + ChatColor.WHITE
+                    + definition.entityType());
+            return true;
+        }
+
+        Block block = player.getTargetBlock(transparent, MAX_RANGE);
+        if (transparent.contains(block.getType())) {
+            sendError(sender, "You must be looking at a block");
+            return true;
+        }
+
+        ActiveModel activeModel;
+        try {
+            activeModel = ModelEngineAPI.createActiveModel(definition.model());
+        } catch (RuntimeException | LinkageError error) {
+            reportModelFailure(sender, definition.model(), error);
+            return true;
+        }
+        if (activeModel == null) {
+            sendError(sender, "Failed to load model: " + ChatColor.WHITE
+                    + definition.model());
+            return true;
+        }
+
+        Block spawnBlock = block.getRelative(BlockFace.UP);
+        Entity entity;
+        try {
+            entity = spawnBlock.getWorld().spawnEntity(
+                    spawnBlock.getLocation(), entityType);
+        } catch (IllegalArgumentException | IllegalStateException exception) {
+            discardActiveModel(activeModel);
+            sendError(sender, "Could not spawn entity type: "
+                    + ChatColor.WHITE + definition.entityType());
+            return true;
+        }
+        if (!(entity instanceof Mob mob)) {
+            entity.remove();
+            discardActiveModel(activeModel);
+            sendError(sender, "Configured entity type is not a mob: "
+                    + ChatColor.WHITE + definition.entityType());
+            return true;
+        }
+
+        try {
+            configureMob(mob, definition, activeModel);
+            return true;
+        } catch (RuntimeException | LinkageError error) {
+            mob.remove();
+            reportModelFailure(sender, definition.model(), error);
+            return true;
+        }
+    }
+
+    private void configureMob(Mob mob, MobDefinition definition,
+            ActiveModel activeModel) {
+        Devoria plugin = Devoria.getInstance();
+        mob.setMetadata("healthStats", new FixedMetadataValue(plugin,
+                ",currentHealth:" + definition.maxHealth()));
+        mob.setMetadata("attributes", new FixedMetadataValue(plugin,
+                ",health:" + definition.maxHealth()
+                        + ",damage:" + definition.damage()
+                        + ",xp:" + definition.experience()));
+
+        ModeledEntity modeledEntity = ModelEngineAPI.createModeledEntity(mob);
+        if (modeledEntity == null) {
+            throw new IllegalStateException("ModelEngine did not create a modeled entity");
+        }
+
+        modeledEntity.addModel(activeModel, true);
+        modeledEntity.setBaseEntityVisible(false);
+        PlayerUtils.updateHealthBar(mob);
+
+        Nameable nameBone = activeModel.getNametagHandler().getBones().get("nametag");
+        if (nameBone != null) {
+            nameBone.setCustomNameVisible(true);
+            nameBone.setCustomName(definition.name());
+        }
+    }
+
+    private void reportModelFailure(CommandSender sender, String model,
+            Throwable error) {
+        Devoria.getInstance().getLogger().warning(
+                "Could not summon model '" + model + "': " + error.getMessage());
+        sendError(sender, "ModelEngine could not create model: "
+                + ChatColor.WHITE + model);
+    }
+
+    private void discardActiveModel(ActiveModel activeModel) {
+        try {
+            activeModel.destroy();
+        } catch (RuntimeException | LinkageError error) {
+            Devoria.getInstance().getLogger().warning(
+                    "Could not discard unused ModelEngine model: " + error.getMessage());
         }
     }
 

@@ -1,6 +1,6 @@
-name: example
-tradeable: true
-rarity: common
-attack_speed: 2
-damage: 50
-earth_damage: 80-120
+name: Training Husk
+model: training_husk
+type: zombie
+max_health: 100
+damage: 10
+xp: 25
