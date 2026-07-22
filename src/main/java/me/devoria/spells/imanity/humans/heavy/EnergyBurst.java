@@ -2,6 +2,7 @@ package me.devoria.spells.imanity.humans.heavy;
 
 import me.devoria.Devoria;
 import me.devoria.cooldowns.CooldownManager;
+import me.devoria.spells.CastTargetLedger;
 import me.devoria.spells.Spell;
 import me.devoria.utils.FastUtils;
 import me.devoria.utils.ParticleUtils;
@@ -17,13 +18,17 @@ import org.bukkit.util.Vector;
 public class EnergyBurst extends Spell {
     @Override
     public void cast(Player p, CooldownManager cooldownManager) {
+        CastTargetLedger targets = new CastTargetLedger();
         new BukkitRunnable() {
             int mTick = 0;
 
             @Override
             public void run() {
-                if (mTick >= 10) this.cancel();
-                slash(p);
+                if (mTick >= 10 || p.isDead() || !p.isOnline()) {
+                    this.cancel();
+                    return;
+                }
+                slash(p, targets);
                 p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1f, 1f);
                 mTick++;
             }
@@ -38,7 +43,7 @@ public class EnergyBurst extends Spell {
         return ParticleUtils.rotateXAxis(ParticleUtils.rotateYAxis(ParticleUtils.rotateZAxis(pView.multiply(distance), rotateZ), rotateY), rotateX);
     }
 
-    private void slash(Player p) {
+    private void slash(Player p, CastTargetLedger targets) {
         // Calculate start, control, and end points
         Vector start = randomPoint(p.getLocation().getDirection());
         Vector control = randomPoint(p.getLocation().getDirection());
@@ -52,8 +57,11 @@ public class EnergyBurst extends Spell {
             p.getWorld().spawnParticle(Particle.FLAME, particleLoc, 1, 0, 0, 0, 0);
             p.getWorld().spawnParticle(Particle.TOTEM, particleLoc, 10, 0, 0, 0, 0);
             for (Entity entity : particleLoc.getNearbyEntities(2, 2, 2)) {
-                if (!(entity instanceof LivingEntity) || entity.equals(p)) continue;
-                ((LivingEntity) entity).damage(5, p);
+                if (!(entity instanceof LivingEntity target) || entity.equals(p)
+                        || !targets.claim(entity.getUniqueId())) {
+                    continue;
+                }
+                target.damage(5, p);
             }
         }
     }

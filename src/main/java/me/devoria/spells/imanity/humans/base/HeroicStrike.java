@@ -1,6 +1,7 @@
 package me.devoria.spells.imanity.humans.base;
 
 import me.devoria.cooldowns.CooldownManager;
+import me.devoria.spells.CastTargetLedger;
 import me.devoria.spells.Spell;
 import me.devoria.utils.ParticleUtils;
 import org.bukkit.Location;
@@ -15,9 +16,10 @@ public class HeroicStrike extends Spell {
 
     @Override
     public void cast(Player p, CooldownManager cooldownManager) {
-        slash(p, 5);
-        slash(p, 4);
-        slash(p, 3);
+        CastTargetLedger targets = new CastTargetLedger();
+        slash(p, 5, targets);
+        slash(p, 4, targets);
+        slash(p, 3, targets);
 
         p.getWorld().playSound(p.getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 1.0f, 1.0f);
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_DROWNED_SHOOT, 1.2f, 0.1f);
@@ -31,7 +33,7 @@ public class HeroicStrike extends Spell {
         return "HeroicStrike";
     }
 
-    public void slash(Player p, int controlMult) {
+    private void slash(Player p, int controlMult, CastTargetLedger targets) {
         // Calculate start, control, and end points
         Vector start = ParticleUtils.rotateYAxis(ParticleUtils.rotateXAxis(p.getEyeLocation().getDirection().multiply(5), -45), 90);
         Vector control = p.getEyeLocation().getDirection().multiply(controlMult);
@@ -44,8 +46,11 @@ public class HeroicStrike extends Spell {
             p.getWorld().spawnParticle(Particle.CRIT, particleLoc, 3, 0, 0, 0, 0);
             p.getWorld().spawnParticle(Particle.TOTEM, particleLoc, 10, 0, 0, 0, 0);
             for (Entity entity : particleLoc.getNearbyEntities(2, 2, 2)) {
-                if (!(entity instanceof LivingEntity) || entity.equals(p)) continue;
-                ((LivingEntity) entity).damage(5, p);
+                if (!(entity instanceof LivingEntity target) || entity.equals(p)
+                        || !targets.claim(entity.getUniqueId())) {
+                    continue;
+                }
+                target.damage(5, p);
             }
         }
 
@@ -60,8 +65,11 @@ public class HeroicStrike extends Spell {
             p.getWorld().spawnParticle(Particle.CRIT, particleLoc, 3, 0, 0, 0, 0);
             p.getWorld().spawnParticle(Particle.TOTEM, particleLoc, 10, 0, 0, 0, 0);
             for (Entity entity : particleLoc.getNearbyEntities(2, 2, 2)) {
-                if (!(entity instanceof LivingEntity) || entity.equals(p)) continue;
-                ((LivingEntity) entity).damage(5, p);
+                if (!(entity instanceof LivingEntity target) || entity.equals(p)
+                        || !targets.claim(entity.getUniqueId())) {
+                    continue;
+                }
+                target.damage(5, p);
             }
         }
     }
