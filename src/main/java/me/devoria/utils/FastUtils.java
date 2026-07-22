@@ -42,15 +42,24 @@ public class FastUtils {
     }
 
     public static int randomIntInRange(int min, int max) {
-        return min == max ? min : (RANDOM.nextInt() * (max - min)) + min;
+        requireValidRange(min, max);
+        return min == max ? min : RANDOM.nextInt(min, max);
     }
 
     public static double randomDoubleInRange(double min, double max) {
+        requireValidRange(min, max);
         return min == max ? min : (RANDOM.nextDouble() * (max - min)) + min;
     }
 
     public static float randomFloatInRange(float min, float max) {
+        requireValidRange(min, max);
         return min == max ? min : (RANDOM.nextFloat() * (max - min)) + min;
+    }
+
+    private static void requireValidRange(double min, double max) {
+        if (!Double.isFinite(min) || !Double.isFinite(max) || min > max) {
+            throw new IllegalArgumentException("Range bounds must be finite and ordered.");
+        }
     }
 
     /**

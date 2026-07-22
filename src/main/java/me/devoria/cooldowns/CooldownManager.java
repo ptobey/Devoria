@@ -9,7 +9,7 @@ public class CooldownManager {
 
     public CooldownContainer createContainer(UUID playerId) {
         CooldownContainer container = new CooldownContainer();
-        cooldownContainerMap.put(playerId, new CooldownContainer());
+        cooldownContainerMap.put(playerId, container);
         return container;
     }
 
