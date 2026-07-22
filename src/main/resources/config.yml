@@ -1,0 +1,15 @@
+# Devoria does not modify world rules unless this switch is explicitly enabled.
+world-rules:
+  enabled: false
+  do-mob-spawning: false
+  do-fire-tick: false
+  random-tick-speed: 0
+  mob-griefing: false
+
+# The legacy database integration is disabled by default. Prefer environment
+# variables for credentials: DEVORIA_DB_USERNAME and DEVORIA_DB_PASSWORD.
+database:
+  enabled: false
+  url: "jdbc:mysql://localhost:3306/devoria?sslMode=VERIFY_IDENTITY"
+  username: ""
+  password: ""

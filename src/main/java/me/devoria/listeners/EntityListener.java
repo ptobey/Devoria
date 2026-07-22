@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
+import me.devoria.Devoria;
 import me.devoria.utils.FastUtils;
 import me.devoria.utils.ItemUtils;
 import me.devoria.utils.MiscellaneousUtils;
@@ -26,71 +27,118 @@ public class EntityListener implements Listener {
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent ev) {
         Entity entity = ev.getEntity();
-        if (entity.getType() == EntityType.ARROW) {
+        if (entity.getType() == EntityType.ARROW
+                && (entity.getScoreboardTags().contains("devoriaProjectile")
+                || entity.getScoreboardTags().contains("arrowRainArrow")
+                || entity.getScoreboardTags().contains("nodamage"))) {
             entity.remove();
         }
     }
 
     @EventHandler
     public void onMobDeath(EntityDeathEvent event) {
-        event.getDrops().clear();
         LivingEntity e = event.getEntity();
+        if (e.getMetadata("damagers").isEmpty() || e.getMetadata("attributes").isEmpty()) {
+            return;
+        }
 
-        String damagers = e.getMetadata("damagers").get(0).asString();
-        HashMap<String, String> damagersMap = FastUtils.map(damagers);
+        try {
+            String damagers = e.getMetadata("damagers").get(0).asString();
+            HashMap<String, String> damagersMap = FastUtils.map(damagers);
 
-        String entityStats = e.getMetadata("attributes").get(0).asString();
-        HashMap<String, String> entityStatsMap = FastUtils.map(entityStats);
+            String entityStats = e.getMetadata("attributes").get(0).asString();
+            HashMap<String, String> entityStatsMap = FastUtils.map(entityStats);
+            if (!damagersMap.containsKey("total") || !entityStatsMap.containsKey("xp")) {
+                return;
+            }
 
-        int xp = Integer.parseInt(entityStatsMap.get("xp"));
+            int xp = Integer.parseInt(entityStatsMap.get("xp"));
+            int totalDamage = Math.abs(Integer.parseInt(damagersMap.get("total")));
+            if (totalDamage == 0) {
+                return;
+            }
 
+            event.getDrops().clear();
+            for (String d : damagersMap.keySet()) {
+                if (d.equals("total")) {
+                    continue;
+                }
 
-        for (String d : damagersMap.keySet()) {
+                UUID playerId = UUID.fromString(d);
+                int playerDamage = Math.abs(Integer.parseInt(damagersMap.get(d)));
+                Player player = Bukkit.getPlayer(playerId);
 
-            if (!d.equals("total")) {
-                if ((Integer.parseInt(damagersMap.get(d)) <= (Integer.parseInt(damagersMap.get("total")) * 0.15))) {
+                if (playerDamage >= totalDamage * 0.15) {
                     try {
                         Collection<ItemStack> drops = ItemUtils.generate("huntsman", "15");
-
                         for (ItemStack drop : drops) {
-
                             ItemMeta itemMeta = drop.getItemMeta();
-                            String itemInfo = drop.getItemMeta().getLocalizedName() + ",owner:" + d;
+                            if (itemMeta == null) {
+                                continue;
+                            }
+                            String itemInfo = itemMeta.getLocalizedName() + ",owner:" + d;
                             itemMeta.setLocalizedName(itemInfo);
                             drop.setItemMeta(itemMeta);
-
                             e.getLocation().getWorld().dropItemNaturally(e.getLocation(), drop);
                         }
-
-
                     } catch (FileNotFoundException err) {
-                        err.printStackTrace();
+                        Devoria.getInstance().getLogger().warning(
+                                "Could not generate mob loot: " + err.getMessage());
                     }
                 }
-                int percentXp = (int) (xp * (Double.parseDouble(damagersMap.get(d)) / Double.parseDouble(damagersMap.get("total"))));
-                Bukkit.getPlayer(UUID.fromString(d)).sendMessage("+" + percentXp + " xp!");
 
+                int percentXp = (int) (xp * (playerDamage / (double) totalDamage));
+                if (player != null) {
+                    player.sendMessage("+" + percentXp + " xp!");
+                }
             }
+        } catch (IllegalArgumentException exception) {
+            Devoria.getInstance().getLogger().warning(
+                    "Ignored malformed Devoria mob metadata: " + exception.getMessage());
         }
     }
 
     @EventHandler
     public void hit(EntityDamageByEntityEvent e) {
-        e.setDamage(0);
+        Entity victim = e.getEntity();
+        if (victim.getMetadata("healthStats").isEmpty()
+                || victim.getMetadata("attributes").isEmpty()) {
+            return;
+        }
+
         String damagerStats = "";
         boolean isPlayer = false;
         Entity damagerEntity = e.getDamager();
-        Entity victim = e.getEntity();
         if (e.getDamager() instanceof Player) {
             Player damager = (Player) e.getDamager();
-            damagerStats = damager.getPlayer().getInventory().getItemInMainHand().getItemMeta().getLocalizedName();
+            ItemMeta heldItemMeta = damager.getInventory().getItemInMainHand().getItemMeta();
+            if (heldItemMeta == null || !heldItemMeta.hasLocalizedName()) {
+                return;
+            }
+            damagerStats = heldItemMeta.getLocalizedName();
             isPlayer = true;
         } else {
-            e.getDamager();
             Entity damager = e.getDamager();
-            damagerStats = String.valueOf(damager.getMetadata("attributes").get(0).asString());
+            if (damager.getMetadata("attributes").isEmpty()) {
+                return;
+            }
+            damagerStats = damager.getMetadata("attributes").get(0).asString();
         }
+
         ArrayList<String> damages = ItemUtils.getItemDamage(damagerStats);
+        if (damages.size() <= 6) {
+            return;
+        }
+
+        int damage;
+        try {
+            damage = Integer.parseInt(damages.get(6));
+        } catch (NumberFormatException exception) {
+            Devoria.getInstance().getLogger().warning("Ignored invalid damage metadata");
+            return;
+        }
+
+        e.setDamage(0);
 
         if (isPlayer) {
             MiscellaneousUtils damageIndicator = new MiscellaneousUtils();
@@ -99,7 +147,7 @@ public class EntityListener implements Listener {
             e.getDamager().sendMessage(damages.get(6));
         }
 
-        PlayerUtils.changeHealth(victim, Integer.parseInt("-" + damages.get(6)), damagerEntity, true);
+        PlayerUtils.changeHealth(victim, -Math.abs(damage), damagerEntity, true);
 
         if (victim instanceof Player) {
             PlayerUtils.updateHealthBar((Player) e.getEntity());

@@ -36,6 +36,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class PlayerListener implements Listener {
     private final Devoria plugin = Devoria.getInstance();
@@ -235,9 +236,22 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onItemPickUp(PlayerAttemptPickupItemEvent event) {
-        HashMap<String, String> map = FastUtils.map(event.getItem().getItemStack().getItemMeta().getLocalizedName());
+        ItemMeta itemMeta = event.getItem().getItemStack().getItemMeta();
+        if (itemMeta == null || !itemMeta.hasLocalizedName()) {
+            return;
+        }
 
-        if (!event.getPlayer().equals(Bukkit.getPlayer(UUID.fromString(map.get("owner"))))) {
+        HashMap<String, String> map = FastUtils.map(itemMeta.getLocalizedName());
+        String owner = map.get("owner");
+        if (owner == null) {
+            return;
+        }
+
+        try {
+            if (!event.getPlayer().getUniqueId().equals(UUID.fromString(owner))) {
+                event.setCancelled(true);
+            }
+        } catch (IllegalArgumentException ignored) {
             event.setCancelled(true);
         }
     }

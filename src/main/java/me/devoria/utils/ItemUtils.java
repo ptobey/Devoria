@@ -29,6 +29,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.constructor.SafeConstructor;
 
 public class ItemUtils {
     public static ChatColor starsColor = ChatColor.WHITE;
@@ -987,9 +989,41 @@ public class ItemUtils {
     }
 
     public static Map<String, String> parseItemFile(String folder, String name) throws FileNotFoundException {
-        FileInputStream inputStream = new FileInputStream(Devoria.dataFolder+"/"+folder+"/"+name+".yml");
-        Yaml yaml = new Yaml();
-        return yaml.load(inputStream);
+        if (folder == null || name == null
+                || !folder.matches("[A-Za-z0-9_-]+")
+                || !name.matches("[A-Za-z0-9_-]+")) {
+            throw new FileNotFoundException("Invalid content definition name");
+        }
+
+        Path base = Devoria.dataFolder.toPath().resolve(folder).normalize();
+        Path definition = base.resolve(name + ".yml").normalize();
+        if (!definition.startsWith(base) || !Files.isRegularFile(definition)) {
+            throw new FileNotFoundException("Content definition not found: " + name);
+        }
+
+        LoaderOptions options = new LoaderOptions();
+        options.setCodePointLimit(1_000_000);
+        options.setMaxAliasesForCollections(20);
+        Yaml yaml = new Yaml(new SafeConstructor(options));
+        try (java.io.InputStream inputStream = Files.newInputStream(definition)) {
+            Object loaded = yaml.load(inputStream);
+            if (!(loaded instanceof Map)) {
+                throw new FileNotFoundException("Content definition must be a YAML mapping: " + name);
+            }
+
+            Map<String, String> values = new HashMap<>();
+            ((Map<?, ?>) loaded).forEach((key, value) -> {
+                if (key != null && value != null) {
+                    values.put(String.valueOf(key), String.valueOf(value));
+                }
+            });
+            return values;
+        } catch (IOException exception) {
+            FileNotFoundException wrapped = new FileNotFoundException(
+                    "Could not read content definition: " + name);
+            wrapped.initCause(exception);
+            throw wrapped;
+        }
     }
 
     public static Collection<ItemStack> generate(String type, String level) throws FileNotFoundException {

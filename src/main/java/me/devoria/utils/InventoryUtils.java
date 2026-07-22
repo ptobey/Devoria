@@ -13,6 +13,8 @@ import java.util.Map;
 
 
 public class InventoryUtils {
+    private static final int MAX_SERIALIZED_CHARACTERS = 2_000_000;
+    private static final int MAX_ITEM_STACKS = 256;
     /**
      * Converts the player inventory to a Base64 encoded string.
      *
@@ -63,17 +65,27 @@ public class InventoryUtils {
      * @throws IOException
      */
     public static ItemStack[] itemStackArrayFromBase64(String data) throws IOException {
+        if (data == null || data.length() > MAX_SERIALIZED_CHARACTERS) {
+            throw new IOException("Serialized inventory is missing or exceeds the size limit.");
+        }
         try {
-
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
-            ItemStack[] items = new ItemStack[dataInput.readInt()];
-
-            Bukkit.getLogger().info(String.valueOf(items.length));
+            int itemCount = dataInput.readInt();
+            if (itemCount < 0 || itemCount > MAX_ITEM_STACKS) {
+                dataInput.close();
+                throw new IOException("Serialized inventory contains an invalid item count.");
+            }
+            ItemStack[] items = new ItemStack[itemCount];
 
             for (int Index = 0; Index < items.length; Index++) {
 
-                Map<String, Object> stack = (Map<String, Object>) dataInput.readObject();
+                Object serialized = dataInput.readObject();
+                if (serialized != null && !(serialized instanceof Map)) {
+                    dataInput.close();
+                    throw new IOException("Serialized inventory contains an invalid entry.");
+                }
+                Map<String, Object> stack = (Map<String, Object>) serialized;
 
                 if (stack != null) {
                     items[Index] = ItemStack.deserialize(stack);

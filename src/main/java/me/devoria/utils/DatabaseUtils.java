@@ -1,280 +1,233 @@
 package me.devoria.utils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.sql.DriverManager;
-import org.bukkit.Bukkit;
-
-
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import me.devoria.Devoria;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-public class DatabaseUtils {
-    public static boolean register(UUID uuid, String username) {
-        try {
-            PreparedStatement ps;
-            Connection connection = DatabaseUtils.getConnection();
-            ps = connection.prepareStatement("INSERT INTO Players (uuid, Username) VALUES (?, ?)");
-            ps.setString(1, uuid.toString());
-            ps.setString(2, username);
-            ps.executeUpdate();
+/**
+ * Legacy JDBC access retained for compatibility while persistence is redesigned.
+ * The integration is disabled by default and never contains built-in credentials.
+ */
+public final class DatabaseUtils {
+    private static Connection connection;
 
-
-        } catch (SQLException e) {
-            Bukkit.getLogger().info(e.toString());
-            Bukkit.getLogger().info("Could not insert into table players");
-        }
-
-        return false;
+    private DatabaseUtils() {
     }
 
-
-    public boolean remove(UUID uuid) {
-        try {
-            PreparedStatement ps;
-            Connection connection = DatabaseUtils.getConnection();
-            ps = connection.prepareStatement("DELETE FROM Players WHERE UUID=?)");
-            ps.setString(1, uuid.toString());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            Bukkit.getLogger().info(e.toString());
-            Bukkit.getLogger().info("Could not delete player");
+    public static boolean register(UUID uuid, String username) {
+        String sql = "INSERT INTO Players (uuid, Username) VALUES (?, ?)";
+        try (PreparedStatement statement = requireConnection().prepareStatement(sql)) {
+            statement.setString(1, uuid.toString());
+            statement.setString(2, username);
+            return statement.executeUpdate() > 0;
+        } catch (SQLException exception) {
+            logDatabaseError("Could not insert player", exception);
+            return false;
         }
-        return false;
+    }
+
+    public static boolean remove(UUID uuid) {
+        try (PreparedStatement statement = requireConnection()
+                .prepareStatement("DELETE FROM Players WHERE UUID=?")) {
+            statement.setString(1, uuid.toString());
+            return statement.executeUpdate() > 0;
+        } catch (SQLException exception) {
+            logDatabaseError("Could not delete player", exception);
+            return false;
+        }
     }
 
     public static boolean verify(UUID uuid) throws SQLException {
-        try {
-            PreparedStatement ps;
-            Connection connection = DatabaseUtils.getConnection();
-            ps = connection.prepareStatement("SELECT * FROM Players WHERE UUID=?");
-            ps.setString(1, uuid.toString());
-            ResultSet results = ps.executeQuery();
-
-            if (results.next()) {
-                return true;
-            } else {
-                return false;
+        try (PreparedStatement statement = requireConnection()
+                .prepareStatement("SELECT 1 FROM Players WHERE UUID=?")) {
+            statement.setString(1, uuid.toString());
+            try (ResultSet results = statement.executeQuery()) {
+                return results.next();
             }
-        } catch (SQLException e) {
-            Bukkit.getLogger().info(e.toString());
-            Bukkit.getLogger().info("Could not verify table players");
-            return false;
         }
     }
 
-    public static boolean verifyIS(UUID uuid, String class_name) throws SQLException {
-        try {
-            PreparedStatement ps;
-            Connection connection = getConnection();
-            ps = connection.prepareStatement("SELECT itemstack,class_name,class_location FROM Inventory WHERE uuid=? AND class_name=?");
-            ps.setString(1, uuid.toString());
-            ps.setString(2, class_name);
-
-            ResultSet results = ps.executeQuery();
-
-            if (results.next()) {
-                return true;
-            } else {
-                return false;
+    public static boolean verifyIS(UUID uuid, String className) throws SQLException {
+        String sql = "SELECT 1 FROM Inventory WHERE uuid=? AND class_name=?";
+        try (PreparedStatement statement = requireConnection().prepareStatement(sql)) {
+            statement.setString(1, uuid.toString());
+            statement.setString(2, className);
+            try (ResultSet results = statement.executeQuery()) {
+                return results.next();
             }
-        } catch (SQLException e) {
-            Bukkit.getLogger().info(e.toString());
-            Bukkit.getLogger().info("Could not verify table players");
-            return false;
         }
     }
 
-    public static void insertItemStack(UUID uuid, String class_name, String item_stack, String class_location) throws SQLException {
-        try {
-            PreparedStatement ps;
-            Connection connection = getConnection();
-            ps = connection.prepareStatement("INSERT INTO Inventory (uuid, class_name, itemstack, class_location) VALUES (?, ?,?,?)");
-            ps.setString(1, uuid.toString());
-            ps.setString(2, class_name);
-            ps.setString(3, item_stack.toString());
-            ps.setString(4, class_location);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            Bukkit.getLogger().info(e.toString());
-            Bukkit.getLogger().info("Could not insert item stack ");
+    public static void insertItemStack(UUID uuid, String className, String itemStack,
+            String classLocation) throws SQLException {
+        String sql = "INSERT INTO Inventory (uuid, class_name, itemstack, class_location) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement statement = requireConnection().prepareStatement(sql)) {
+            statement.setString(1, uuid.toString());
+            statement.setString(2, className);
+            statement.setString(3, itemStack);
+            statement.setString(4, classLocation);
+            statement.executeUpdate();
         }
     }
 
-    public static void updateItemStack(UUID uuid, String class_name, String item_stack, String class_location) throws SQLException {
-        if (verifyIS(uuid, class_name)) {
-            try {
-                PreparedStatement ps;
-                Connection connection = getConnection();
-                ps = connection.prepareStatement("UPDATE Inventory SET itemstack=?,class_location=? WHERE uuid=? AND class_name=? ");
-                ps.setString(1, item_stack.toString());
-                ps.setString(2, class_location);
-                ps.setString(3, uuid.toString());
-                ps.setString(4, class_name);
-                ps.executeUpdate();
-            } catch (SQLException e) {
-                Bukkit.getLogger().info(e.toString());
-                Bukkit.getLogger().info("Could not update item stack ");
-            }
-        } else {
-            insertItemStack(uuid, class_name, item_stack, class_location);
+    public static void updateItemStack(UUID uuid, String className, String itemStack,
+            String classLocation) throws SQLException {
+        if (!verifyIS(uuid, className)) {
+            insertItemStack(uuid, className, itemStack, classLocation);
+            return;
+        }
+
+        String sql = "UPDATE Inventory SET itemstack=?, class_location=? WHERE uuid=? AND class_name=?";
+        try (PreparedStatement statement = requireConnection().prepareStatement(sql)) {
+            statement.setString(1, itemStack);
+            statement.setString(2, classLocation);
+            statement.setString(3, uuid.toString());
+            statement.setString(4, className);
+            statement.executeUpdate();
         }
     }
 
-    public static ItemStack[] getItemStack(UUID uuid, String class_name) {
-        try {
-            PreparedStatement ps;
-            Connection connection = getConnection();
-            ps = connection.prepareStatement("SELECT itemstack FROM Inventory WHERE uuid=? AND class_name=?");
-            ps.setString(1, uuid.toString());
-            ps.setString(2, class_name);
-            ResultSet resultSet = ps.executeQuery();
-            StringBuilder sb = new StringBuilder();
-
-            while (resultSet.next()) {
-                byte[] buffer = new byte[1024];
-                InputStream in = resultSet.getBinaryStream("itemstack");
-                BufferedReader br = new BufferedReader(new InputStreamReader(in));
-                String line = br.readLine();
-                while (line != null) {
-                    sb.append(line);
-                    line = br.readLine();
+    public static ItemStack[] getItemStack(UUID uuid, String className) {
+        String sql = "SELECT itemstack FROM Inventory WHERE uuid=? AND class_name=?";
+        try (PreparedStatement statement = requireConnection().prepareStatement(sql)) {
+            statement.setString(1, uuid.toString());
+            statement.setString(2, className);
+            try (ResultSet results = statement.executeQuery()) {
+                if (!results.next()) {
+                    return new ItemStack[0];
                 }
+                return InventoryUtils.itemStackArrayFromBase64(results.getString("itemstack"));
             }
-            String data = sb.toString();
-            ItemStack[] items = InventoryUtils.itemStackArrayFromBase64(data);
-            return items;
-        } catch (SQLException | IOException e) {
-            Bukkit.getLogger().info(e.toString());
-            Bukkit.getLogger().info("Could not pull item stack ");
+        } catch (SQLException | IOException exception) {
+            logDatabaseError("Could not load item stack", exception);
+            return new ItemStack[0];
         }
-        return null;
     }
 
     public static boolean refactorClass(UUID uuid) throws SQLException {
-        try {
-            PreparedStatement ps;
-            Connection connection = getConnection();
-            ps = connection.prepareStatement("SELECT Current_Class FROM CLASS WHERE uuid=?");
-            ps.setString(1, uuid.toString());
-            ResultSet results = ps.executeQuery();
-
-            if (results.next()) {
-                return true;
-            } else {
-                return false;
+        try (PreparedStatement statement = requireConnection()
+                .prepareStatement("SELECT 1 FROM CLASS WHERE uuid=?")) {
+            statement.setString(1, uuid.toString());
+            try (ResultSet results = statement.executeQuery()) {
+                return results.next();
             }
-        } catch (SQLException e) {
-            Bukkit.getLogger().info(e.toString());
-            Bukkit.getLogger().info("Could not verify table CLASS");
-            return false;
         }
     }
 
-    public static void insertClass(UUID uuid, String class_name) throws SQLException {
-        try {
-            PreparedStatement ps;
-            Connection connection = getConnection();
-            ps = connection.prepareStatement("INSERT INTO CLASS (uuid, Current_Class) VALUES (?, ?)");
-            ps.setString(1, uuid.toString());
-            ps.setString(2, class_name);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            Bukkit.getLogger().info(e.toString());
-            Bukkit.getLogger().info("Could not insert class ");
+    public static void insertClass(UUID uuid, String className) throws SQLException {
+        try (PreparedStatement statement = requireConnection()
+                .prepareStatement("INSERT INTO CLASS (uuid, Current_Class) VALUES (?, ?)")) {
+            statement.setString(1, uuid.toString());
+            statement.setString(2, className);
+            statement.executeUpdate();
         }
     }
 
     public static String findCurrentClass(UUID uuid) {
-        try {
-            PreparedStatement ps;
-            Connection connection = getConnection();
-            ps = connection.prepareStatement("SELECT Current_Class FROM CLASS WHERE UUID=?");
-            ps.setString(1, uuid.toString());
-            ResultSet results = ps.executeQuery();
-
-            results.next();
-
-            String c_class = results.getString("Current_Class");
-
-            if (c_class == null) {
-                insertClass(uuid, "huntsman");
-            } else {
-                return c_class;
+        String sql = "SELECT Current_Class FROM CLASS WHERE UUID=?";
+        try (PreparedStatement statement = requireConnection().prepareStatement(sql)) {
+            statement.setString(1, uuid.toString());
+            try (ResultSet results = statement.executeQuery()) {
+                if (results.next()) {
+                    return results.getString("Current_Class");
+                }
             }
-
-        } catch (SQLException e) {
-            Bukkit.getLogger().info(e.toString());
-            Bukkit.getLogger().info("Could not verify table players");
-        }
-
-        return null;
-    }
-
-    public static void setCurrentClass(UUID uuid, String c_class) throws SQLException {
-
-        if (refactorClass(uuid)) {
-            try {
-                PreparedStatement ps;
-                Connection connection = getConnection();
-                ps = connection.prepareStatement("UPDATE CLASS SET Current_Class=? WHERE uuid=?");
-                ps.setString(1, c_class);
-                ps.setString(2, uuid.toString());
-                ps.executeUpdate();
-                Bukkit.getLogger().info("I`m here 2");
-
-            } catch (SQLException e) {
-                Bukkit.getLogger().info(e.toString());
-                Bukkit.getLogger().info("Could not set current class ");
-                Bukkit.getLogger().info("I`m here 4");
-            }
-
-        } else {
-            insertClass(uuid, c_class);
-
+            insertClass(uuid, "huntsman");
+            return "huntsman";
+        } catch (SQLException exception) {
+            logDatabaseError("Could not load current class", exception);
+            return null;
         }
     }
 
-    private static Connection connection;
+    public static void setCurrentClass(UUID uuid, String className) throws SQLException {
+        if (!refactorClass(uuid)) {
+            insertClass(uuid, className);
+            return;
+        }
+
+        try (PreparedStatement statement = requireConnection()
+                .prepareStatement("UPDATE CLASS SET Current_Class=? WHERE uuid=?")) {
+            statement.setString(1, className);
+            statement.setString(2, uuid.toString());
+            statement.executeUpdate();
+        }
+    }
 
     public static boolean isConnected() {
-        return (connection == null ? false : true);
+        if (connection == null) {
+            return false;
+        }
+        try {
+            return !connection.isClosed();
+        } catch (SQLException exception) {
+            return false;
+        }
     }
 
-
     public static void connect() throws ClassNotFoundException, SQLException {
-
-        String host = "mysql.mcprohosting.com";
-        String port = "3306";
-        String database = "test";
-        String username = "server_1046151";
-        String password = "NS7MRXIhHUxsdelJ#i$gw";
-
-        if (!isConnected()) {
-            connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database +
-                    "?useSSL=false", username, password);
+        if (isConnected()) {
+            return;
         }
+
+        FileConfiguration config = Devoria.getInstance().getConfig();
+        if (!config.getBoolean("database.enabled", false)) {
+            throw new SQLException("Database integration is disabled in config.yml");
+        }
+
+        String url = config.getString("database.url", "").trim();
+        String username = environmentOrConfig("DEVORIA_DB_USERNAME", "database.username");
+        String password = environmentOrConfig("DEVORIA_DB_PASSWORD", "database.password");
+        if (url.isBlank() || username.isBlank() || password.isBlank()) {
+            throw new SQLException("Database URL and credentials must be configured before connecting");
+        }
+        if (url.toLowerCase().contains("usessl=false") || url.toLowerCase().contains("sslmode=disabled")) {
+            throw new SQLException("Insecure database URLs are not allowed");
+        }
+
+        connection = DriverManager.getConnection(url, username, password);
     }
 
     public static void disconnect() {
-
-        if (isConnected()) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                // Do absolutely nothing.
-            }
+        if (connection == null) {
+            return;
+        }
+        try {
+            connection.close();
+        } catch (SQLException exception) {
+            logDatabaseError("Could not close database connection", exception);
+        } finally {
+            connection = null;
         }
     }
 
     public static Connection getConnection() {
         return connection;
     }
-}
 
+    private static Connection requireConnection() throws SQLException {
+        if (!isConnected()) {
+            throw new SQLException("Database is not connected");
+        }
+        return connection;
+    }
+
+    private static String environmentOrConfig(String environmentName, String configPath) {
+        String environmentValue = System.getenv(environmentName);
+        if (environmentValue != null && !environmentValue.isBlank()) {
+            return environmentValue;
+        }
+        return Devoria.getInstance().getConfig().getString(configPath, "");
+    }
+
+    private static void logDatabaseError(String message, Exception exception) {
+        Devoria.getInstance().getLogger().warning(message + ": " + exception.getMessage());
+    }
+}

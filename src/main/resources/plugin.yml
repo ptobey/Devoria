@@ -3,44 +3,84 @@ version: '${project.version}'
 api-version: 1.19
 main: me.devoria.Devoria
 authors: [ ptobey, SleepingRaven ]
+depend: [ ModelEngine ]
 
 commands:
   item:
     description: Get a custom item
-    usage: Put an item name
-  reveal:
-    descreption: Changes item atty
-    usage: Reveal item
+    usage: /item <name>
+    permission: devoria.command.item
   register:
-    description: register player in database
+    description: Register a player in the configured database
+    permission: devoria.command.register
   getinfo:
     description: Gets an item's meta data
-  loot:
-    description: Get random loot
+    permission: devoria.command.getinfo
   identify:
     description: Identifies an item
+    permission: devoria.command.identify
   summonmob:
     description: Summons a mob
+    usage: /summonmob <name>
+    permission: devoria.command.summonmob
   survival:
     aliases: 0
     description: Puts your gamemode to survival
     usage: /0 or /survival
+    permission: devoria.command.gamemode
   creative:
     aliases: 1
     description: Puts your gamemode to creative
     usage: /1 or /creative
+    permission: devoria.command.gamemode
   adventure:
     aliases: 2
     description: Puts your gamemode to adventure
     usage: /2 or /adventure
+    permission: devoria.command.gamemode
   spectator:
     aliases: 3
     description: Puts your gamemode to spectator
     usage: /3 or /spectator
+    permission: devoria.command.gamemode
   factions:
     description: Opens the Factions GUI
     usage: /factions [player]
+    permission: devoria.command.factions
   spellmode:
     aliases: spells
     description: Toggles spellmode
     usage: /spellmode [player]
+    permission: devoria.command.spellmode
+
+permissions:
+  devoria.command.item:
+    description: Grants custom items
+    default: op
+  devoria.command.register:
+    description: Uses the legacy database registration command
+    default: op
+  devoria.command.getinfo:
+    description: Inspects internal item and player metadata
+    default: op
+  devoria.command.identify:
+    description: Identifies a held Devoria item
+    default: true
+  devoria.command.summonmob:
+    description: Summons configured custom mobs
+    default: op
+  devoria.command.gamemode:
+    description: Changes the caller's game mode
+    default: op
+  devoria.command.factions:
+    description: Opens the caller's faction selector
+    default: true
+  devoria.command.factions.others:
+    description: Opens the faction selector for another player
+    default: op
+  devoria.command.spellmode:
+    description: Toggles the caller's spell mode
+    default: true
+  devoria.command.spellmode.others:
+    description: Toggles spell mode for another player
+    default: op

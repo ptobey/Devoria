@@ -3,6 +3,8 @@ package me.devoria.player;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -112,12 +114,15 @@ public class PlayerStats {
                 return data;
             }
             try {
-                // getting the data
                 String json = Files.readString(path);
                 data = JsonUtils.GSON.fromJson(json, PlayerStats.class);
-            } catch (IOException e) {
-                // print the error
-                e.printStackTrace();
+                if (data == null) {
+                    throw new IOException("Player data was empty");
+                }
+            } catch (IOException | RuntimeException e) {
+                Devoria.getInstance().getLogger().warning(
+                        "Could not load player data for " + uuid + ": " + e.getMessage());
+                data = new PlayerStats(uuid);
             }
             playerStats.put(uuid, data);
         }
@@ -125,24 +130,30 @@ public class PlayerStats {
     }
 
     public void createJSON() throws IOException {
-        if (!Files.exists(this.storage)) {
-            if (!Files.exists(this.storage.getParent())) {
-                Files.createDirectory(this.storage.getParent());
-            }
-            Files.createFile(this.storage);
-        }
+        Files.createDirectories(this.storage.getParent());
     }
 
     public static void saveAll() {
-        playerStats.forEach((k, v) -> v.saveAndDelete());
+        for (PlayerStats stats : new ArrayList<>(playerStats.values())) {
+            stats.save();
+        }
+        playerStats.clear();
     }
 
     public void save() {
         try {
             createJSON();
-            Files.writeString(storage, JsonUtils.GSON.toJson(this));
+            Path temporary = Files.createTempFile(storage.getParent(), uuid.toString(), ".tmp");
+            Files.writeString(temporary, JsonUtils.GSON.toJson(this));
+            try {
+                Files.move(temporary, storage, StandardCopyOption.ATOMIC_MOVE,
+                        StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException atomicMoveFailure) {
+                Files.move(temporary, storage, StandardCopyOption.REPLACE_EXISTING);
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            Devoria.getInstance().getLogger().severe(
+                    "Could not save player data for " + uuid + ": " + e.getMessage());
         }
     }
 

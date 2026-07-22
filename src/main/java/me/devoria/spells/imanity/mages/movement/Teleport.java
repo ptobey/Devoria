@@ -34,9 +34,9 @@ public class Teleport extends Spell {
         
         for (int i = 0; i <= 20; i++) {
             
-        	Double angle = (i*Math.PI*2)/20;
-        	Double xInc = Math.cos(angle)*0.5;
-            Double zInc = Math.sin(angle)*0.5;
+            double angle = (i*Math.PI*2)/20;
+            double xInc = Math.cos(angle)*0.5;
+            double zInc = Math.sin(angle)*0.5;
             p.getWorld().spawnParticle(Particle.END_ROD, p.getLocation(), 0, xInc, 0f, zInc, 0.25);
         
     	}
