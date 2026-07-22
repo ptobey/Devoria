@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import me.devoria.Devoria;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -36,6 +35,14 @@ public class ItemUtils {
     public static ChatColor starsColor = ChatColor.WHITE;
     public static ChatColor statColor = ChatColor.WHITE;
     public static String plusOrMinus = "";
+
+    private static String capitalize(String value) {
+        if (value == null || value.isEmpty()) {
+            return value;
+        }
+
+        return Character.toTitleCase(value.charAt(0)) + value.substring(1);
+    }
 
 
     public static void starsColorFinder(int percentNumber) {
@@ -738,7 +745,7 @@ public class ItemUtils {
 
 
         lore.add("");
-        lore.add(rarityColor+ StringUtils.capitalize(String.valueOf(rarity))+" "+ StringUtils.capitalize(String.valueOf(type)));
+        lore.add(rarityColor + capitalize(String.valueOf(rarity)) + " " + capitalize(String.valueOf(type)));
 
         Material item = Material.STICK;
 
@@ -1133,7 +1140,7 @@ public class ItemUtils {
         ItemMeta bowMeta = bow.getItemMeta();
 
 
-        bowMeta.setDisplayName(rarityColor+"Unidentified "+StringUtils.capitalize(String.valueOf(rarity))+ " " + StringUtils.capitalize(String.valueOf(type)));
+        bowMeta.setDisplayName(rarityColor + "Unidentified " + capitalize(String.valueOf(rarity)) + " " + capitalize(String.valueOf(type)));
         bowMeta.setLocalizedName(itemInfo);
 
         bow.setItemMeta(bowMeta);
