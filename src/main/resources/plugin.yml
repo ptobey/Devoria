@@ -1,5 +1,8 @@
 name: Devoria
 version: '${project.version}'
+description: Core action-MMO systems for the Devoria server
+website: https://github.com/ptobey/Devoria
+prefix: Devoria
 api-version: 1.19
 main: me.devoria.Devoria
 authors: [ ptobey, SleepingRaven ]
