@@ -2,6 +2,7 @@ package me.devoria.spells;
 
 import me.devoria.Devoria;
 import me.devoria.cooldowns.CooldownManager;
+import me.devoria.player.PlayerStats;
 import me.devoria.utils.PlayerUtils;
 import me.devoria.utils.SpellUtils;
 import org.bukkit.ChatColor;
@@ -83,75 +84,115 @@ public class SpellTriggers {
         cancelInactivityTimer();
         boolean firstClick = spellClicks[0];
         boolean secondClick = spellClicks[1];
+        SpellType type = spellType(firstClick, secondClick);
+        PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
+        SpellCastRule rule = plugin.getRuntimeConfiguration()
+                .spellCasts().ruleFor(type);
 
-        currentMessage = ChatColor.YELLOW + "Casted!";
-        PlayerUtils.updateHealthBar(player);
+        SpellCastTransaction.Result result = SpellCastTransaction.attempt(
+                resources(stats), rule, type.cooldownKey(),
+                isCastStateValid(stats, type),
+                () -> SpellUtils.redirect(player, player.getUniqueId(), type));
+        showCastResult(type, stats, result);
+    }
 
-        // If the notation is LEFT-RIGHT
+    private SpellType spellType(boolean firstClick, boolean secondClick) {
         if (!firstClick && secondClick) {
-            long cooldown = 1000;
-
-            // Base Spell
-            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Base Spell")) {
-                player.sendMessage(ChatColor.RED + "That ability is currently on cooldown.");
-                player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 0.5f);
-                return;
-            }
-            SpellUtils.redirect(player, player.getUniqueId(), SpellType.BASE);
-            cooldownManager.setCooldownFromNow(player.getUniqueId(), "Base Spell", cooldown);
+            return SpellType.BASE;
         }
-
-        // If the notation is RIGHT-LEFT
         if (firstClick && !secondClick) {
-            long cooldown = 4000;
-
-            // Utility Spell
-            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Utility Spell")) {
-                player.sendMessage(ChatColor.RED + "That ability is currently on cooldown.");
-                player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 0.5f);
-                return;
-            }
-            SpellUtils.redirect(player, player.getUniqueId(), SpellType.UTIL);
-            cooldownManager.setCooldownFromNow(player.getUniqueId(), "Utility Spell", cooldown);
+            return SpellType.UTIL;
         }
-
-        // If the notation is LEFT-LEFT
-        if (!firstClick && !secondClick) {
-            long cooldown = 3000;
-
-            // Heavy Spell
-            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Heavy Spell")) {
-                player.sendMessage(ChatColor.RED + "That ability is currently on cooldown.");
-                player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 0.5f);
-                return;
-            }
-            SpellUtils.redirect(player, player.getUniqueId(), SpellType.HEAVY);
-            cooldownManager.setCooldownFromNow(player.getUniqueId(), "Heavy Spell", cooldown);
+        if (!firstClick) {
+            return SpellType.HEAVY;
         }
+        return SpellType.MOVEMENT;
+    }
 
-        // If the notation is RIGHT-RIGHT
-        if (firstClick && secondClick) {
-            long cooldown = 1000;
-
-            // Movement Spell
-            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Movement Spell")) {
-                player.sendMessage(ChatColor.RED + "That ability is currently on cooldown.");
-                player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 0.5f);
-                return;
-            }
-
-            boolean hasDisableEffect = false;
-            for (PotionEffect effect : player.getActivePotionEffects()) {
-                if (effect.getType().equals(PotionEffectType.SLOW_FALLING)) {
-                    hasDisableEffect = true;
-                }
-            }
-
-            if (hasDisableEffect) return;
-
-            SpellUtils.redirect(player, player.getUniqueId(), SpellType.MOVEMENT);
-            cooldownManager.setCooldownFromNow(player.getUniqueId(), "Movement Spell", cooldown);
+    private boolean isCastStateValid(PlayerStats stats, SpellType type) {
+        if (!player.isOnline() || player.isDead() || !stats.spellMode) {
+            return false;
         }
+        if (type != SpellType.MOVEMENT) {
+            return true;
+        }
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            if (effect.getType().equals(PotionEffectType.SLOW_FALLING)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private SpellCastTransaction.Resources resources(PlayerStats stats) {
+        return new SpellCastTransaction.Resources() {
+            @Override
+            public int currentMana() {
+                return stats.getMana();
+            }
+
+            @Override
+            public int maxMana() {
+                return stats.getMaxMana();
+            }
+
+            @Override
+            public long cooldownRemaining(String cooldownKey) {
+                return cooldownManager.getCooldownLeft(
+                        player.getUniqueId(), cooldownKey);
+            }
+
+            @Override
+            public void commit(int newMana, String cooldownKey,
+                    int cooldownMillis) {
+                stats.setMana(newMana);
+                cooldownManager.setCooldownFromNow(player.getUniqueId(),
+                        cooldownKey, (long) cooldownMillis);
+            }
+        };
+    }
+
+    private void showCastResult(SpellType type, PlayerStats stats,
+            SpellCastTransaction.Result result) {
+        switch (result.outcome()) {
+            case SUCCESS -> {
+                currentMessage = ChatColor.GREEN + "Casted! " + stats.getMana()
+                        + "/" + stats.getMaxMana() + " mana";
+                player.sendMessage(ChatColor.GREEN + "Cast " + type.displayName()
+                        + ". Mana: " + stats.getMana() + "/" + stats.getMaxMana() + ".");
+            }
+            case ACTIVE_COOLDOWN -> {
+                currentMessage = ChatColor.RED + "Cooldown: "
+                        + result.remainingCooldownSeconds() + "s";
+                player.sendMessage(ChatColor.RED + "That ability is on cooldown for "
+                        + result.remainingCooldownSeconds() + " more second(s).");
+                playFailureSound();
+            }
+            case INSUFFICIENT_MANA -> {
+                currentMessage = ChatColor.RED + "Need " + result.manaCost() + " mana";
+                player.sendMessage(ChatColor.RED + "That ability requires "
+                        + result.manaCost() + " mana; you have " + stats.getMana() + ".");
+                playFailureSound();
+            }
+            case INVALID_STATE -> {
+                currentMessage = ChatColor.RED + "Cast cancelled";
+                player.sendMessage(ChatColor.RED
+                        + "You cannot cast that ability in your current state.");
+                playFailureSound();
+            }
+            case REJECTED -> {
+                currentMessage = ChatColor.RED + "No spell equipped";
+                player.sendMessage(ChatColor.RED
+                        + "You do not have a spell equipped in that slot.");
+                playFailureSound();
+            }
+        }
+        PlayerUtils.updateHealthBar(player);
+    }
+
+    private void playFailureSound() {
+        player.getWorld().playSound(player.getLocation(),
+                Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 0.5f);
     }
 
     /** Cancels an unfinished click sequence without casting or starting cooldowns. */

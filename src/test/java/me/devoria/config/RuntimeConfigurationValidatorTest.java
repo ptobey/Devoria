@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import me.devoria.spells.SpellCastRule;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -20,7 +21,12 @@ class RuntimeConfigurationValidatorTest {
 
         assertTrue(validate(config, Map.of()).isEmpty());
         assertEquals(new RuntimeConfiguration(
-                false, false, false, 0, false, true),
+                false, false, false, 0, false, true,
+                new SpellCastConfiguration(
+                        new SpellCastRule(10, 1000),
+                        new SpellCastRule(20, 4000),
+                        new SpellCastRule(30, 3000),
+                        new SpellCastRule(15, 1000))),
                 RuntimeConfiguration.from(config));
     }
 
@@ -85,6 +91,22 @@ class RuntimeConfigurationValidatorTest {
                 "DEVORIA_DB_PASSWORD", "secret"));
 
         assertEquals(List.of("database.url must not disable TLS"), errors);
+    }
+
+    @Test
+    void validatesEverySpellCostAndCooldown() {
+        MemoryConfiguration config = defaultConfig();
+        config.set("spells.base.mana-cost", -1);
+        config.set("spells.utility.cooldown-millis", "soon");
+        config.set("spells.heavy.mana-cost", 10_001);
+        config.set("spells.movement.cooldown-millis", 3_600_001);
+
+        assertEquals(List.of(
+                "spells.base.mana-cost must be between 0 and 10000",
+                "spells.utility.cooldown-millis must be an integer",
+                "spells.heavy.mana-cost must be between 0 and 10000",
+                "spells.movement.cooldown-millis must be between 0 and 3600000"),
+                validate(config, Map.of()));
     }
 
     private static List<String> validate(MemoryConfiguration config,

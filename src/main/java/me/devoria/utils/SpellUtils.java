@@ -3,16 +3,20 @@ package me.devoria.utils;
 import java.util.UUID;
 import me.devoria.Devoria;
 import me.devoria.player.PlayerStats;
+import me.devoria.spells.DefaultSpells;
 import me.devoria.spells.Spell;
 import me.devoria.spells.SpellType;
 import org.bukkit.entity.Player;
 
 public class SpellUtils {
-    public static void redirect(Player player, UUID pUUID, SpellType spellType) {
+    public static boolean redirect(Player player, UUID pUUID, SpellType spellType) {
         PlayerStats stats = PlayerStats.getStats(pUUID);
         Spell spell = getSpell(spellType, stats);
-        if (spell == null) return;
+        if (spell == null || spell == DefaultSpells.DEFAULT) {
+            return false;
+        }
         spell.cast(player, Devoria.getInstance().getCdInstance());
+        return true;
     }
 
 

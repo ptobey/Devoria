@@ -9,7 +9,8 @@ public record RuntimeConfiguration(
         boolean fireTick,
         int randomTickSpeed,
         boolean mobGriefing,
-        boolean modelEngineEnabled) {
+        boolean modelEngineEnabled,
+        SpellCastConfiguration spellCasts) {
 
     public static RuntimeConfiguration from(ConfigurationSection config) {
         return new RuntimeConfiguration(
@@ -18,6 +19,7 @@ public record RuntimeConfiguration(
                 config.getBoolean("world-rules.do-fire-tick"),
                 config.getInt("world-rules.random-tick-speed"),
                 config.getBoolean("world-rules.mob-griefing"),
-                config.getBoolean("integrations.model-engine.enabled"));
+                config.getBoolean("integrations.model-engine.enabled"),
+                SpellCastConfiguration.from(config));
     }
 }
