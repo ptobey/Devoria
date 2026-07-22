@@ -108,11 +108,12 @@ trim() {
 scriptDir="$(dirname "$0")"
 scriptName="$(basename "$0")"
 
-# parse distributionUrl and optional distributionSha256Sum, requires .mvn/wrapper/maven-wrapper.properties
+# parse distributionUrl and optional distribution checksums, requires .mvn/wrapper/maven-wrapper.properties
 while IFS="=" read -r key value; do
   case "${key-}" in
   distributionUrl) distributionUrl=$(trim "${value-}") ;;
   distributionSha256Sum) distributionSha256Sum=$(trim "${value-}") ;;
+  distributionSha256SumTarGz) distributionSha256SumTarGz=$(trim "${value-}") ;;
   esac
 done <"$scriptDir/.mvn/wrapper/maven-wrapper.properties"
 [ -n "${distributionUrl-}" ] || die "cannot read distributionUrl property in $scriptDir/.mvn/wrapper/maven-wrapper.properties"
@@ -179,6 +180,7 @@ verbose "Downloading to: $TMP_DOWNLOAD_DIR/$distributionUrlName"
 if ! command -v unzip >/dev/null; then
   distributionUrl="${distributionUrl%.zip}.tar.gz"
   distributionUrlName="${distributionUrl##*/}"
+  distributionSha256Sum="${distributionSha256SumTarGz-}"
 fi
 
 # verbose opt
