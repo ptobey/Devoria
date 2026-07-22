@@ -29,3 +29,12 @@ directory, starts Devoria without ModelEngine, verifies the model-backed mob
 fallback, and shuts the server down cleanly. ModelEngine is optional at runtime
 and can also be disabled through `integrations.model-engine.enabled` in
 `config.yml`.
+
+ModelEngine is expected on production servers and is required for the complete
+model-backed mob feature set. The soft dependency exists so development,
+diagnostics, and recovery can run in a clearly reported degraded mode. Operators
+can inspect the current runtime state from the server console with:
+
+```text
+devoria status
+```

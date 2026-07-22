@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Objects;
 import me.devoria.commands.Adventure;
 import me.devoria.commands.Creative;
+import me.devoria.commands.DevoriaCommand;
 import me.devoria.commands.GetItemInfo;
 import me.devoria.commands.IdentifyCommand;
 import me.devoria.commands.ItemCommand;
@@ -71,6 +72,7 @@ public class Devoria extends JavaPlugin {
 
     public void registerCommands() {
         Objects.requireNonNull(getCommand("item")).setExecutor(new ItemCommand());
+        Objects.requireNonNull(getCommand("devoria")).setExecutor(new DevoriaCommand(this));
         Objects.requireNonNull(getCommand("register")).setExecutor(new RegisterCommand());
         Objects.requireNonNull(getCommand("getinfo")).setExecutor(new GetItemInfo());
         Objects.requireNonNull(getCommand("identify")).setExecutor(new IdentifyCommand());

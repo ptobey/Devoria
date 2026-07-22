@@ -9,6 +9,10 @@ authors: [ ptobey, SleepingRaven ]
 softdepend: [ ModelEngine ]
 
 commands:
+  devoria:
+    description: Shows Devoria runtime and integration status
+    usage: /devoria [status]
+    permission: devoria.command.status
   item:
     description: Get a custom item
     usage: /item <name>
@@ -57,6 +61,9 @@ commands:
     permission: devoria.command.spellmode
 
 permissions:
+  devoria.command.status:
+    description: Views Devoria runtime and integration status
+    default: op
   devoria.command.item:
     description: Grants custom items
     default: op
